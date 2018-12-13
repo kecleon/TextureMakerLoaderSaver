@@ -298,7 +298,7 @@ package kabam.rotmg.editor.view {
 			var bitmap:BitmapData = PNGDecoder.decodeImage(file.data);
 			var h:int = bitmap.height;
 			var w:int = bitmap.width;
-			if ((w == 8 && h == 8) || (w == 16 && h == 8) || (w == 16 && h == 16)) {
+			if ((w == 8 && h == 8) || (w == 16 && h == 8) || (w == 16 && h == 16) || (w == 24 && h == 24) || (w == 32 && h == 32) || (w == 48 && h == 48) || (w == 64 && h == 64)) {
 				pixelDrawer_.loadBitmapData(bitmap);
 			}
 		}
