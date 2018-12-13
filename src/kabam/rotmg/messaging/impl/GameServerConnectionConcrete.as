@@ -1,4 +1,3 @@
- 
 package kabam.rotmg.messaging.impl {
 	import com.company.assembleegameclient.game.AGameSprite;
 	import com.company.assembleegameclient.game.events.GuildResultEvent;
@@ -57,6 +56,7 @@ package kabam.rotmg.messaging.impl {
 	import com.hurlant.crypto.symmetric.ICipher;
 	import com.hurlant.util.Base64;
 	import com.hurlant.util.der.PEM;
+
 	import flash.display.BitmapData;
 	import flash.events.Event;
 	import flash.events.TimerEvent;
@@ -65,6 +65,7 @@ package kabam.rotmg.messaging.impl {
 	import flash.utils.ByteArray;
 	import flash.utils.Timer;
 	import flash.utils.getTimer;
+
 	import io.decagames.rotmg.characterMetrics.tracker.CharactersMetricsTracker;
 	import io.decagames.rotmg.classes.NewClassUnlockSignal;
 	import io.decagames.rotmg.dailyQuests.messages.incoming.QuestFetchResponse;
@@ -80,6 +81,7 @@ package kabam.rotmg.messaging.impl {
 	import io.decagames.rotmg.pets.signals.UpdatePetYardSignal;
 	import io.decagames.rotmg.social.model.SocialModel;
 	import io.decagames.rotmg.supportCampaign.data.SupporterCampaignModel;
+
 	import kabam.lib.net.api.MessageMap;
 	import kabam.lib.net.api.MessageProvider;
 	import kabam.lib.net.impl.Message;
@@ -222,92 +224,94 @@ package kabam.rotmg.messaging.impl {
 	import kabam.rotmg.ui.signals.UpdateBackpackTabSignal;
 	import kabam.rotmg.ui.view.NotEnoughGoldDialog;
 	import kabam.rotmg.ui.view.TitleView;
+
 	import org.swiftsuspenders.Injector;
+
 	import robotlegs.bender.framework.api.ILogger;
-	
+
 	public class GameServerConnectionConcrete extends GameServerConnection {
-		
+
 		private static const TO_MILLISECONDS:int = 1000;
-		 
-		
+
+
 		private var petUpdater:PetUpdater;
-		
+
 		private var messages:MessageProvider;
-		
+
 		private var playerId_:int = -1;
-		
+
 		private var player:Player;
-		
+
 		private var retryConnection_:Boolean = true;
-		
+
 		private var rand_:Random = null;
-		
+
 		private var giftChestUpdateSignal:GiftStatusUpdateSignal;
-		
+
 		private var death:Death;
-		
+
 		private var retryTimer_:Timer;
-		
+
 		private var delayBeforeReconnect:int = 2;
-		
+
 		private var addTextLine:AddTextLineSignal;
-		
+
 		private var addSpeechBalloon:AddSpeechBalloonSignal;
-		
+
 		private var updateGroundTileSignal:UpdateGroundTileSignal;
-		
+
 		private var updateGameObjectTileSignal:UpdateGameObjectTileSignal;
-		
+
 		private var logger:ILogger;
-		
+
 		private var handleDeath:HandleDeathSignal;
-		
+
 		private var zombify:ZombifySignal;
-		
+
 		private var setGameFocus:SetGameFocusSignal;
-		
+
 		private var updateBackpackTab:UpdateBackpackTabSignal;
-		
+
 		private var petFeedResult:PetFeedResultSignal;
-		
+
 		private var closeDialogs:CloseDialogsSignal;
-		
+
 		private var openDialog:OpenDialogSignal;
-		
+
 		private var arenaDeath:ArenaDeathSignal;
-		
+
 		private var imminentWave:ImminentArenaWaveSignal;
-		
+
 		private var questFetchComplete:QuestFetchCompleteSignal;
-		
+
 		private var questRedeemComplete:QuestRedeemCompleteSignal;
-		
+
 		private var keyInfoResponse:KeyInfoResponseSignal;
-		
+
 		private var claimDailyRewardResponse:ClaimDailyRewardResponseSignal;
-		
+
 		private var newClassUnlockSignal:NewClassUnlockSignal;
-		
+
 		private var showHideKeyUISignal:ShowHideKeyUISignal;
-		
+
 		private var currentArenaRun:CurrentArenaRunModel;
-		
+
 		private var classesModel:ClassesModel;
-		
+
 		private var injector:Injector;
-		
+
 		private var model:GameModel;
-		
+
 		private var hudModel:HUDModel;
-		
+
 		private var updateActivePet:UpdateActivePet;
-		
+
 		private var petsModel:PetsModel;
-		
+
 		private var socialModel:SocialModel;
-		
+
 		private var statsTracker:CharactersMetricsTracker;
-		
+
 		public function GameServerConnectionConcrete(param1:AGameSprite, param2:Server, param3:int, param4:Boolean, param5:int, param6:int, param7:ByteArray, param8:String, param9:Boolean) {
 			super();
 			this.injector = StaticInjectorContext.getInjector();
@@ -357,52 +361,52 @@ package kabam.rotmg.messaging.impl {
 			this.getPetUpdater();
 			instance = this;
 		}
-		
-		private static function isStatPotion(param1:int) : Boolean {
+
+		private static function isStatPotion(param1:int):Boolean {
 			return param1 == 2591 || param1 == 5465 || param1 == 9064 || (param1 == 2592 || param1 == 5466 || param1 == 9065) || (param1 == 2593 || param1 == 5467 || param1 == 9066) || (param1 == 2612 || param1 == 5468 || param1 == 9067) || (param1 == 2613 || param1 == 5469 || param1 == 9068) || (param1 == 2636 || param1 == 5470 || param1 == 9069) || (param1 == 2793 || param1 == 5471 || param1 == 9070) || (param1 == 2794 || param1 == 5472 || param1 == 9071) || (param1 == 9724 || param1 == 9725 || param1 == 9726 || param1 == 9727 || param1 == 9728 || param1 == 9729 || param1 == 9730 || param1 == 9731);
 		}
-		
-		private function getPetUpdater() : void {
+
+		private function getPetUpdater():void {
 			this.injector.map(AGameSprite).toValue(gs_);
 			this.petUpdater = this.injector.getInstance(PetUpdater);
 			this.injector.unmap(AGameSprite);
 		}
-		
-		override public function disconnect() : void {
+
+		override public function disconnect():void {
 			this.removeServerConnectionListeners();
 			this.unmapMessages();
 			serverConnection.disconnect();
 		}
-		
-		private function removeServerConnectionListeners() : void {
+
+		private function removeServerConnectionListeners():void {
 			serverConnection.connected.remove(this.onConnected);
 			serverConnection.closed.remove(this.onClosed);
 			serverConnection.error.remove(this.onError);
 		}
-		
-		override public function connect() : void {
+
+		override public function connect():void {
 			this.addServerConnectionListeners();
 			this.mapMessages();
 			var loc1:ChatMessage = new ChatMessage();
 			loc1.name = Parameters.CLIENT_CHAT_NAME;
 			loc1.text = TextKey.CHAT_CONNECTING_TO;
 			var loc2:String = server_.name;
-			if(loc2 == "{\"text\":\"server.vault\"}") {
+			if (loc2 == "{\"text\":\"server.vault\"}") {
 				loc2 = "server.vault";
 			}
 			loc2 = LineBuilder.getLocalizedStringFromKey(loc2);
-			loc1.tokens = {"serverName":loc2};
+			loc1.tokens = {"serverName": loc2};
 			this.addTextLine.dispatch(loc1);
-			serverConnection.connect(server_.address,server_.port);
+			serverConnection.connect(server_.address, server_.port);
 		}
-		
-		public function addServerConnectionListeners() : void {
+
+		public function addServerConnectionListeners():void {
 			serverConnection.connected.add(this.onConnected);
 			serverConnection.closed.add(this.onClosed);
 			serverConnection.error.add(this.onError);
 		}
-		
-		public function mapMessages() : void {
+
+		public function mapMessages():void {
 			var loc1:MessageMap = this.injector.getInstance(MessageMap);
 			loc1.map(CREATE).toMessage(Create);
 			loc1.map(PLAYERSHOOT).toMessage(PlayerShoot);
@@ -500,8 +504,8 @@ package kabam.rotmg.messaging.impl {
 			loc1.map(KEY_INFO_RESPONSE).toMessage(KeyInfoResponse).toMethod(this.onKeyInfoResponse);
 			loc1.map(LOGIN_REWARD_MSG).toMessage(ClaimDailyRewardResponse).toMethod(this.onLoginRewardResponse);
 		}
-		
-		private function onHatchPet(param1:HatchPetMessage) : void {
+
+		private function onHatchPet(param1:HatchPetMessage):void {
 			var loc2:HatchPetSignal = this.injector.getInstance(HatchPetSignal);
 			var loc3:HatchPetVO = new HatchPetVO();
 			loc3.itemType = param1.itemType;
@@ -509,36 +513,36 @@ package kabam.rotmg.messaging.impl {
 			loc3.petName = param1.petName;
 			loc2.dispatch(loc3);
 		}
-		
-		private function onDeletePet(param1:DeletePetMessage) : void {
+
+		private function onDeletePet(param1:DeletePetMessage):void {
 			var loc2:DeletePetSignal = this.injector.getInstance(DeletePetSignal);
 			this.injector.getInstance(PetsModel).deletePet(param1.petID);
 			loc2.dispatch(param1.petID);
 		}
-		
-		private function onNewAbility(param1:NewAbilityMessage) : void {
+
+		private function onNewAbility(param1:NewAbilityMessage):void {
 			var loc2:NewAbilitySignal = this.injector.getInstance(NewAbilitySignal);
 			loc2.dispatch(param1.type);
 		}
-		
-		private function onPetYardUpdate(param1:PetYard) : void {
+
+		private function onPetYardUpdate(param1:PetYard):void {
 			var loc2:UpdatePetYardSignal = StaticInjectorContext.getInjector().getInstance(UpdatePetYardSignal);
 			loc2.dispatch(param1.type);
 		}
-		
-		private function onEvolvedPet(param1:EvolvedPetMessage) : void {
+
+		private function onEvolvedPet(param1:EvolvedPetMessage):void {
 			var loc2:EvolvedMessageHandler = this.injector.getInstance(EvolvedMessageHandler);
 			loc2.handleMessage(param1);
 		}
-		
-		private function onActivePetUpdate(param1:ActivePet) : void {
+
+		private function onActivePetUpdate(param1:ActivePet):void {
 			this.updateActivePet.dispatch(param1.instanceID);
-			var loc2:String = param1.instanceID > 0?this.petsModel.getPet(param1.instanceID).name:"";
-			var loc3:String = param1.instanceID < 0?TextKey.PET_NOT_FOLLOWING:TextKey.PET_FOLLOWING;
-			this.addTextLine.dispatch(ChatMessage.make(Parameters.SERVER_CHAT_NAME,loc3,-1,-1,"",false,{"petName":loc2}));
+			var loc2:String = param1.instanceID > 0 ? this.petsModel.getPet(param1.instanceID).name : "";
+			var loc3:String = param1.instanceID < 0 ? TextKey.PET_NOT_FOLLOWING : TextKey.PET_FOLLOWING;
+			this.addTextLine.dispatch(ChatMessage.make(Parameters.SERVER_CHAT_NAME, loc3, -1, -1, "", false, {"petName": loc2}));
 		}
-		
-		private function unmapMessages() : void {
+
+		private function unmapMessages():void {
 			var loc1:MessageMap = this.injector.getInstance(MessageMap);
 			loc1.unmap(CREATE);
 			loc1.unmap(PLAYERSHOOT);
@@ -611,53 +615,53 @@ package kabam.rotmg.messaging.impl {
 			loc1.unmap(INVITEDTOGUILD);
 			loc1.unmap(PLAYSOUND);
 		}
-		
-		private function encryptConnection() : void {
+
+		private function encryptConnection():void {
 			var loc1:ICipher = null;
 			var loc2:ICipher = null;
-			if(Parameters.ENABLE_ENCRYPTION) {
-				loc1 = Crypto.getCipher("rc4",MoreStringUtil.hexStringToByteArray("6a39570cc9de4ec71d64821894c79332b197f92ba85ed281a023".substring(0,26)));
-				loc2 = Crypto.getCipher("rc4",MoreStringUtil.hexStringToByteArray("6a39570cc9de4ec71d64821894c79332b197f92ba85ed281a023".substring(26)));
+			if (Parameters.ENABLE_ENCRYPTION) {
+				loc1 = Crypto.getCipher("rc4", MoreStringUtil.hexStringToByteArray("6a39570cc9de4ec71d64821894c79332b197f92ba85ed281a023".substring(0, 26)));
+				loc2 = Crypto.getCipher("rc4", MoreStringUtil.hexStringToByteArray("6a39570cc9de4ec71d64821894c79332b197f92ba85ed281a023".substring(26)));
 				serverConnection.setOutgoingCipher(loc1);
 				serverConnection.setIncomingCipher(loc2);
 			}
 		}
-		
-		override public function getNextDamage(param1:uint, param2:uint) : uint {
-			return this.rand_.nextIntRange(param1,param2);
+
+		override public function getNextDamage(param1:uint, param2:uint):uint {
+			return this.rand_.nextIntRange(param1, param2);
 		}
-		
-		override public function enableJitterWatcher() : void {
-			if(jitterWatcher_ == null) {
+
+		override public function enableJitterWatcher():void {
+			if (jitterWatcher_ == null) {
 				jitterWatcher_ = new JitterWatcher();
 			}
 		}
-		
-		override public function disableJitterWatcher() : void {
-			if(jitterWatcher_ != null) {
+
+		override public function disableJitterWatcher():void {
+			if (jitterWatcher_ != null) {
 				jitterWatcher_ = null;
 			}
 		}
-		
-		private function create() : void {
+
+		private function create():void {
 			var loc1:CharacterClass = this.classesModel.getSelected();
 			var loc2:Create = this.messages.require(CREATE) as Create;
 			loc2.classType = loc1.id;
 			loc2.skinType = loc1.skins.getSelectedSkin().id;
 			serverConnection.sendMessage(loc2);
 		}
-		
-		private function load() : void {
+
+		private function load():void {
 			var loc1:Load = this.messages.require(LOAD) as Load;
 			loc1.charId_ = charId_;
 			loc1.isFromArena_ = isFromArena_;
 			serverConnection.sendMessage(loc1);
-			if(isFromArena_) {
+			if (isFromArena_) {
 				this.openDialog.dispatch(new BattleSummaryDialog());
 			}
 		}
-		
-		override public function playerShoot(param1:int, param2:Projectile) : void {
+
+		override public function playerShoot(param1:int, param2:Projectile):void {
 			var loc3:PlayerShoot = this.messages.require(PLAYERSHOOT) as PlayerShoot;
 			loc3.time_ = param1;
 			loc3.bulletId_ = param2.bulletId_;
@@ -667,15 +671,15 @@ package kabam.rotmg.messaging.impl {
 			loc3.angle_ = param2.angle_;
 			serverConnection.sendMessage(loc3);
 		}
-		
-		override public function playerHit(param1:int, param2:int) : void {
+
+		override public function playerHit(param1:int, param2:int):void {
 			var loc3:PlayerHit = this.messages.require(PLAYERHIT) as PlayerHit;
 			loc3.bulletId_ = param1;
 			loc3.objectId_ = param2;
 			serverConnection.sendMessage(loc3);
 		}
-		
-		override public function enemyHit(param1:int, param2:int, param3:int, param4:Boolean) : void {
+
+		override public function enemyHit(param1:int, param2:int, param3:int, param4:Boolean):void {
 			var loc5:EnemyHit = this.messages.require(ENEMYHIT) as EnemyHit;
 			loc5.time_ = param1;
 			loc5.bulletId_ = param2;
@@ -683,8 +687,8 @@ package kabam.rotmg.messaging.impl {
 			loc5.kill_ = param4;
 			serverConnection.sendMessage(loc5);
 		}
-		
-		override public function otherHit(param1:int, param2:int, param3:int, param4:int) : void {
+
+		override public function otherHit(param1:int, param2:int, param3:int, param4:int):void {
 			var loc5:OtherHit = this.messages.require(OTHERHIT) as OtherHit;
 			loc5.time_ = param1;
 			loc5.bulletId_ = param2;
@@ -692,45 +696,45 @@ package kabam.rotmg.messaging.impl {
 			loc5.targetId_ = param4;
 			serverConnection.sendMessage(loc5);
 		}
-		
-		override public function squareHit(param1:int, param2:int, param3:int) : void {
+
+		override public function squareHit(param1:int, param2:int, param3:int):void {
 			var loc4:SquareHit = this.messages.require(SQUAREHIT) as SquareHit;
 			loc4.time_ = param1;
 			loc4.bulletId_ = param2;
 			loc4.objectId_ = param3;
 			serverConnection.sendMessage(loc4);
 		}
-		
-		public function aoeAck(param1:int, param2:Number, param3:Number) : void {
+
+		public function aoeAck(param1:int, param2:Number, param3:Number):void {
 			var loc4:AoeAck = this.messages.require(AOEACK) as AoeAck;
 			loc4.time_ = param1;
 			loc4.position_.x_ = param2;
 			loc4.position_.y_ = param3;
 			serverConnection.sendMessage(loc4);
 		}
-		
-		override public function groundDamage(param1:int, param2:Number, param3:Number) : void {
+
+		override public function groundDamage(param1:int, param2:Number, param3:Number):void {
 			var loc4:GroundDamage = this.messages.require(GROUNDDAMAGE) as GroundDamage;
 			loc4.time_ = param1;
 			loc4.position_.x_ = param2;
 			loc4.position_.y_ = param3;
 			serverConnection.sendMessage(loc4);
 		}
-		
-		public function shootAck(param1:int) : void {
+
+		public function shootAck(param1:int):void {
 			var loc2:ShootAck = this.messages.require(SHOOTACK) as ShootAck;
 			loc2.time_ = param1;
 			serverConnection.sendMessage(loc2);
 		}
-		
-		override public function playerText(param1:String) : void {
+
+		override public function playerText(param1:String):void {
 			var loc2:PlayerText = this.messages.require(PLAYERTEXT) as PlayerText;
 			loc2.text_ = param1;
 			serverConnection.sendMessage(loc2);
 		}
-		
-		override public function invSwap(param1:Player, param2:GameObject, param3:int, param4:int, param5:GameObject, param6:int, param7:int) : Boolean {
-			if(!gs_) {
+
+		override public function invSwap(param1:Player, param2:GameObject, param3:int, param4:int, param5:GameObject, param6:int, param7:int):Boolean {
+			if (!gs_) {
 				return false;
 			}
 			var loc8:InvSwap = this.messages.require(INVSWAP) as InvSwap;
@@ -750,9 +754,9 @@ package kabam.rotmg.messaging.impl {
 			SoundEffectLibrary.play("inventory_move_item");
 			return true;
 		}
-		
-		override public function invSwapPotion(param1:Player, param2:GameObject, param3:int, param4:int, param5:GameObject, param6:int, param7:int) : Boolean {
-			if(!gs_) {
+
+		override public function invSwapPotion(param1:Player, param2:GameObject, param3:int, param4:int, param5:GameObject, param6:int, param7:int):Boolean {
+			if (!gs_) {
 				return false;
 			}
 			var loc8:InvSwap = this.messages.require(INVSWAP) as InvSwap;
@@ -766,28 +770,28 @@ package kabam.rotmg.messaging.impl {
 			loc8.slotObject2_.slotId_ = param6;
 			loc8.slotObject2_.objectType_ = param7;
 			param2.equipment_[param3] = ItemConstants.NO_ITEM;
-			if(param4 == PotionInventoryModel.HEALTH_POTION_ID) {
+			if (param4 == PotionInventoryModel.HEALTH_POTION_ID) {
 				param1.healthPotionCount_++;
-			} else if(param4 == PotionInventoryModel.MAGIC_POTION_ID) {
+			} else if (param4 == PotionInventoryModel.MAGIC_POTION_ID) {
 				param1.magicPotionCount_++;
 			}
 			serverConnection.sendMessage(loc8);
 			SoundEffectLibrary.play("inventory_move_item");
 			return true;
 		}
-		
-		override public function invDrop(param1:GameObject, param2:int, param3:int) : void {
+
+		override public function invDrop(param1:GameObject, param2:int, param3:int):void {
 			var loc4:InvDrop = this.messages.require(INVDROP) as InvDrop;
 			loc4.slotObject_.objectId_ = param1.objectId_;
 			loc4.slotObject_.slotId_ = param2;
 			loc4.slotObject_.objectType_ = param3;
 			serverConnection.sendMessage(loc4);
-			if(param2 != PotionInventoryModel.HEALTH_POTION_SLOT && param2 != PotionInventoryModel.MAGIC_POTION_SLOT) {
+			if (param2 != PotionInventoryModel.HEALTH_POTION_SLOT && param2 != PotionInventoryModel.MAGIC_POTION_SLOT) {
 				param1.equipment_[param2] = ItemConstants.NO_ITEM;
 			}
 		}
-		
-		override public function useItem(param1:int, param2:int, param3:int, param4:int, param5:Number, param6:Number, param7:int) : void {
+
+		override public function useItem(param1:int, param2:int, param3:int, param4:int, param5:Number, param6:Number, param7:int):void {
 			var loc8:UseItem = this.messages.require(USEITEM) as UseItem;
 			loc8.time_ = param1;
 			loc8.slotObject_.objectId_ = param2;
@@ -798,52 +802,52 @@ package kabam.rotmg.messaging.impl {
 			loc8.useType_ = param7;
 			serverConnection.sendMessage(loc8);
 		}
-		
-		override public function useItem_new(param1:GameObject, param2:int) : Boolean {
+
+		override public function useItem_new(param1:GameObject, param2:int):Boolean {
 			var loc4:XML = null;
 			var loc3:int = param1.equipment_[param2];
-			if(loc3 >= 36864 && loc3 < 61440) {
+			if (loc3 >= 36864 && loc3 < 61440) {
 				loc4 = ObjectLibrary.xmlLibrary_[36863];
 			} else {
 				loc4 = ObjectLibrary.xmlLibrary_[loc3];
 			}
-			if(loc4 && !param1.isPaused() && (loc4.hasOwnProperty("Consumable") || loc4.hasOwnProperty("InvUse"))) {
-				if(!this.validStatInc(loc3,param1)) {
-					this.addTextLine.dispatch(ChatMessage.make("",loc4.attribute("id") + " not consumed. Already at Max."));
+			if (loc4 && !param1.isPaused() && (loc4.hasOwnProperty("Consumable") || loc4.hasOwnProperty("InvUse"))) {
+				if (!this.validStatInc(loc3, param1)) {
+					this.addTextLine.dispatch(ChatMessage.make("", loc4.attribute("id") + " not consumed. Already at Max."));
 					return false;
 				}
-				if(isStatPotion(loc3)) {
-					this.addTextLine.dispatch(ChatMessage.make("",loc4.attribute("id") + " Consumed ++"));
+				if (isStatPotion(loc3)) {
+					this.addTextLine.dispatch(ChatMessage.make("", loc4.attribute("id") + " Consumed ++"));
 				}
-				this.applyUseItem(param1,param2,loc3,loc4);
+				this.applyUseItem(param1, param2, loc3, loc4);
 				SoundEffectLibrary.play("use_potion");
 				return true;
 			}
 			SoundEffectLibrary.play("error");
 			return false;
 		}
-		
-		private function validStatInc(param1:int, param2:GameObject) : Boolean {
+
+		private function validStatInc(param1:int, param2:GameObject):Boolean {
 			var p:Player = null;
 			var itemId:int = param1;
 			var itemOwner:GameObject = param2;
 			try {
-				if(itemOwner is Player) {
+				if (itemOwner is Player) {
 					p = itemOwner as Player;
 				} else {
 					p = this.player;
 				}
-				if((itemId == 2591 || itemId == 5465 || itemId == 9064 || itemId == 9729) && p.attackMax_ == p.attack_ - p.attackBoost_ || (itemId == 2592 || itemId == 5466 || itemId == 9065 || itemId == 9727) && p.defenseMax_ == p.defense_ - p.defenseBoost_ || (itemId == 2593 || itemId == 5467 || itemId == 9066 || itemId == 9726) && p.speedMax_ == p.speed_ - p.speedBoost_ || (itemId == 2612 || itemId == 5468 || itemId == 9067 || itemId == 9724) && p.vitalityMax_ == p.vitality_ - p.vitalityBoost_ || (itemId == 2613 || itemId == 5469 || itemId == 9068 || itemId == 9725) && p.wisdomMax_ == p.wisdom_ - p.wisdomBoost_ || (itemId == 2636 || itemId == 5470 || itemId == 9069 || itemId == 9728) && p.dexterityMax_ == p.dexterity_ - p.dexterityBoost_ || (itemId == 2793 || itemId == 5471 || itemId == 9070 || itemId == 9731) && p.maxHPMax_ == p.maxHP_ - p.maxHPBoost_ || (itemId == 2794 || itemId == 5472 || itemId == 9071 || itemId == 9730) && p.maxMPMax_ == p.maxMP_ - p.maxMPBoost_) {
+				if ((itemId == 2591 || itemId == 5465 || itemId == 9064 || itemId == 9729) && p.attackMax_ == p.attack_ - p.attackBoost_ || (itemId == 2592 || itemId == 5466 || itemId == 9065 || itemId == 9727) && p.defenseMax_ == p.defense_ - p.defenseBoost_ || (itemId == 2593 || itemId == 5467 || itemId == 9066 || itemId == 9726) && p.speedMax_ == p.speed_ - p.speedBoost_ || (itemId == 2612 || itemId == 5468 || itemId == 9067 || itemId == 9724) && p.vitalityMax_ == p.vitality_ - p.vitalityBoost_ || (itemId == 2613 || itemId == 5469 || itemId == 9068 || itemId == 9725) && p.wisdomMax_ == p.wisdom_ - p.wisdomBoost_ || (itemId == 2636 || itemId == 5470 || itemId == 9069 || itemId == 9728) && p.dexterityMax_ == p.dexterity_ - p.dexterityBoost_ || (itemId == 2793 || itemId == 5471 || itemId == 9070 || itemId == 9731) && p.maxHPMax_ == p.maxHP_ - p.maxHPBoost_ || (itemId == 2794 || itemId == 5472 || itemId == 9071 || itemId == 9730) && p.maxMPMax_ == p.maxMP_ - p.maxMPBoost_) {
 					return false;
 				}
 			}
-			catch(err:Error) {
+			catch (err:Error) {
 				logger.error("PROBLEM IN STAT INC " + err.getStackTrace());
 			}
 			return true;
 		}
-		
-		private function applyUseItem(param1:GameObject, param2:int, param3:int, param4:XML) : void {
+
+		private function applyUseItem(param1:GameObject, param2:int, param3:int, param4:XML):void {
 			var loc5:UseItem = this.messages.require(USEITEM) as UseItem;
 			loc5.time_ = getTimer();
 			loc5.slotObject_.objectId_ = param1.objectId_;
@@ -852,24 +856,24 @@ package kabam.rotmg.messaging.impl {
 			loc5.itemUsePos_.x_ = 0;
 			loc5.itemUsePos_.y_ = 0;
 			serverConnection.sendMessage(loc5);
-			if(param4.hasOwnProperty("Consumable")) {
+			if (param4.hasOwnProperty("Consumable")) {
 				param1.equipment_[param2] = -1;
 			}
 		}
-		
-		override public function setCondition(param1:uint, param2:Number) : void {
+
+		override public function setCondition(param1:uint, param2:Number):void {
 			var loc3:SetCondition = this.messages.require(SETCONDITION) as SetCondition;
 			loc3.conditionEffect_ = param1;
 			loc3.conditionDuration_ = param2;
 			serverConnection.sendMessage(loc3);
 		}
-		
-		public function move(param1:int, param2:Player) : void {
+
+		public function move(param1:int, param2:Player):void {
 			var loc7:int = 0;
 			var loc8:int = 0;
 			var loc3:Number = -1;
 			var loc4:Number = -1;
-			if(param2 && !param2.isPaused()) {
+			if (param2 && !param2.isPaused()) {
 				loc3 = param2.x_;
 				loc4 = param2.y_;
 			}
@@ -880,11 +884,11 @@ package kabam.rotmg.messaging.impl {
 			loc5.newPosition_.y_ = loc4;
 			var loc6:int = gs_.moveRecords_.lastClearTime_;
 			loc5.records_.length = 0;
-			if(loc6 >= 0 && loc5.time_ - loc6 > 125) {
-				loc7 = Math.min(10,gs_.moveRecords_.records_.length);
+			if (loc6 >= 0 && loc5.time_ - loc6 > 125) {
+				loc7 = Math.min(10, gs_.moveRecords_.records_.length);
 				loc8 = 0;
-				while(loc8 < loc7) {
-					if(gs_.moveRecords_.records_[loc8].time_ >= loc5.time_ - 25) {
+				while (loc8 < loc7) {
+					if (gs_.moveRecords_.records_[loc8].time_ >= loc5.time_ - 25) {
 						break;
 					}
 					loc5.records_.push(gs_.moveRecords_.records_[loc8]);
@@ -895,166 +899,166 @@ package kabam.rotmg.messaging.impl {
 			serverConnection.sendMessage(loc5);
 			param2 && param2.onMove();
 		}
-		
-		override public function teleport(param1:int) : void {
+
+		override public function teleport(param1:int):void {
 			var loc2:Teleport = this.messages.require(TELEPORT) as Teleport;
 			loc2.objectId_ = param1;
 			serverConnection.sendMessage(loc2);
 		}
-		
-		override public function usePortal(param1:int) : void {
+
+		override public function usePortal(param1:int):void {
 			var loc2:UsePortal = this.messages.require(USEPORTAL) as UsePortal;
 			loc2.objectId_ = param1;
 			serverConnection.sendMessage(loc2);
 		}
-		
-		override public function buy(param1:int, param2:int) : void {
+
+		override public function buy(param1:int, param2:int):void {
 			var sObj:SellableObject = null;
 			var converted:Boolean = false;
 			var sellableObjectId:int = param1;
 			var quantity:int = param2;
-			if(outstandingBuy_ != null) {
+			if (outstandingBuy_ != null) {
 				return;
 			}
 			sObj = gs_.map.goDict_[sellableObjectId];
-			if(sObj == null) {
+			if (sObj == null) {
 				return;
 			}
 			converted = false;
-			if(sObj.currency_ == Currency.GOLD) {
+			if (sObj.currency_ == Currency.GOLD) {
 				converted = gs_.model.getConverted() || this.player.credits_ > 100 || sObj.price_ > this.player.credits_;
 			}
-			if(sObj.soldObjectName() == TextKey.VAULT_CHEST) {
-				this.openDialog.dispatch(new PurchaseConfirmationDialog(function():void {
-					buyConfirmation(sObj,converted,sellableObjectId,quantity);
+			if (sObj.soldObjectName() == TextKey.VAULT_CHEST) {
+				this.openDialog.dispatch(new PurchaseConfirmationDialog(function ():void {
+					buyConfirmation(sObj, converted, sellableObjectId, quantity);
 				}));
 			} else {
-				this.buyConfirmation(sObj,converted,sellableObjectId,quantity);
+				this.buyConfirmation(sObj, converted, sellableObjectId, quantity);
 			}
 		}
-		
-		private function buyConfirmation(param1:SellableObject, param2:Boolean, param3:int, param4:int) : void {
-			outstandingBuy_ = new OutstandingBuy(param1.soldObjectInternalName(),param1.price_,param1.currency_,param2);
+
+		private function buyConfirmation(param1:SellableObject, param2:Boolean, param3:int, param4:int):void {
+			outstandingBuy_ = new OutstandingBuy(param1.soldObjectInternalName(), param1.price_, param1.currency_, param2);
 			var loc5:Buy = this.messages.require(BUY) as Buy;
 			loc5.objectId_ = param3;
 			loc5.quantity_ = param4;
 			serverConnection.sendMessage(loc5);
 		}
-		
-		public function gotoAck(param1:int) : void {
+
+		public function gotoAck(param1:int):void {
 			var loc2:GotoAck = this.messages.require(GOTOACK) as GotoAck;
 			loc2.time_ = param1;
 			serverConnection.sendMessage(loc2);
 		}
-		
-		override public function editAccountList(param1:int, param2:Boolean, param3:int) : void {
+
+		override public function editAccountList(param1:int, param2:Boolean, param3:int):void {
 			var loc4:EditAccountList = this.messages.require(EDITACCOUNTLIST) as EditAccountList;
 			loc4.accountListId_ = param1;
 			loc4.add_ = param2;
 			loc4.objectId_ = param3;
 			serverConnection.sendMessage(loc4);
 		}
-		
-		override public function chooseName(param1:String) : void {
+
+		override public function chooseName(param1:String):void {
 			var loc2:ChooseName = this.messages.require(CHOOSENAME) as ChooseName;
 			loc2.name_ = param1;
 			serverConnection.sendMessage(loc2);
 		}
-		
-		override public function createGuild(param1:String) : void {
+
+		override public function createGuild(param1:String):void {
 			var loc2:CreateGuild = this.messages.require(CREATEGUILD) as CreateGuild;
 			loc2.name_ = param1;
 			serverConnection.sendMessage(loc2);
 		}
-		
-		override public function guildRemove(param1:String) : void {
+
+		override public function guildRemove(param1:String):void {
 			var loc2:GuildRemove = this.messages.require(GUILDREMOVE) as GuildRemove;
 			loc2.name_ = param1;
 			serverConnection.sendMessage(loc2);
 		}
-		
-		override public function guildInvite(param1:String) : void {
+
+		override public function guildInvite(param1:String):void {
 			var loc2:GuildInvite = this.messages.require(GUILDINVITE) as GuildInvite;
 			loc2.name_ = param1;
 			serverConnection.sendMessage(loc2);
 		}
-		
-		override public function requestTrade(param1:String) : void {
+
+		override public function requestTrade(param1:String):void {
 			var loc2:RequestTrade = this.messages.require(REQUESTTRADE) as RequestTrade;
 			loc2.name_ = param1;
 			serverConnection.sendMessage(loc2);
 		}
-		
-		override public function changeTrade(param1:Vector.<Boolean>) : void {
+
+		override public function changeTrade(param1:Vector.<Boolean>):void {
 			var loc2:ChangeTrade = this.messages.require(CHANGETRADE) as ChangeTrade;
 			loc2.offer_ = param1;
 			serverConnection.sendMessage(loc2);
 		}
-		
-		override public function acceptTrade(param1:Vector.<Boolean>, param2:Vector.<Boolean>) : void {
+
+		override public function acceptTrade(param1:Vector.<Boolean>, param2:Vector.<Boolean>):void {
 			var loc3:AcceptTrade = this.messages.require(ACCEPTTRADE) as AcceptTrade;
 			loc3.myOffer_ = param1;
 			loc3.yourOffer_ = param2;
 			serverConnection.sendMessage(loc3);
 		}
-		
-		override public function cancelTrade() : void {
+
+		override public function cancelTrade():void {
 			serverConnection.sendMessage(this.messages.require(CANCELTRADE));
 		}
-		
-		override public function checkCredits() : void {
+
+		override public function checkCredits():void {
 			serverConnection.sendMessage(this.messages.require(CHECKCREDITS));
 		}
-		
-		override public function escape() : void {
-			if(this.playerId_ == -1) {
+
+		override public function escape():void {
+			if (this.playerId_ == -1) {
 				return;
 			}
-			if(gs_.map && gs_.map.name_ == "Arena") {
+			if (gs_.map && gs_.map.name_ == "Arena") {
 				serverConnection.sendMessage(this.messages.require(ACCEPT_ARENA_DEATH));
 			} else {
 				serverConnection.sendMessage(this.messages.require(ESCAPE));
 				this.showHideKeyUISignal.dispatch(false);
 			}
 		}
-		
-		override public function gotoQuestRoom() : void {
+
+		override public function gotoQuestRoom():void {
 			serverConnection.sendMessage(this.messages.require(QUEST_ROOM_MSG));
 		}
-		
-		override public function joinGuild(param1:String) : void {
+
+		override public function joinGuild(param1:String):void {
 			var loc2:JoinGuild = this.messages.require(JOINGUILD) as JoinGuild;
 			loc2.guildName_ = param1;
 			serverConnection.sendMessage(loc2);
 		}
-		
-		override public function changeGuildRank(param1:String, param2:int) : void {
+
+		override public function changeGuildRank(param1:String, param2:int):void {
 			var loc3:ChangeGuildRank = this.messages.require(CHANGEGUILDRANK) as ChangeGuildRank;
 			loc3.name_ = param1;
 			loc3.guildRank_ = param2;
 			serverConnection.sendMessage(loc3);
 		}
-		
-		override public function changePetSkin(param1:int, param2:int, param3:int) : void {
+
+		override public function changePetSkin(param1:int, param2:int, param3:int):void {
 			var loc4:ChangePetSkin = this.messages.require(PET_CHANGE_SKIN_MSG) as ChangePetSkin;
 			loc4.petId = param1;
 			loc4.skinType = param2;
 			loc4.currency = param3;
 			serverConnection.sendMessage(loc4);
 		}
-		
-		private function rsaEncrypt(param1:String) : String {
+
+		private function rsaEncrypt(param1:String):String {
 			var loc2:RSAKey = PEM.readRSAPublicKey(Parameters.RSA_PUBLIC_KEY);
 			var loc3:ByteArray = new ByteArray();
 			loc3.writeUTFBytes(param1);
 			var loc4:ByteArray = new ByteArray();
-			loc2.encrypt(loc3,loc4,loc3.length);
+			loc2.encrypt(loc3, loc4, loc3.length);
 			return Base64.encodeByteArray(loc4);
 		}
-		
-		private function onConnected() : void {
+
+		private function onConnected():void {
 			var loc1:Account = StaticInjectorContext.getInjector().getInstance(Account);
-			this.addTextLine.dispatch(ChatMessage.make(Parameters.CLIENT_CHAT_NAME,TextKey.CHAT_CONNECTED));
+			this.addTextLine.dispatch(ChatMessage.make(Parameters.CLIENT_CHAT_NAME, TextKey.CHAT_CONNECTED));
 			this.encryptConnection();
 			var loc2:Hello = this.messages.require(HELLO) as Hello;
 			loc2.buildVersion_ = Parameters.BUILD_VERSION + "." + Parameters.MINOR_VERSION;
@@ -1065,7 +1069,7 @@ package kabam.rotmg.messaging.impl {
 			loc2.keyTime_ = keyTime_;
 			loc2.key_.length = 0;
 			key_ != null && loc2.key_.writeBytes(key_);
-			loc2.mapJSON_ = mapJSON_ == null?"":mapJSON_;
+			loc2.mapJSON_ = mapJSON_ == null ? "" : mapJSON_;
 			loc2.entrytag_ = loc1.getEntryTag();
 			loc2.gameNet = loc1.gameNetwork();
 			loc2.gameNetUserId = loc1.gameNetworkUserId();
@@ -1074,88 +1078,88 @@ package kabam.rotmg.messaging.impl {
 			loc2.userToken = loc1.getToken();
 			serverConnection.sendMessage(loc2);
 		}
-		
-		private function onCreateSuccess(param1:CreateSuccess) : void {
+
+		private function onCreateSuccess(param1:CreateSuccess):void {
 			this.playerId_ = param1.objectId_;
 			charId_ = param1.charId_;
 			gs_.initialize();
 			createCharacter_ = false;
 		}
-		
-		private function onDamage(param1:Damage) : void {
+
+		private function onDamage(param1:Damage):void {
 			var loc5:int = 0;
 			var loc6:* = false;
 			var loc2:AbstractMap = gs_.map;
 			var loc3:Projectile = null;
-			if(param1.objectId_ >= 0 && param1.bulletId_ > 0) {
-				loc5 = Projectile.findObjId(param1.objectId_,param1.bulletId_);
+			if (param1.objectId_ >= 0 && param1.bulletId_ > 0) {
+				loc5 = Projectile.findObjId(param1.objectId_, param1.bulletId_);
 				loc3 = loc2.boDict_[loc5] as Projectile;
-				if(loc3 != null && !loc3.projProps_.multiHit_) {
+				if (loc3 != null && !loc3.projProps_.multiHit_) {
 					loc2.removeObj(loc5);
 				}
 			}
 			var loc4:GameObject = loc2.goDict_[param1.targetId_];
-			if(loc4 != null) {
+			if (loc4 != null) {
 				loc6 = param1.objectId_ == this.player.objectId_;
-				loc4.damage(loc6,param1.damageAmount_,param1.effects_,param1.kill_,loc3,param1.armorPierce_);
+				loc4.damage(loc6, param1.damageAmount_, param1.effects_, param1.kill_, loc3, param1.armorPierce_);
 			}
 		}
-		
-		private function onServerPlayerShoot(param1:ServerPlayerShoot) : void {
+
+		private function onServerPlayerShoot(param1:ServerPlayerShoot):void {
 			var loc2:* = param1.ownerId_ == this.playerId_;
 			var loc3:GameObject = gs_.map.goDict_[param1.ownerId_];
-			if(loc3 == null || loc3.dead_) {
-				if(loc2) {
+			if (loc3 == null || loc3.dead_) {
+				if (loc2) {
 					this.shootAck(-1);
 				}
 				return;
 			}
-			if(loc3.objectId_ != this.playerId_ && Parameters.data_.disableAllyShoot) {
+			if (loc3.objectId_ != this.playerId_ && Parameters.data_.disableAllyShoot) {
 				return;
 			}
 			var loc4:Projectile = FreeList.newObject(Projectile) as Projectile;
 			var loc5:Player = loc3 as Player;
-			if(loc5 != null) {
-				loc4.reset(param1.containerType_,0,param1.ownerId_,param1.bulletId_,param1.angle_,gs_.lastUpdate_,loc5.projectileIdSetOverrideNew,loc5.projectileIdSetOverrideOld);
+			if (loc5 != null) {
+				loc4.reset(param1.containerType_, 0, param1.ownerId_, param1.bulletId_, param1.angle_, gs_.lastUpdate_, loc5.projectileIdSetOverrideNew, loc5.projectileIdSetOverrideOld);
 			} else {
-				loc4.reset(param1.containerType_,0,param1.ownerId_,param1.bulletId_,param1.angle_,gs_.lastUpdate_);
+				loc4.reset(param1.containerType_, 0, param1.ownerId_, param1.bulletId_, param1.angle_, gs_.lastUpdate_);
 			}
 			loc4.setDamage(param1.damage_);
-			gs_.map.addObj(loc4,param1.startingPos_.x_,param1.startingPos_.y_);
-			if(loc2) {
+			gs_.map.addObj(loc4, param1.startingPos_.x_, param1.startingPos_.y_);
+			if (loc2) {
 				this.shootAck(gs_.lastUpdate_);
 			}
 		}
-		
-		private function onAllyShoot(param1:AllyShoot) : void {
+
+		private function onAllyShoot(param1:AllyShoot):void {
 			var loc2:GameObject = gs_.map.goDict_[param1.ownerId_];
-			if(loc2 == null || loc2.dead_) {
+			if (loc2 == null || loc2.dead_) {
 				return;
 			}
-			if(Parameters.data_.disableAllyShoot == 1) {
+			if (Parameters.data_.disableAllyShoot == 1) {
 				return;
 			}
-			loc2.setAttack(param1.containerType_,param1.angle_);
-			if(Parameters.data_.disableAllyShoot == 2) {
+			loc2.setAttack(param1.containerType_, param1.angle_);
+			if (Parameters.data_.disableAllyShoot == 2) {
 				return;
 			}
 			var loc3:Projectile = FreeList.newObject(Projectile) as Projectile;
 			var loc4:Player = loc2 as Player;
-			if(loc4 != null) {
-				loc3.reset(param1.containerType_,0,param1.ownerId_,param1.bulletId_,param1.angle_,gs_.lastUpdate_,loc4.projectileIdSetOverrideNew,loc4.projectileIdSetOverrideOld);
+			if (loc4 != null) {
+				loc3.reset(param1.containerType_, 0, param1.ownerId_, param1.bulletId_, param1.angle_, gs_.lastUpdate_, loc4.projectileIdSetOverrideNew, loc4.projectileIdSetOverrideOld);
 			} else {
-				loc3.reset(param1.containerType_,0,param1.ownerId_,param1.bulletId_,param1.angle_,gs_.lastUpdate_);
+				loc3.reset(param1.containerType_, 0, param1.ownerId_, param1.bulletId_, param1.angle_, gs_.lastUpdate_);
 			}
-			gs_.map.addObj(loc3,loc2.x_,loc2.y_);
+			gs_.map.addObj(loc3, loc2.x_, loc2.y_);
 		}
-		
-		private function onReskinUnlock(param1:ReskinUnlock) : void {
+
+		private function onReskinUnlock(param1:ReskinUnlock):void {
 			var loc2:* = null;
 			var loc3:CharacterSkin = null;
 			var loc4:PetsModel = null;
-			if(param1.isPetSkin == 0) {
-				for(loc2 in this.model.player.lockedSlot) {
-					if(this.model.player.lockedSlot[loc2] == param1.skinID) {
+			if (param1.isPetSkin == 0) {
+				for (loc2 in this.model.player.lockedSlot) {
+					if (this.model.player.lockedSlot[loc2] == param1.skinID) {
 						this.model.player.lockedSlot[loc2] = 0;
 					}
 				}
@@ -1166,50 +1170,50 @@ package kabam.rotmg.messaging.impl {
 				loc4.unlockSkin(param1.skinID);
 			}
 		}
-		
-		private function onEnemyShoot(param1:EnemyShoot) : void {
+
+		private function onEnemyShoot(param1:EnemyShoot):void {
 			var loc4:Projectile = null;
 			var loc5:Number = NaN;
 			var loc2:GameObject = gs_.map.goDict_[param1.ownerId_];
-			if(loc2 == null || loc2.dead_) {
+			if (loc2 == null || loc2.dead_) {
 				this.shootAck(-1);
 				return;
 			}
 			var loc3:int = 0;
-			while(loc3 < param1.numShots_) {
+			while (loc3 < param1.numShots_) {
 				loc4 = FreeList.newObject(Projectile) as Projectile;
 				loc5 = param1.angle_ + param1.angleInc_ * loc3;
-				loc4.reset(loc2.objectType_,param1.bulletType_,param1.ownerId_,(param1.bulletId_ + loc3) % 256,loc5,gs_.lastUpdate_);
+				loc4.reset(loc2.objectType_, param1.bulletType_, param1.ownerId_, (param1.bulletId_ + loc3) % 256, loc5, gs_.lastUpdate_);
 				loc4.setDamage(param1.damage_);
-				gs_.map.addObj(loc4,param1.startingPos_.x_,param1.startingPos_.y_);
+				gs_.map.addObj(loc4, param1.startingPos_.x_, param1.startingPos_.y_);
 				loc3++;
 			}
 			this.shootAck(gs_.lastUpdate_);
-			loc2.setAttack(loc2.objectType_,param1.angle_ + param1.angleInc_ * ((param1.numShots_ - 1) / 2));
+			loc2.setAttack(loc2.objectType_, param1.angle_ + param1.angleInc_ * ((param1.numShots_ - 1) / 2));
 		}
-		
-		private function onTradeRequested(param1:TradeRequested) : void {
-			if(!Parameters.data_.chatTrade) {
+
+		private function onTradeRequested(param1:TradeRequested):void {
+			if (!Parameters.data_.chatTrade) {
 				return;
 			}
-			if(Parameters.data_.tradeWithFriends && !this.socialModel.isMyFriend(param1.name_)) {
+			if (Parameters.data_.tradeWithFriends && !this.socialModel.isMyFriend(param1.name_)) {
 				return;
 			}
-			if(Parameters.data_.showTradePopup) {
-				gs_.hudView.interactPanel.setOverride(new TradeRequestPanel(gs_,param1.name_));
+			if (Parameters.data_.showTradePopup) {
+				gs_.hudView.interactPanel.setOverride(new TradeRequestPanel(gs_, param1.name_));
 			}
-			this.addTextLine.dispatch(ChatMessage.make("",param1.name_ + " wants to " + "trade with you.  Type \"/trade " + param1.name_ + "\" to trade."));
+			this.addTextLine.dispatch(ChatMessage.make("", param1.name_ + " wants to " + "trade with you.  Type \"/trade " + param1.name_ + "\" to trade."));
 		}
-		
-		private function onTradeStart(param1:TradeStart) : void {
-			gs_.hudView.startTrade(gs_,param1);
+
+		private function onTradeStart(param1:TradeStart):void {
+			gs_.hudView.startTrade(gs_, param1);
 		}
-		
-		private function onTradeChanged(param1:TradeChanged) : void {
+
+		private function onTradeChanged(param1:TradeChanged):void {
 			gs_.hudView.tradeChanged(param1);
 		}
-		
-		private function onTradeDone(param1:TradeDone) : void {
+
+		private function onTradeDone(param1:TradeDone):void {
 			var loc3:Object = null;
 			var loc4:Object = null;
 			gs_.hudView.tradeDone();
@@ -1219,36 +1223,36 @@ package kabam.rotmg.messaging.impl {
 				loc2 = loc4.key;
 				loc3 = loc4.tokens;
 			}
-			catch(e:Error) {
+			catch (e:Error) {
 			}
-			this.addTextLine.dispatch(ChatMessage.make(Parameters.SERVER_CHAT_NAME,loc2,-1,-1,"",false,loc3));
+			this.addTextLine.dispatch(ChatMessage.make(Parameters.SERVER_CHAT_NAME, loc2, -1, -1, "", false, loc3));
 		}
-		
-		private function onTradeAccepted(param1:TradeAccepted) : void {
+
+		private function onTradeAccepted(param1:TradeAccepted):void {
 			gs_.hudView.tradeAccepted(param1);
 		}
-		
-		private function addObject(param1:ObjectData) : void {
+
+		private function addObject(param1:ObjectData):void {
 			var loc2:AbstractMap = gs_.map;
 			var loc3:GameObject = ObjectLibrary.getObjectFromType(param1.objectType_);
-			if(loc3 == null) {
+			if (loc3 == null) {
 				return;
 			}
 			var loc4:ObjectStatusData = param1.status_;
 			loc3.setObjectId(loc4.objectId_);
-			loc2.addObj(loc3,loc4.pos_.x_,loc4.pos_.y_);
-			if(loc3 is Player) {
-				this.handleNewPlayer(loc3 as Player,loc2);
+			loc2.addObj(loc3, loc4.pos_.x_, loc4.pos_.y_);
+			if (loc3 is Player) {
+				this.handleNewPlayer(loc3 as Player, loc2);
 			}
-			this.processObjectStatus(loc4,0,-1);
-			if(loc3.props_.static_ && loc3.props_.occupySquare_ && !loc3.props_.noMiniMap_) {
-				this.updateGameObjectTileSignal.dispatch(new UpdateGameObjectTileVO(loc3.x_,loc3.y_,loc3));
+			this.processObjectStatus(loc4, 0, -1);
+			if (loc3.props_.static_ && loc3.props_.occupySquare_ && !loc3.props_.noMiniMap_) {
+				this.updateGameObjectTileSignal.dispatch(new UpdateGameObjectTileVO(loc3.x_, loc3.y_, loc3));
 			}
 		}
-		
-		private function handleNewPlayer(param1:Player, param2:AbstractMap) : void {
-			this.setPlayerSkinTemplate(param1,0);
-			if(param1.objectId_ == this.playerId_) {
+
+		private function handleNewPlayer(param1:Player, param2:AbstractMap):void {
+			this.setPlayerSkinTemplate(param1, 0);
+			if (param1.objectId_ == this.playerId_) {
 				this.player = param1;
 				this.model.player = param1;
 				param2.player_ = param1;
@@ -1256,55 +1260,55 @@ package kabam.rotmg.messaging.impl {
 				this.setGameFocus.dispatch(this.playerId_.toString());
 			}
 		}
-		
-		private function onUpdate(param1:Update) : void {
+
+		private function onUpdate(param1:Update):void {
 			var loc3:int = 0;
 			var loc4:GroundTileData = null;
 			var loc2:Message = this.messages.require(UPDATEACK);
 			serverConnection.sendMessage(loc2);
 			loc3 = 0;
-			while(loc3 < param1.tiles_.length) {
+			while (loc3 < param1.tiles_.length) {
 				loc4 = param1.tiles_[loc3];
-				gs_.map.setGroundTile(loc4.x_,loc4.y_,loc4.type_);
-				this.updateGroundTileSignal.dispatch(new UpdateGroundTileVO(loc4.x_,loc4.y_,loc4.type_));
+				gs_.map.setGroundTile(loc4.x_, loc4.y_, loc4.type_);
+				this.updateGroundTileSignal.dispatch(new UpdateGroundTileVO(loc4.x_, loc4.y_, loc4.type_));
 				loc3++;
 			}
 			loc3 = 0;
-			while(loc3 < param1.newObjs_.length) {
+			while (loc3 < param1.newObjs_.length) {
 				this.addObject(param1.newObjs_[loc3]);
 				loc3++;
 			}
 			loc3 = 0;
-			while(loc3 < param1.drops_.length) {
+			while (loc3 < param1.drops_.length) {
 				gs_.map.removeObj(param1.drops_[loc3]);
 				loc3++;
 			}
 		}
-		
-		private function onNotification(param1:Notification) : void {
+
+		private function onNotification(param1:Notification):void {
 			var loc3:LineBuilder = null;
 			var loc2:GameObject = gs_.map.goDict_[param1.objectId_];
-			if(loc2 != null) {
+			if (loc2 != null) {
 				loc3 = LineBuilder.fromJSON(param1.message);
-				if(loc2 == this.player) {
-					if(loc3.key == "server.quest_complete") {
+				if (loc2 == this.player) {
+					if (loc3.key == "server.quest_complete") {
 						gs_.map.quest_.completed();
 					}
-					this.makeNotification(loc3,loc2,param1.color_,1000);
-				} else if(loc2.props_.isEnemy_ || !Parameters.data_.noAllyNotifications) {
-					this.makeNotification(loc3,loc2,param1.color_,1000);
+					this.makeNotification(loc3, loc2, param1.color_, 1000);
+				} else if (loc2.props_.isEnemy_ || !Parameters.data_.noAllyNotifications) {
+					this.makeNotification(loc3, loc2, param1.color_, 1000);
 				}
 			}
 		}
-		
-		private function makeNotification(param1:LineBuilder, param2:GameObject, param3:uint, param4:int) : void {
-			var loc5:CharacterStatusText = new CharacterStatusText(param2,param3,param4);
+
+		private function makeNotification(param1:LineBuilder, param2:GameObject, param3:uint, param4:int):void {
+			var loc5:CharacterStatusText = new CharacterStatusText(param2, param3, param4);
 			loc5.setStringBuilder(param1);
 			gs_.map.mapOverlay_.addStatusText(loc5);
 		}
-		
-		private function onGlobalNotification(param1:GlobalNotification) : void {
-			switch(param1.text) {
+
+		private function onGlobalNotification(param1:GlobalNotification):void {
+			switch (param1.text) {
 				case "yellow":
 					ShowKeySignal.instance.dispatch(Key.YELLOW);
 					break;
@@ -1329,196 +1333,196 @@ package kabam.rotmg.messaging.impl {
 				case "beginnersPackage":
 			}
 		}
-		
-		private function onNewTick(param1:NewTick) : void {
+
+		private function onNewTick(param1:NewTick):void {
 			var loc2:ObjectStatusData = null;
-			if(jitterWatcher_ != null) {
+			if (jitterWatcher_ != null) {
 				jitterWatcher_.record();
 			}
-			this.move(param1.tickId_,this.player);
+			this.move(param1.tickId_, this.player);
 			for each(loc2 in param1.statuses_) {
-				this.processObjectStatus(loc2,param1.tickTime_,param1.tickId_);
+				this.processObjectStatus(loc2, param1.tickTime_, param1.tickId_);
 			}
 			lastTickId_ = param1.tickId_;
 		}
-		
-		private function canShowEffect(param1:GameObject) : Boolean {
-			if(param1 != null) {
+
+		private function canShowEffect(param1:GameObject):Boolean {
+			if (param1 != null) {
 				return true;
 			}
 			var loc2:* = param1.objectId_ == this.playerId_;
-			if(!loc2 && param1.props_.isPlayer_ && Parameters.data_.disableAllyShoot) {
+			if (!loc2 && param1.props_.isPlayer_ && Parameters.data_.disableAllyShoot) {
 				return false;
 			}
 			return true;
 		}
-		
-		private function onShowEffect(param1:ShowEffect) : void {
+
+		private function onShowEffect(param1:ShowEffect):void {
 			var loc3:GameObject = null;
 			var loc4:ParticleEffect = null;
 			var loc5:Point = null;
 			var loc6:uint = 0;
-			if(Parameters.data_.noParticlesMaster && (param1.effectType_ == ShowEffect.HEAL_EFFECT_TYPE || param1.effectType_ == ShowEffect.TELEPORT_EFFECT_TYPE || param1.effectType_ == ShowEffect.STREAM_EFFECT_TYPE || param1.effectType_ == ShowEffect.POISON_EFFECT_TYPE || param1.effectType_ == ShowEffect.LINE_EFFECT_TYPE || param1.effectType_ == ShowEffect.FLOW_EFFECT_TYPE || param1.effectType_ == ShowEffect.COLLAPSE_EFFECT_TYPE || param1.effectType_ == ShowEffect.CONEBLAST_EFFECT_TYPE || param1.effectType_ == ShowEffect.NOVA_NO_AOE_EFFECT_TYPE)) {
+			if (Parameters.data_.noParticlesMaster && (param1.effectType_ == ShowEffect.HEAL_EFFECT_TYPE || param1.effectType_ == ShowEffect.TELEPORT_EFFECT_TYPE || param1.effectType_ == ShowEffect.STREAM_EFFECT_TYPE || param1.effectType_ == ShowEffect.POISON_EFFECT_TYPE || param1.effectType_ == ShowEffect.LINE_EFFECT_TYPE || param1.effectType_ == ShowEffect.FLOW_EFFECT_TYPE || param1.effectType_ == ShowEffect.COLLAPSE_EFFECT_TYPE || param1.effectType_ == ShowEffect.CONEBLAST_EFFECT_TYPE || param1.effectType_ == ShowEffect.NOVA_NO_AOE_EFFECT_TYPE)) {
 				return;
 			}
 			var loc2:AbstractMap = gs_.map;
-			switch(param1.effectType_) {
+			switch (param1.effectType_) {
 				case ShowEffect.HEAL_EFFECT_TYPE:
 					loc3 = loc2.goDict_[param1.targetObjectId_];
-					if(loc3 == null || !this.canShowEffect(loc3)) {
+					if (loc3 == null || !this.canShowEffect(loc3)) {
 						break;
 					}
-					loc2.addObj(new HealEffect(loc3,param1.color_),loc3.x_,loc3.y_);
+					loc2.addObj(new HealEffect(loc3, param1.color_), loc3.x_, loc3.y_);
 					break;
 				case ShowEffect.TELEPORT_EFFECT_TYPE:
-					loc2.addObj(new TeleportEffect(),param1.pos1_.x_,param1.pos1_.y_);
+					loc2.addObj(new TeleportEffect(), param1.pos1_.x_, param1.pos1_.y_);
 					break;
 				case ShowEffect.STREAM_EFFECT_TYPE:
-					loc4 = new StreamEffect(param1.pos1_,param1.pos2_,param1.color_);
-					loc2.addObj(loc4,param1.pos1_.x_,param1.pos1_.y_);
+					loc4 = new StreamEffect(param1.pos1_, param1.pos2_, param1.color_);
+					loc2.addObj(loc4, param1.pos1_.x_, param1.pos1_.y_);
 					break;
 				case ShowEffect.THROW_EFFECT_TYPE:
 					loc3 = loc2.goDict_[param1.targetObjectId_];
-					loc5 = loc3 != null?new Point(loc3.x_,loc3.y_):param1.pos2_.toPoint();
-					if(loc3 != null && !this.canShowEffect(loc3)) {
+					loc5 = loc3 != null ? new Point(loc3.x_, loc3.y_) : param1.pos2_.toPoint();
+					if (loc3 != null && !this.canShowEffect(loc3)) {
 						break;
 					}
-					loc4 = new ThrowEffect(loc5,param1.pos1_.toPoint(),param1.color_,param1.duration_ * 1000);
-					loc2.addObj(loc4,loc5.x,loc5.y);
+					loc4 = new ThrowEffect(loc5, param1.pos1_.toPoint(), param1.color_, param1.duration_ * 1000);
+					loc2.addObj(loc4, loc5.x, loc5.y);
 					break;
 				case ShowEffect.NOVA_EFFECT_TYPE:
 				case ShowEffect.NOVA_NO_AOE_EFFECT_TYPE:
 					loc3 = loc2.goDict_[param1.targetObjectId_];
-					if(loc3 == null || !this.canShowEffect(loc3)) {
+					if (loc3 == null || !this.canShowEffect(loc3)) {
 						break;
 					}
-					loc4 = new NovaEffect(loc3,param1.pos1_.x_,param1.color_);
-					loc2.addObj(loc4,loc3.x_,loc3.y_);
+					loc4 = new NovaEffect(loc3, param1.pos1_.x_, param1.color_);
+					loc2.addObj(loc4, loc3.x_, loc3.y_);
 					break;
 				case ShowEffect.POISON_EFFECT_TYPE:
 					loc3 = loc2.goDict_[param1.targetObjectId_];
-					if(loc3 == null || !this.canShowEffect(loc3)) {
+					if (loc3 == null || !this.canShowEffect(loc3)) {
 						break;
 					}
-					loc4 = new PoisonEffect(loc3,param1.color_);
-					loc2.addObj(loc4,loc3.x_,loc3.y_);
+					loc4 = new PoisonEffect(loc3, param1.color_);
+					loc2.addObj(loc4, loc3.x_, loc3.y_);
 					break;
 				case ShowEffect.LINE_EFFECT_TYPE:
 					loc3 = loc2.goDict_[param1.targetObjectId_];
-					if(loc3 == null || !this.canShowEffect(loc3)) {
+					if (loc3 == null || !this.canShowEffect(loc3)) {
 						break;
 					}
-					loc4 = new LineEffect(loc3,param1.pos1_,param1.color_);
-					loc2.addObj(loc4,param1.pos1_.x_,param1.pos1_.y_);
+					loc4 = new LineEffect(loc3, param1.pos1_, param1.color_);
+					loc2.addObj(loc4, param1.pos1_.x_, param1.pos1_.y_);
 					break;
 				case ShowEffect.BURST_EFFECT_TYPE:
 					loc3 = loc2.goDict_[param1.targetObjectId_];
-					if(loc3 == null || !this.canShowEffect(loc3)) {
+					if (loc3 == null || !this.canShowEffect(loc3)) {
 						break;
 					}
-					loc4 = new BurstEffect(loc3,param1.pos1_,param1.pos2_,param1.color_);
-					loc2.addObj(loc4,param1.pos1_.x_,param1.pos1_.y_);
+					loc4 = new BurstEffect(loc3, param1.pos1_, param1.pos2_, param1.color_);
+					loc2.addObj(loc4, param1.pos1_.x_, param1.pos1_.y_);
 					break;
 				case ShowEffect.FLOW_EFFECT_TYPE:
 					loc3 = loc2.goDict_[param1.targetObjectId_];
-					if(loc3 == null || !this.canShowEffect(loc3)) {
+					if (loc3 == null || !this.canShowEffect(loc3)) {
 						break;
 					}
-					loc4 = new FlowEffect(param1.pos1_,loc3,param1.color_);
-					loc2.addObj(loc4,param1.pos1_.x_,param1.pos1_.y_);
+					loc4 = new FlowEffect(param1.pos1_, loc3, param1.color_);
+					loc2.addObj(loc4, param1.pos1_.x_, param1.pos1_.y_);
 					break;
 				case ShowEffect.RING_EFFECT_TYPE:
 					loc3 = loc2.goDict_[param1.targetObjectId_];
-					if(loc3 == null || !this.canShowEffect(loc3)) {
+					if (loc3 == null || !this.canShowEffect(loc3)) {
 						break;
 					}
-					loc4 = new RingEffect(loc3,param1.pos1_.x_,param1.color_);
-					loc2.addObj(loc4,loc3.x_,loc3.y_);
+					loc4 = new RingEffect(loc3, param1.pos1_.x_, param1.color_);
+					loc2.addObj(loc4, loc3.x_, loc3.y_);
 					break;
 				case ShowEffect.LIGHTNING_EFFECT_TYPE:
 					loc3 = loc2.goDict_[param1.targetObjectId_];
-					if(loc3 == null || !this.canShowEffect(loc3)) {
+					if (loc3 == null || !this.canShowEffect(loc3)) {
 						break;
 					}
-					loc4 = new LightningEffect(loc3,param1.pos1_,param1.color_,param1.pos2_.x_);
-					loc2.addObj(loc4,loc3.x_,loc3.y_);
+					loc4 = new LightningEffect(loc3, param1.pos1_, param1.color_, param1.pos2_.x_);
+					loc2.addObj(loc4, loc3.x_, loc3.y_);
 					break;
 				case ShowEffect.COLLAPSE_EFFECT_TYPE:
 					loc3 = loc2.goDict_[param1.targetObjectId_];
-					if(loc3 == null || !this.canShowEffect(loc3)) {
+					if (loc3 == null || !this.canShowEffect(loc3)) {
 						break;
 					}
-					loc4 = new CollapseEffect(loc3,param1.pos1_,param1.pos2_,param1.color_);
-					loc2.addObj(loc4,param1.pos1_.x_,param1.pos1_.y_);
+					loc4 = new CollapseEffect(loc3, param1.pos1_, param1.pos2_, param1.color_);
+					loc2.addObj(loc4, param1.pos1_.x_, param1.pos1_.y_);
 					break;
 				case ShowEffect.CONEBLAST_EFFECT_TYPE:
 					loc3 = loc2.goDict_[param1.targetObjectId_];
-					if(loc3 == null || !this.canShowEffect(loc3)) {
+					if (loc3 == null || !this.canShowEffect(loc3)) {
 						break;
 					}
-					loc4 = new ConeBlastEffect(loc3,param1.pos1_,param1.pos2_.x_,param1.color_);
-					loc2.addObj(loc4,loc3.x_,loc3.y_);
+					loc4 = new ConeBlastEffect(loc3, param1.pos1_, param1.pos2_.x_, param1.color_);
+					loc2.addObj(loc4, loc3.x_, loc3.y_);
 					break;
 				case ShowEffect.JITTER_EFFECT_TYPE:
 					gs_.camera_.startJitter();
 					break;
 				case ShowEffect.FLASH_EFFECT_TYPE:
 					loc3 = loc2.goDict_[param1.targetObjectId_];
-					if(loc3 == null || !this.canShowEffect(loc3)) {
+					if (loc3 == null || !this.canShowEffect(loc3)) {
 						break;
 					}
-					loc3.flash_ = new FlashDescription(getTimer(),param1.color_,param1.pos1_.x_,param1.pos1_.y_);
+					loc3.flash_ = new FlashDescription(getTimer(), param1.color_, param1.pos1_.x_, param1.pos1_.y_);
 					break;
 				case ShowEffect.THROW_PROJECTILE_EFFECT_TYPE:
 					loc5 = param1.pos1_.toPoint();
-					if(loc3 != null && !this.canShowEffect(loc3)) {
+					if (loc3 != null && !this.canShowEffect(loc3)) {
 						break;
 					}
-					loc4 = new ThrowProjectileEffect(param1.color_,param1.pos2_.toPoint(),param1.pos1_.toPoint(),param1.duration_ * 1000);
-					loc2.addObj(loc4,loc5.x,loc5.y);
+					loc4 = new ThrowProjectileEffect(param1.color_, param1.pos2_.toPoint(), param1.pos1_.toPoint(), param1.duration_ * 1000);
+					loc2.addObj(loc4, loc5.x, loc5.y);
 					break;
 				case ShowEffect.SHOCKER_EFFECT_TYPE:
 					loc3 = loc2.goDict_[param1.targetObjectId_];
-					if(loc3 == null || !this.canShowEffect(loc3)) {
+					if (loc3 == null || !this.canShowEffect(loc3)) {
 						break;
 					}
-					if(loc3 && loc3.shockEffect) {
+					if (loc3 && loc3.shockEffect) {
 						loc3.shockEffect.destroy();
 					}
 					loc4 = new ShockerEffect(loc3);
 					loc3.shockEffect = ShockerEffect(loc4);
-					gs_.map.addObj(loc4,loc3.x_,loc3.y_);
+					gs_.map.addObj(loc4, loc3.x_, loc3.y_);
 					break;
 				case ShowEffect.SHOCKEE_EFFECT_TYPE:
 					loc3 = loc2.goDict_[param1.targetObjectId_];
-					if(loc3 == null || !this.canShowEffect(loc3)) {
+					if (loc3 == null || !this.canShowEffect(loc3)) {
 						break;
 					}
 					loc4 = new ShockeeEffect(loc3);
-					gs_.map.addObj(loc4,loc3.x_,loc3.y_);
+					gs_.map.addObj(loc4, loc3.x_, loc3.y_);
 					break;
 				case ShowEffect.RISING_FURY_EFFECT_TYPE:
 					loc3 = loc2.goDict_[param1.targetObjectId_];
-					if(loc3 == null || !this.canShowEffect(loc3)) {
+					if (loc3 == null || !this.canShowEffect(loc3)) {
 						break;
 					}
 					loc6 = param1.pos1_.x_ * 1000;
-					loc4 = new RisingFuryEffect(loc3,loc6);
-					gs_.map.addObj(loc4,loc3.x_,loc3.y_);
+					loc4 = new RisingFuryEffect(loc3, loc6);
+					gs_.map.addObj(loc4, loc3.x_, loc3.y_);
 					break;
 			}
 		}
-		
-		private function onGoto(param1:Goto) : void {
+
+		private function onGoto(param1:Goto):void {
 			this.gotoAck(gs_.lastUpdate_);
 			var loc2:GameObject = gs_.map.goDict_[param1.objectId_];
-			if(loc2 == null) {
+			if (loc2 == null) {
 				return;
 			}
-			loc2.onGoto(param1.pos_.x_,param1.pos_.y_,gs_.lastUpdate_);
+			loc2.onGoto(param1.pos_.x_, param1.pos_.y_, gs_.lastUpdate_);
 		}
-		
-		private function updateGameObject(param1:GameObject, param2:Vector.<StatData>, param3:Boolean) : void {
+
+		private function updateGameObject(param1:GameObject, param2:Vector.<StatData>, param3:Boolean):void {
 			var loc7:StatData = null;
 			var loc8:int = 0;
 			var loc9:int = 0;
@@ -1526,22 +1530,22 @@ package kabam.rotmg.messaging.impl {
 			var loc4:Player = param1 as Player;
 			var loc5:Merchant = param1 as Merchant;
 			var loc6:Pet = param1 as Pet;
-			if(loc6) {
-				this.petUpdater.updatePet(loc6,param2);
-				if(gs_.map.isPetYard) {
-					this.petUpdater.updatePetVOs(loc6,param2);
+			if (loc6) {
+				this.petUpdater.updatePet(loc6, param2);
+				if (gs_.map.isPetYard) {
+					this.petUpdater.updatePetVOs(loc6, param2);
 				}
 				return;
 			}
 			for each(loc7 in param2) {
 				loc8 = loc7.statValue_;
-				switch(loc7.statType_) {
+				switch (loc7.statType_) {
 					case StatData.MAX_HP_STAT:
 						param1.maxHP_ = loc8;
 						continue;
 					case StatData.HP_STAT:
 						param1.hp_ = loc8;
-						if(param1.dead_ && loc8 > 1 && param1.props_.isEnemy_ && ++param1.deadCounter_ >= 2) {
+						if (param1.dead_ && loc8 > 1 && param1.props_.isEnemy_ && ++param1.deadCounter_ >= 2) {
 							param1.dead_ = false;
 						}
 						continue;
@@ -1597,7 +1601,7 @@ package kabam.rotmg.messaging.impl {
 					case StatData.INVENTORY_10_STAT:
 					case StatData.INVENTORY_11_STAT:
 						loc9 = loc7.statType_ - StatData.INVENTORY_0_STAT;
-						if(loc8 != -1) {
+						if (loc8 != -1) {
 							param1.lockedSlot[loc9] = 0;
 						}
 						param1.equipment_[loc9] = loc8;
@@ -1606,7 +1610,7 @@ package kabam.rotmg.messaging.impl {
 						loc4.numStars_ = loc8;
 						continue;
 					case StatData.NAME_STAT:
-						if(param1.name_ != loc7.strStatValue_) {
+						if (param1.name_ != loc7.strStatValue_) {
 							param1.name_ = loc7.strStatValue_;
 							param1.nameBitmapData_ = null;
 						}
@@ -1639,16 +1643,16 @@ package kabam.rotmg.messaging.impl {
 						loc4.setTokens(loc8);
 						continue;
 					case StatData.SUPPORTER_POINTS_STAT:
-						if(loc4 != null) {
+						if (loc4 != null) {
 							loc4.supporterPoints = loc8;
 							loc4.clearTextureCache();
-							if(loc4.objectId_ == this.playerId_) {
+							if (loc4.objectId_ == this.playerId_) {
 								StaticInjectorContext.getInjector().getInstance(SupporterCampaignModel).updatePoints(loc8);
 							}
 						}
 						continue;
 					case StatData.SUPPORTER_STAT:
-						if(loc4 != null) {
+						if (loc4 != null) {
 							loc4.setSupporterFlag(loc8);
 						}
 						continue;
@@ -1717,7 +1721,7 @@ package kabam.rotmg.messaging.impl {
 						loc4.legendaryRank_ = loc8;
 						continue;
 					case StatData.SINK_LEVEL_STAT:
-						if(!param3) {
+						if (!param3) {
 							loc4.sinkLevel_ = loc8;
 						}
 						continue;
@@ -1752,15 +1756,15 @@ package kabam.rotmg.messaging.impl {
 						loc4.magicPotionCount_ = loc8;
 						continue;
 					case StatData.TEXTURE_STAT:
-						if(loc4 != null) {
-							loc4.skinId != loc8 && loc8 >= 0 && this.setPlayerSkinTemplate(loc4,loc8);
-						} else if(param1.objectType_ == 1813 && loc8 > 0) {
+						if (loc4 != null) {
+							loc4.skinId != loc8 && loc8 >= 0 && this.setPlayerSkinTemplate(loc4, loc8);
+						} else if (param1.objectType_ == 1813 && loc8 > 0) {
 							param1.setTexture(loc8);
 						}
 						continue;
 					case StatData.HASBACKPACK_STAT:
 						(param1 as Player).hasBackpack_ = Boolean(loc8);
-						if(param3) {
+						if (param3) {
 							this.updateBackpackTab.dispatch(Boolean(loc8));
 						}
 						continue;
@@ -1783,15 +1787,15 @@ package kabam.rotmg.messaging.impl {
 				}
 			}
 		}
-		
-		private function setPlayerSkinTemplate(param1:Player, param2:int) : void {
+
+		private function setPlayerSkinTemplate(param1:Player, param2:int):void {
 			var loc3:Reskin = this.messages.require(RESKIN) as Reskin;
 			loc3.skinID = param2;
 			loc3.player = param1;
 			loc3.consume();
 		}
-		
-		private function processObjectStatus(param1:ObjectStatusData, param2:int, param3:int) : void {
+
+		private function processObjectStatus(param1:ObjectStatusData, param2:int, param3:int):void {
 			var loc8:int = 0;
 			var loc9:int = 0;
 			var loc10:int = 0;
@@ -1806,112 +1810,112 @@ package kabam.rotmg.messaging.impl {
 			var loc19:Array = null;
 			var loc4:AbstractMap = gs_.map;
 			var loc5:GameObject = loc4.goDict_[param1.objectId_];
-			if(loc5 == null) {
+			if (loc5 == null) {
 				return;
 			}
 			var loc6:* = param1.objectId_ == this.playerId_;
-			if(param2 != 0 && !loc6) {
-				loc5.onTickPos(param1.pos_.x_,param1.pos_.y_,param2,param3);
+			if (param2 != 0 && !loc6) {
+				loc5.onTickPos(param1.pos_.x_, param1.pos_.y_, param2, param3);
 			}
 			var loc7:Player = loc5 as Player;
-			if(loc7 != null) {
+			if (loc7 != null) {
 				loc8 = loc7.level_;
 				loc9 = loc7.exp_;
 				loc10 = loc7.skinId;
 				loc11 = loc7.currFame_;
 			}
-			this.updateGameObject(loc5,param1.stats_,loc6);
-			if(loc7) {
-				if(loc6) {
+			this.updateGameObject(loc5, param1.stats_, loc6);
+			if (loc7) {
+				if (loc6) {
 					loc12 = this.classesModel.getCharacterClass(loc7.objectType_);
-					if(loc12.getMaxLevelAchieved() < loc7.level_) {
+					if (loc12.getMaxLevelAchieved() < loc7.level_) {
 						loc12.setMaxLevelAchieved(loc7.level_);
 					}
 				}
-				if(loc7.skinId != loc10) {
-					if(ObjectLibrary.skinSetXMLDataLibrary_[loc7.skinId] != null) {
+				if (loc7.skinId != loc10) {
+					if (ObjectLibrary.skinSetXMLDataLibrary_[loc7.skinId] != null) {
 						loc13 = ObjectLibrary.skinSetXMLDataLibrary_[loc7.skinId] as XML;
 						loc14 = loc13.attribute("color");
 						loc15 = loc13.attribute("bulletType");
-						if(loc8 != -1 && loc14.length > 0) {
+						if (loc8 != -1 && loc14.length > 0) {
 							loc7.levelUpParticleEffect(uint(loc14));
 						}
-						if(loc15.length > 0) {
+						if (loc15.length > 0) {
 							loc7.projectileIdSetOverrideNew = loc15;
 							loc16 = loc7.equipment_[0];
 							loc17 = ObjectLibrary.propsLibrary_[loc16];
 							loc18 = loc17.projectiles_[0];
 							loc7.projectileIdSetOverrideOld = loc18.objectId_;
 						}
-					} else if(ObjectLibrary.skinSetXMLDataLibrary_[loc7.skinId] == null) {
+					} else if (ObjectLibrary.skinSetXMLDataLibrary_[loc7.skinId] == null) {
 						loc7.projectileIdSetOverrideNew = "";
 						loc7.projectileIdSetOverrideOld = "";
 					}
 				}
-				if(loc8 != -1 && loc7.level_ > loc8) {
-					if(loc6) {
-						loc19 = gs_.model.getNewUnlocks(loc7.objectType_,loc7.level_);
+				if (loc8 != -1 && loc7.level_ > loc8) {
+					if (loc6) {
+						loc19 = gs_.model.getNewUnlocks(loc7.objectType_, loc7.level_);
 						loc7.handleLevelUp(loc19.length != 0);
-						if(loc19.length > 0) {
+						if (loc19.length > 0) {
 							this.newClassUnlockSignal.dispatch(loc19);
 						}
-					} else if(!Parameters.data_.noAllyNotifications) {
+					} else if (!Parameters.data_.noAllyNotifications) {
 						loc7.levelUpEffect(TextKey.PLAYER_LEVELUP);
 					}
-				} else if(loc8 != -1 && loc7.exp_ > loc9) {
-					if(loc6 || !Parameters.data_.noAllyNotifications) {
+				} else if (loc8 != -1 && loc7.exp_ > loc9) {
+					if (loc6 || !Parameters.data_.noAllyNotifications) {
 						loc7.handleExpUp(loc7.exp_ - loc9);
 					}
 				}
-				if(Parameters.data_.showFameGain && loc11 != -1 && loc7.currFame_ > loc11) {
-					if(loc6) {
+				if (Parameters.data_.showFameGain && loc11 != -1 && loc7.currFame_ > loc11) {
+					if (loc6) {
 						loc7.updateFame(loc7.currFame_ - loc11);
 					}
 				}
-				this.socialModel.updateFriendVO(loc7.getName(),loc7);
+				this.socialModel.updateFriendVO(loc7.getName(), loc7);
 			}
 		}
-		
-		private function onInvResult(param1:InvResult) : void {
-			if(param1.result_ != 0) {
+
+		private function onInvResult(param1:InvResult):void {
+			if (param1.result_ != 0) {
 				this.handleInvFailure();
 			}
 		}
-		
-		private function handleInvFailure() : void {
+
+		private function handleInvFailure():void {
 			SoundEffectLibrary.play("error");
 			gs_.hudView.interactPanel.redraw();
 		}
-		
-		private function onReconnect(param1:Reconnect) : void {
-			var loc2:Server = new Server().setName(param1.name_).setAddress(param1.host_ != ""?param1.host_:server_.address).setPort(param1.host_ != ""?int(param1.port_):int(server_.port));
+
+		private function onReconnect(param1:Reconnect):void {
+			var loc2:Server = new Server().setName(param1.name_).setAddress(param1.host_ != "" ? param1.host_ : server_.address).setPort(param1.host_ != "" ? int(param1.port_) : int(server_.port));
 			var loc3:int = param1.gameId_;
 			var loc4:Boolean = createCharacter_;
 			var loc5:int = charId_;
 			var loc6:int = param1.keyTime_;
 			var loc7:ByteArray = param1.key_;
 			isFromArena_ = param1.isFromArena_;
-			if(param1.stats_) {
-				this.statsTracker.setBinaryStringData(loc5,param1.stats_);
+			if (param1.stats_) {
+				this.statsTracker.setBinaryStringData(loc5, param1.stats_);
 			}
-			var loc8:ReconnectEvent = new ReconnectEvent(loc2,loc3,loc4,loc5,loc6,loc7,isFromArena_);
+			var loc8:ReconnectEvent = new ReconnectEvent(loc2, loc3, loc4, loc5, loc6, loc7, isFromArena_);
 			gs_.dispatchEvent(loc8);
 		}
-		
-		private function onPing(param1:Ping) : void {
+
+		private function onPing(param1:Ping):void {
 			var loc2:Pong = this.messages.require(PONG) as Pong;
 			loc2.serial_ = param1.serial_;
 			loc2.time_ = getTimer();
 			serverConnection.sendMessage(loc2);
 		}
-		
-		private function parseXML(param1:String) : void {
+
+		private function parseXML(param1:String):void {
 			var loc2:XML = XML(param1);
 			GroundLibrary.parseFromXML(loc2);
 			ObjectLibrary.parseFromXML(loc2);
 		}
-		
-		private function onMapInfo(param1:MapInfo) : void {
+
+		private function onMapInfo(param1:MapInfo):void {
 			var loc2:String = null;
 			var loc3:String = null;
 			for each(loc2 in param1.clientXML_) {
@@ -1924,45 +1928,45 @@ package kabam.rotmg.messaging.impl {
 			this.closeDialogs.dispatch();
 			gs_.applyMapInfo(param1);
 			this.rand_ = new Random(param1.fp_);
-			if(createCharacter_) {
+			if (createCharacter_) {
 				this.create();
 			} else {
 				this.load();
 			}
 		}
-		
-		private function onPic(param1:Pic) : void {
+
+		private function onPic(param1:Pic):void {
 			gs_.addChild(new PicView(param1.bitmapData_));
 		}
-		
-		private function onDeath(param1:Death) : void {
+
+		private function onDeath(param1:Death):void {
 			this.death = param1;
-			var loc2:BitmapData = new BitmapDataSpy(gs_.stage.stageWidth,gs_.stage.stageHeight);
+			var loc2:BitmapData = new BitmapDataSpy(gs_.stage.stageWidth, gs_.stage.stageHeight);
 			loc2.draw(gs_);
 			param1.background = loc2;
-			if(!gs_.isEditor) {
+			if (!gs_.isEditor) {
 				this.handleDeath.dispatch(param1);
 			}
-			if(gs_.map.name_ == "Davy Jones\' Locker") {
+			if (gs_.map.name_ == "Davy Jones\' Locker") {
 				this.showHideKeyUISignal.dispatch(false);
 			}
 		}
-		
-		private function onBuyResult(param1:BuyResult) : void {
-			if(param1.result_ == BuyResult.SUCCESS_BRID) {
-				if(outstandingBuy_ != null) {
+
+		private function onBuyResult(param1:BuyResult):void {
+			if (param1.result_ == BuyResult.SUCCESS_BRID) {
+				if (outstandingBuy_ != null) {
 					outstandingBuy_.record();
 				}
 			}
 			outstandingBuy_ = null;
 			this.handleBuyResultType(param1);
 		}
-		
-		private function handleBuyResultType(param1:BuyResult) : void {
+
+		private function handleBuyResultType(param1:BuyResult):void {
 			var loc2:ChatMessage = null;
-			switch(param1.result_) {
+			switch (param1.result_) {
 				case BuyResult.UNKNOWN_ERROR_BRID:
-					loc2 = ChatMessage.make(Parameters.SERVER_CHAT_NAME,param1.resultString_);
+					loc2 = ChatMessage.make(Parameters.SERVER_CHAT_NAME, param1.resultString_);
 					this.addTextLine.dispatch(loc2);
 					break;
 				case BuyResult.NOT_ENOUGH_GOLD_BRID:
@@ -1975,19 +1979,19 @@ package kabam.rotmg.messaging.impl {
 					this.handleDefaultResult(param1);
 			}
 		}
-		
-		private function handleDefaultResult(param1:BuyResult) : void {
+
+		private function handleDefaultResult(param1:BuyResult):void {
 			var loc2:LineBuilder = LineBuilder.fromJSON(param1.resultString_);
 			var loc3:Boolean = param1.result_ == BuyResult.SUCCESS_BRID || param1.result_ == BuyResult.PET_FEED_SUCCESS_BRID;
-			var loc4:ChatMessage = ChatMessage.make(!!loc3?Parameters.SERVER_CHAT_NAME:Parameters.ERROR_CHAT_NAME,loc2.key);
+			var loc4:ChatMessage = ChatMessage.make(!!loc3 ? Parameters.SERVER_CHAT_NAME : Parameters.ERROR_CHAT_NAME, loc2.key);
 			loc4.tokens = loc2.tokens;
 			this.addTextLine.dispatch(loc4);
 		}
-		
-		private function onAccountList(param1:AccountList) : void {
-			if(param1.accountListId_ == 0) {
-				if(param1.lockAction_ != -1) {
-					if(param1.lockAction_ == 1) {
+
+		private function onAccountList(param1:AccountList):void {
+			if (param1.accountListId_ == 0) {
+				if (param1.lockAction_ != -1) {
+					if (param1.lockAction_ == 1) {
 						gs_.map.party_.setStars(param1);
 					} else {
 						gs_.map.party_.removeStars(param1);
@@ -1995,186 +1999,186 @@ package kabam.rotmg.messaging.impl {
 				} else {
 					gs_.map.party_.setStars(param1);
 				}
-			} else if(param1.accountListId_ == 1) {
+			} else if (param1.accountListId_ == 1) {
 				gs_.map.party_.setIgnores(param1);
 			}
 		}
-		
-		private function onQuestObjId(param1:QuestObjId) : void {
+
+		private function onQuestObjId(param1:QuestObjId):void {
 			gs_.map.quest_.setObject(param1.objectId_);
 		}
-		
-		private function onAoe(param1:Aoe) : void {
+
+		private function onAoe(param1:Aoe):void {
 			var loc4:int = 0;
 			var loc5:Vector.<uint> = null;
-			if(this.player == null) {
-				this.aoeAck(gs_.lastUpdate_,0,0);
+			if (this.player == null) {
+				this.aoeAck(gs_.lastUpdate_, 0, 0);
 				return;
 			}
-			var loc2:AOEEffect = new AOEEffect(param1.pos_.toPoint(),param1.radius_,param1.color_);
-			gs_.map.addObj(loc2,param1.pos_.x_,param1.pos_.y_);
-			if(this.player.isInvincible() || this.player.isPaused()) {
-				this.aoeAck(gs_.lastUpdate_,this.player.x_,this.player.y_);
+			var loc2:AOEEffect = new AOEEffect(param1.pos_.toPoint(), param1.radius_, param1.color_);
+			gs_.map.addObj(loc2, param1.pos_.x_, param1.pos_.y_);
+			if (this.player.isInvincible() || this.player.isPaused()) {
+				this.aoeAck(gs_.lastUpdate_, this.player.x_, this.player.y_);
 				return;
 			}
 			var loc3:* = this.player.distTo(param1.pos_) < param1.radius_;
-			if(loc3) {
-				loc4 = GameObject.damageWithDefense(param1.damage_,this.player.defense_,false,this.player.condition_);
+			if (loc3) {
+				loc4 = GameObject.damageWithDefense(param1.damage_, this.player.defense_, false, this.player.condition_);
 				loc5 = null;
-				if(param1.effect_ != 0) {
+				if (param1.effect_ != 0) {
 					loc5 = new Vector.<uint>();
 					loc5.push(param1.effect_);
 				}
-				this.player.damage(true,loc4,loc5,false,null);
+				this.player.damage(true, loc4, loc5, false, null);
 			}
-			this.aoeAck(gs_.lastUpdate_,this.player.x_,this.player.y_);
+			this.aoeAck(gs_.lastUpdate_, this.player.x_, this.player.y_);
 		}
-		
-		private function onNameResult(param1:NameResult) : void {
+
+		private function onNameResult(param1:NameResult):void {
 			gs_.dispatchEvent(new NameResultEvent(param1));
 		}
-		
-		private function onGuildResult(param1:GuildResult) : void {
+
+		private function onGuildResult(param1:GuildResult):void {
 			var loc2:LineBuilder = null;
-			if(param1.lineBuilderJSON == "") {
-				gs_.dispatchEvent(new GuildResultEvent(param1.success_,"",{}));
+			if (param1.lineBuilderJSON == "") {
+				gs_.dispatchEvent(new GuildResultEvent(param1.success_, "", {}));
 			} else {
 				loc2 = LineBuilder.fromJSON(param1.lineBuilderJSON);
-				this.addTextLine.dispatch(ChatMessage.make(Parameters.ERROR_CHAT_NAME,loc2.key,-1,-1,"",false,loc2.tokens));
-				gs_.dispatchEvent(new GuildResultEvent(param1.success_,loc2.key,loc2.tokens));
+				this.addTextLine.dispatch(ChatMessage.make(Parameters.ERROR_CHAT_NAME, loc2.key, -1, -1, "", false, loc2.tokens));
+				gs_.dispatchEvent(new GuildResultEvent(param1.success_, loc2.key, loc2.tokens));
 			}
 		}
-		
-		private function onClientStat(param1:ClientStat) : void {
+
+		private function onClientStat(param1:ClientStat):void {
 			var loc2:Account = StaticInjectorContext.getInjector().getInstance(Account);
-			loc2.reportIntStat(param1.name_,param1.value_);
+			loc2.reportIntStat(param1.name_, param1.value_);
 		}
-		
-		private function onFile(param1:File) : void {
-			new FileReference().save(param1.file_,param1.filename_);
+
+		private function onFile(param1:File):void {
+			new FileReference().save(param1.file_, param1.filename_);
 		}
-		
-		private function onInvitedToGuild(param1:InvitedToGuild) : void {
-			if(Parameters.data_.showGuildInvitePopup) {
-				gs_.hudView.interactPanel.setOverride(new GuildInvitePanel(gs_,param1.name_,param1.guildName_));
+
+		private function onInvitedToGuild(param1:InvitedToGuild):void {
+			if (Parameters.data_.showGuildInvitePopup) {
+				gs_.hudView.interactPanel.setOverride(new GuildInvitePanel(gs_, param1.name_, param1.guildName_));
 			}
-			this.addTextLine.dispatch(ChatMessage.make("","You have been invited by " + param1.name_ + " to join the guild " + param1.guildName_ + ".\n  If you wish to join type \"/join " + param1.guildName_ + "\""));
+			this.addTextLine.dispatch(ChatMessage.make("", "You have been invited by " + param1.name_ + " to join the guild " + param1.guildName_ + ".\n  If you wish to join type \"/join " + param1.guildName_ + "\""));
 		}
-		
-		private function onPlaySound(param1:PlaySound) : void {
+
+		private function onPlaySound(param1:PlaySound):void {
 			var loc2:GameObject = gs_.map.goDict_[param1.ownerId_];
 			loc2 && loc2.playSound(param1.soundId_);
 		}
-		
-		private function onImminentArenaWave(param1:ImminentArenaWave) : void {
+
+		private function onImminentArenaWave(param1:ImminentArenaWave):void {
 			this.imminentWave.dispatch(param1.currentRuntime);
 		}
-		
-		private function onArenaDeath(param1:ArenaDeath) : void {
+
+		private function onArenaDeath(param1:ArenaDeath):void {
 			this.currentArenaRun.costOfContinue = param1.cost;
-			this.openDialog.dispatch(new ContinueOrQuitDialog(param1.cost,false));
+			this.openDialog.dispatch(new ContinueOrQuitDialog(param1.cost, false));
 			this.arenaDeath.dispatch();
 		}
-		
-		private function onVerifyEmail(param1:VerifyEmail) : void {
+
+		private function onVerifyEmail(param1:VerifyEmail):void {
 			TitleView.queueEmailConfirmation = true;
-			if(gs_ != null) {
+			if (gs_ != null) {
 				gs_.closed.dispatch();
 			}
 			var loc2:HideMapLoadingSignal = StaticInjectorContext.getInjector().getInstance(HideMapLoadingSignal);
-			if(loc2 != null) {
+			if (loc2 != null) {
 				loc2.dispatch();
 			}
 		}
-		
-		private function onPasswordPrompt(param1:PasswordPrompt) : void {
-			if(param1.cleanPasswordStatus == 3) {
+
+		private function onPasswordPrompt(param1:PasswordPrompt):void {
+			if (param1.cleanPasswordStatus == 3) {
 				TitleView.queuePasswordPromptFull = true;
-			} else if(param1.cleanPasswordStatus == 2) {
+			} else if (param1.cleanPasswordStatus == 2) {
 				TitleView.queuePasswordPrompt = true;
-			} else if(param1.cleanPasswordStatus == 4) {
+			} else if (param1.cleanPasswordStatus == 4) {
 				TitleView.queueRegistrationPrompt = true;
 			}
-			if(gs_ != null) {
+			if (gs_ != null) {
 				gs_.closed.dispatch();
 			}
 			var loc2:HideMapLoadingSignal = StaticInjectorContext.getInjector().getInstance(HideMapLoadingSignal);
-			if(loc2 != null) {
+			if (loc2 != null) {
 				loc2.dispatch();
 			}
 		}
-		
-		override public function questFetch() : void {
+
+		override public function questFetch():void {
 			serverConnection.sendMessage(this.messages.require(QUEST_FETCH_ASK));
 		}
-		
-		private function onQuestFetchResponse(param1:QuestFetchResponse) : void {
+
+		private function onQuestFetchResponse(param1:QuestFetchResponse):void {
 			this.questFetchComplete.dispatch(param1);
 		}
-		
-		private function onQuestRedeemResponse(param1:QuestRedeemResponse) : void {
+
+		private function onQuestRedeemResponse(param1:QuestRedeemResponse):void {
 			this.questRedeemComplete.dispatch(param1);
 		}
-		
-		override public function questRedeem(param1:String, param2:Vector.<SlotObjectData>, param3:int = -1) : void {
+
+		override public function questRedeem(param1:String, param2:Vector.<SlotObjectData>, param3:int = -1):void {
 			var loc4:QuestRedeem = this.messages.require(QUEST_REDEEM) as QuestRedeem;
 			loc4.questID = param1;
 			loc4.item = param3;
 			loc4.slots = param2;
 			serverConnection.sendMessage(loc4);
 		}
-		
-		override public function keyInfoRequest(param1:int) : void {
+
+		override public function keyInfoRequest(param1:int):void {
 			var loc2:KeyInfoRequest = this.messages.require(KEY_INFO_REQUEST) as KeyInfoRequest;
 			loc2.itemType_ = param1;
 			serverConnection.sendMessage(loc2);
 		}
-		
-		private function onKeyInfoResponse(param1:KeyInfoResponse) : void {
+
+		private function onKeyInfoResponse(param1:KeyInfoResponse):void {
 			this.keyInfoResponse.dispatch(param1);
 		}
-		
-		private function onLoginRewardResponse(param1:ClaimDailyRewardResponse) : void {
+
+		private function onLoginRewardResponse(param1:ClaimDailyRewardResponse):void {
 			this.claimDailyRewardResponse.dispatch(param1);
 		}
-		
-		private function onClosed() : void {
+
+		private function onClosed():void {
 			var loc1:GoogleAnalytics = null;
 			var loc2:HideMapLoadingSignal = null;
-			if(this.playerId_ != -1) {
+			if (this.playerId_ != -1) {
 				loc1 = StaticInjectorContext.getInjector().getInstance(GoogleAnalytics);
-				loc1.trackEvent("error","disconnect",gs_.map.name_);
+				loc1.trackEvent("error", "disconnect", gs_.map.name_);
 				gs_.closed.dispatch();
-			} else if(this.retryConnection_) {
-				if(this.delayBeforeReconnect < 10) {
-					if(this.delayBeforeReconnect == 6) {
+			} else if (this.retryConnection_) {
+				if (this.delayBeforeReconnect < 10) {
+					if (this.delayBeforeReconnect == 6) {
 						loc2 = StaticInjectorContext.getInjector().getInstance(HideMapLoadingSignal);
 						loc2.dispatch();
 					}
 					this.retry(this.delayBeforeReconnect++);
-					this.addTextLine.dispatch(ChatMessage.make(Parameters.ERROR_CHAT_NAME,"Connection failed!  Retrying..."));
+					this.addTextLine.dispatch(ChatMessage.make(Parameters.ERROR_CHAT_NAME, "Connection failed!  Retrying..."));
 				} else {
 					gs_.closed.dispatch();
 				}
 			}
 		}
-		
-		private function retry(param1:int) : void {
-			this.retryTimer_ = new Timer(param1 * 1000,1);
-			this.retryTimer_.addEventListener(TimerEvent.TIMER_COMPLETE,this.onRetryTimer);
+
+		private function retry(param1:int):void {
+			this.retryTimer_ = new Timer(param1 * 1000, 1);
+			this.retryTimer_.addEventListener(TimerEvent.TIMER_COMPLETE, this.onRetryTimer);
 			this.retryTimer_.start();
 		}
-		
-		private function onRetryTimer(param1:TimerEvent) : void {
-			serverConnection.connect(server_.address,server_.port);
+
+		private function onRetryTimer(param1:TimerEvent):void {
+			serverConnection.connect(server_.address, server_.port);
 		}
-		
-		private function onError(param1:String) : void {
-			this.addTextLine.dispatch(ChatMessage.make(Parameters.ERROR_CHAT_NAME,param1));
+
+		private function onError(param1:String):void {
+			this.addTextLine.dispatch(ChatMessage.make(Parameters.ERROR_CHAT_NAME, param1));
 		}
-		
-		private function onFailure(param1:Failure) : void {
-			switch(param1.errorId_) {
+
+		private function onFailure(param1:Failure):void {
+			switch (param1.errorId_) {
 				case Failure.INCORRECT_VERSION:
 					this.handleIncorrectVersionFailure(param1);
 					break;
@@ -2194,62 +2198,62 @@ package kabam.rotmg.messaging.impl {
 					this.handleDefaultFailure(param1);
 			}
 		}
-		
-		private function handleEmailVerificationNeeded(param1:Failure) : void {
+
+		private function handleEmailVerificationNeeded(param1:Failure):void {
 			this.retryConnection_ = false;
 			gs_.closed.dispatch();
 		}
-		
-		private function handleRealmTeleportBlock(param1:Failure) : void {
-			this.addTextLine.dispatch(ChatMessage.make(Parameters.SERVER_CHAT_NAME,"You need to wait at least " + param1.errorDescription_ + " seconds before a non guild member teleport."));
+
+		private function handleRealmTeleportBlock(param1:Failure):void {
+			this.addTextLine.dispatch(ChatMessage.make(Parameters.SERVER_CHAT_NAME, "You need to wait at least " + param1.errorDescription_ + " seconds before a non guild member teleport."));
 			this.player.nextTeleportAt_ = getTimer() + int(param1.errorDescription_) * 1000;
 		}
-		
-		private function handleInvalidTeleportTarget(param1:Failure) : void {
+
+		private function handleInvalidTeleportTarget(param1:Failure):void {
 			var loc2:String = LineBuilder.getLocalizedStringFromJSON(param1.errorDescription_);
-			if(loc2 == "") {
+			if (loc2 == "") {
 				loc2 = param1.errorDescription_;
 			}
-			this.addTextLine.dispatch(ChatMessage.make(Parameters.ERROR_CHAT_NAME,loc2));
+			this.addTextLine.dispatch(ChatMessage.make(Parameters.ERROR_CHAT_NAME, loc2));
 			this.player.nextTeleportAt_ = 0;
 		}
-		
-		private function handleBadKeyFailure(param1:Failure) : void {
+
+		private function handleBadKeyFailure(param1:Failure):void {
 			var loc2:String = LineBuilder.getLocalizedStringFromJSON(param1.errorDescription_);
-			if(loc2 == "") {
+			if (loc2 == "") {
 				loc2 = param1.errorDescription_;
 			}
-			this.addTextLine.dispatch(ChatMessage.make(Parameters.ERROR_CHAT_NAME,loc2));
+			this.addTextLine.dispatch(ChatMessage.make(Parameters.ERROR_CHAT_NAME, loc2));
 			this.retryConnection_ = false;
 			gs_.closed.dispatch();
 		}
-		
-		private function handleIncorrectVersionFailure(param1:Failure) : void {
-			var loc2:Dialog = new Dialog(TextKey.CLIENT_UPDATE_TITLE,"",TextKey.CLIENT_UPDATE_LEFT_BUTTON,null,"/clientUpdate");
-			loc2.setTextParams(TextKey.CLIENT_UPDATE_DESCRIPTION,{
-				"client":Parameters.BUILD_VERSION,
-				"server":param1.errorDescription_
+
+		private function handleIncorrectVersionFailure(param1:Failure):void {
+			var loc2:Dialog = new Dialog(TextKey.CLIENT_UPDATE_TITLE, "", TextKey.CLIENT_UPDATE_LEFT_BUTTON, null, "/clientUpdate");
+			loc2.setTextParams(TextKey.CLIENT_UPDATE_DESCRIPTION, {
+				"client": Parameters.BUILD_VERSION,
+				"server": param1.errorDescription_
 			});
-			loc2.addEventListener(Dialog.LEFT_BUTTON,this.onDoClientUpdate);
+			loc2.addEventListener(Dialog.LEFT_BUTTON, this.onDoClientUpdate);
 			gs_.stage.addChild(loc2);
 			this.retryConnection_ = false;
 		}
-		
-		private function handleDefaultFailure(param1:Failure) : void {
+
+		private function handleDefaultFailure(param1:Failure):void {
 			var loc2:String = LineBuilder.getLocalizedStringFromJSON(param1.errorDescription_);
-			if(loc2 == "") {
+			if (loc2 == "") {
 				loc2 = param1.errorDescription_;
 			}
-			this.addTextLine.dispatch(ChatMessage.make(Parameters.ERROR_CHAT_NAME,loc2));
+			this.addTextLine.dispatch(ChatMessage.make(Parameters.ERROR_CHAT_NAME, loc2));
 		}
-		
-		private function onDoClientUpdate(param1:Event) : void {
+
+		private function onDoClientUpdate(param1:Event):void {
 			var loc2:Dialog = param1.currentTarget as Dialog;
 			loc2.parent.removeChild(loc2);
 			gs_.closed.dispatch();
 		}
-		
-		override public function isConnected() : Boolean {
+
+		override public function isConnected():Boolean {
 			return serverConnection.isConnected();
 		}
 	}

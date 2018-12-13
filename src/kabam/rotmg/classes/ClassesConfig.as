@@ -1,4 +1,3 @@
- 
 package kabam.rotmg.classes {
 	import kabam.rotmg.account.core.control.IsAccountRegisteredToBuyGoldGuard;
 	import kabam.rotmg.account.core.signals.CharListDataSignal;
@@ -23,32 +22,34 @@ package kabam.rotmg.classes {
 	import kabam.rotmg.classes.view.CharacterSkinView;
 	import kabam.rotmg.classes.view.ClassDetailMediator;
 	import kabam.rotmg.classes.view.ClassDetailView;
+
 	import org.swiftsuspenders.Injector;
+
 	import robotlegs.bender.extensions.mediatorMap.api.IMediatorMap;
 	import robotlegs.bender.extensions.signalCommandMap.api.ISignalCommandMap;
 	import robotlegs.bender.framework.api.IConfig;
 	import robotlegs.bender.framework.api.IContext;
-	
+
 	public class ClassesConfig implements IConfig {
-		 
-		
+
+
 		[Inject]
 		public var context:IContext;
-		
+
 		[Inject]
 		public var injector:Injector;
-		
+
 		[Inject]
 		public var mediatorMap:IMediatorMap;
-		
+
 		[Inject]
 		public var commandMap:ISignalCommandMap;
-		
+
 		public function ClassesConfig() {
 			super();
 		}
-		
-		public function configure() : void {
+
+		public function configure():void {
 			this.injector.map(ClassesModel).asSingleton();
 			this.injector.map(CharacterSkinListItemFactory).asSingleton();
 			this.injector.map(FocusCharacterSkinSignal).asSingleton();
@@ -64,8 +65,8 @@ package kabam.rotmg.classes {
 			this.commandMap.map(BuyCharacterSkinSignal).toCommand(BuyCharacterSkinCommand).withGuards(IsAccountRegisteredToBuyGoldGuard);
 			this.context.lifecycle.afterInitializing(this.init);
 		}
-		
-		private function init() : void {
+
+		private function init():void {
 			var loc1:XML = XML(new EmbeddedData.PlayersCXML());
 			var loc2:ParseClassesXMLSignal = this.injector.getInstance(ParseClassesXMLSignal);
 			loc2.dispatch(loc1);

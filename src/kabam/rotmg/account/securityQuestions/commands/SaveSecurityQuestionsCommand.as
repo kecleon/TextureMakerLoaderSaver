@@ -1,4 +1,3 @@
- 
 package kabam.rotmg.account.securityQuestions.commands {
 	import kabam.lib.tasks.BranchingTask;
 	import kabam.lib.tasks.DispatchSignalTask;
@@ -11,50 +10,50 @@ package kabam.rotmg.account.securityQuestions.commands {
 	import kabam.rotmg.core.signals.TaskErrorSignal;
 	import kabam.rotmg.core.signals.TrackEventSignal;
 	import kabam.rotmg.dialogs.control.CloseDialogsSignal;
-	
+
 	public class SaveSecurityQuestionsCommand {
-		 
-		
+
+
 		[Inject]
 		public var task:SaveSecurityQuestionsTask;
-		
+
 		[Inject]
 		public var monitor:TaskMonitor;
-		
+
 		[Inject]
 		public var taskError:TaskErrorSignal;
-		
+
 		[Inject]
 		public var closeDialogs:CloseDialogsSignal;
-		
+
 		[Inject]
 		public var track:TrackEventSignal;
-		
+
 		[Inject]
 		public var securityQuestionsModel:SecurityQuestionsModel;
-		
+
 		public function SaveSecurityQuestionsCommand() {
 			super();
 		}
-		
-		public function execute() : void {
-			var loc1:BranchingTask = new BranchingTask(this.task,this.makeSuccess(),this.makeFailure());
+
+		public function execute():void {
+			var loc1:BranchingTask = new BranchingTask(this.task, this.makeSuccess(), this.makeFailure());
 			this.monitor.add(loc1);
 			loc1.start();
 		}
-		
-		private function makeSuccess() : Task {
+
+		private function makeSuccess():Task {
 			var loc1:TaskSequence = new TaskSequence();
 			loc1.add(new DispatchSignalTask(this.closeDialogs));
 			this.securityQuestionsModel.showSecurityQuestionsOnStartup = false;
 			return loc1;
 		}
-		
-		private function makeFailure() : DispatchSignalTask {
-			return new DispatchSignalTask(this.taskError,this.task);
+
+		private function makeFailure():DispatchSignalTask {
+			return new DispatchSignalTask(this.taskError, this.task);
 		}
-		
-		private function getTrackingData() : TrackingData {
+
+		private function getTrackingData():TrackingData {
 			var loc1:TrackingData = new TrackingData();
 			loc1.category = "account";
 			loc1.action = "saveSecurityQuestions";

@@ -1,39 +1,38 @@
- 
 package kabam.rotmg.messaging.impl.outgoing {
 	import flash.utils.ByteArray;
 	import flash.utils.IDataOutput;
-	
+
 	public class Hello extends OutgoingMessage {
-		 
-		
+
+
 		public var buildVersion_:String;
-		
+
 		public var gameId_:int = 0;
-		
+
 		public var guid_:String;
-		
+
 		public var password_:String;
-		
+
 		public var secret_:String;
-		
+
 		public var keyTime_:int = 0;
-		
+
 		public var key_:ByteArray;
-		
+
 		public var mapJSON_:String;
-		
+
 		public var entrytag_:String = "";
-		
+
 		public var gameNet:String = "";
-		
+
 		public var gameNetUserId:String = "";
-		
+
 		public var playPlatform:String = "";
-		
+
 		public var platformToken:String = "";
-		
+
 		public var userToken:String = "";
-		
+
 		public function Hello(param1:uint, param2:Function) {
 			this.buildVersion_ = new String();
 			this.guid_ = new String();
@@ -41,10 +40,10 @@ package kabam.rotmg.messaging.impl.outgoing {
 			this.secret_ = new String();
 			this.key_ = new ByteArray();
 			this.mapJSON_ = new String();
-			super(param1,param2);
+			super(param1, param2);
 		}
-		
-		override public function writeToOutput(param1:IDataOutput) : void {
+
+		override public function writeToOutput(param1:IDataOutput):void {
 			param1.writeUTF(this.buildVersion_);
 			param1.writeInt(this.gameId_);
 			param1.writeUTF(this.guid_);
@@ -64,9 +63,9 @@ package kabam.rotmg.messaging.impl.outgoing {
 			param1.writeUTF(this.platformToken);
 			param1.writeUTF(this.userToken);
 		}
-		
-		override public function toString() : String {
-			return formatToString("HELLO","buildVersion_","gameId_","guid_","password_","secret_");
+
+		override public function toString():String {
+			return formatToString("HELLO", "buildVersion_", "gameId_", "guid_", "password_", "secret_");
 		}
 	}
 }

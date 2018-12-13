@@ -1,38 +1,37 @@
- 
 package kabam.rotmg.chat.model {
 	public class TellModel {
-		 
-		
+
+
 		private var pastRecipients:Vector.<String>;
-		
+
 		private var index:int = 0;
-		
+
 		public function TellModel() {
 			this.pastRecipients = new Vector.<String>();
 			super();
 		}
-		
-		public function push(param1:String) : void {
+
+		public function push(param1:String):void {
 			var loc2:int = this.pastRecipients.indexOf(param1);
-			if(loc2 != -1) {
-				this.pastRecipients.splice(loc2,1);
+			if (loc2 != -1) {
+				this.pastRecipients.splice(loc2, 1);
 			}
 			this.pastRecipients.unshift(param1);
 		}
-		
-		public function getNext() : String {
-			if(this.pastRecipients.length > 0) {
+
+		public function getNext():String {
+			if (this.pastRecipients.length > 0) {
 				this.index = (this.index + 1) % this.pastRecipients.length;
 				return this.pastRecipients[this.index];
 			}
 			return "";
 		}
-		
-		public function resetRecipients() : void {
+
+		public function resetRecipients():void {
 			this.index = -1;
 		}
-		
-		public function clearRecipients() : void {
+
+		public function clearRecipients():void {
 			this.pastRecipients = new Vector.<String>();
 			this.index = 0;
 		}

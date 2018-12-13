@@ -1,4 +1,3 @@
- 
 package kabam.rotmg.account.web.services {
 	import kabam.lib.tasks.BaseTask;
 	import kabam.rotmg.account.core.Account;
@@ -6,32 +5,32 @@ package kabam.rotmg.account.web.services {
 	import kabam.rotmg.account.web.model.AccountData;
 	import kabam.rotmg.appengine.api.AppEngineClient;
 	import kabam.rotmg.core.model.PlayerModel;
-	
+
 	public class WebRegisterAccountTask extends BaseTask implements RegisterAccountTask {
-		 
-		
+
+
 		[Inject]
 		public var data:AccountData;
-		
+
 		[Inject]
 		public var account:Account;
-		
+
 		[Inject]
 		public var model:PlayerModel;
-		
+
 		[Inject]
 		public var client:AppEngineClient;
-		
+
 		public function WebRegisterAccountTask() {
 			super();
 		}
-		
-		override protected function startTask() : void {
+
+		override protected function startTask():void {
 			this.client.complete.addOnce(this.onComplete);
-			this.client.sendRequest("/account/register",this.makeDataPacket());
+			this.client.sendRequest("/account/register", this.makeDataPacket());
 		}
-		
-		private function makeDataPacket() : Object {
+
+		private function makeDataPacket():Object {
 			var loc1:Object = {};
 			loc1.guid = this.account.getUserId();
 			loc1.newGUID = this.data.username;
@@ -41,20 +40,20 @@ package kabam.rotmg.account.web.services {
 			loc1.isAgeVerified = 1;
 			return loc1;
 		}
-		
-		private function onComplete(param1:Boolean, param2:*) : void {
+
+		private function onComplete(param1:Boolean, param2:*):void {
 			param1 && this.onRegisterDone(param2);
-			completeTask(param1,param2);
+			completeTask(param1, param2);
 		}
-		
-		private function onRegisterDone(param1:String) : void {
+
+		private function onRegisterDone(param1:String):void {
 			this.model.setIsAgeVerified(true);
 			var loc2:XML = new XML(param1);
-			if(loc2.hasOwnProperty("token")) {
+			if (loc2.hasOwnProperty("token")) {
 				this.data.token = loc2.token;
-				this.account.updateUser(this.data.username,this.data.password,loc2.token);
+				this.account.updateUser(this.data.username, this.data.password, loc2.token);
 			} else {
-				this.account.updateUser(this.data.username,this.data.password,"");
+				this.account.updateUser(this.data.username, this.data.password, "");
 			}
 		}
 	}

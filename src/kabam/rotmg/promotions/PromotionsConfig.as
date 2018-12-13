@@ -1,4 +1,3 @@
- 
 package kabam.rotmg.promotions {
 	import kabam.rotmg.packages.control.BeginnersPackageAvailableSignal;
 	import kabam.rotmg.promotions.commands.BuyBeginnersPackageCommand;
@@ -17,28 +16,30 @@ package kabam.rotmg.promotions {
 	import kabam.rotmg.promotions.view.SpecialOfferButtonMediator;
 	import kabam.rotmg.promotions.view.WebChoosePaymentTypeDialog;
 	import kabam.rotmg.promotions.view.WebChoosePaymentTypeDialogMediator;
+
 	import org.swiftsuspenders.Injector;
+
 	import robotlegs.bender.extensions.mediatorMap.api.IMediatorMap;
 	import robotlegs.bender.extensions.signalCommandMap.api.ISignalCommandMap;
 	import robotlegs.bender.framework.api.IConfig;
-	
+
 	public class PromotionsConfig implements IConfig {
-		 
-		
+
+
 		[Inject]
 		public var injector:Injector;
-		
+
 		[Inject]
 		public var mediatorMap:IMediatorMap;
-		
+
 		[Inject]
 		public var commandMap:ISignalCommandMap;
-		
+
 		public function PromotionsConfig() {
 			super();
 		}
-		
-		public function configure() : void {
+
+		public function configure():void {
 			this.injector.map(BeginnersPackageModel).asSingleton();
 			this.injector.map(BeginnersPackageAvailableSignal).asSingleton();
 			this.injector.map(PackageStatusUpdateSignal).asSingleton();

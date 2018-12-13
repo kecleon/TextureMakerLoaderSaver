@@ -1,6 +1,6 @@
- 
 package io.decagames.rotmg.pets.windows.yard {
 	import com.company.assembleegameclient.ui.tooltip.TextToolTip;
+
 	import io.decagames.rotmg.ui.buttons.BaseButton;
 	import io.decagames.rotmg.ui.buttons.SliceScalingButton;
 	import io.decagames.rotmg.ui.defaults.DefaultLabelFormat;
@@ -8,85 +8,87 @@ package io.decagames.rotmg.pets.windows.yard {
 	import io.decagames.rotmg.ui.popups.signals.ClosePopupSignal;
 	import io.decagames.rotmg.ui.sliceScaling.SliceScalingBitmap;
 	import io.decagames.rotmg.ui.texture.TextureParser;
+
 	import kabam.rotmg.account.core.signals.OpenMoneyWindowSignal;
 	import kabam.rotmg.core.signals.HideTooltipsSignal;
 	import kabam.rotmg.core.signals.ShowTooltipSignal;
 	import kabam.rotmg.game.model.GameModel;
 	import kabam.rotmg.tooltips.HoverTooltipDelegate;
+
 	import robotlegs.bender.bundles.mvcs.Mediator;
-	
+
 	public class PetYardWindowMediator extends Mediator {
-		 
-		
+
+
 		[Inject]
 		public var view:PetYardWindow;
-		
+
 		[Inject]
 		public var gameModel:GameModel;
-		
+
 		[Inject]
 		public var openMoneyWindow:OpenMoneyWindowSignal;
-		
+
 		[Inject]
 		public var closePopupSignal:ClosePopupSignal;
-		
+
 		[Inject]
 		public var showTooltipSignal:ShowTooltipSignal;
-		
+
 		[Inject]
 		public var hideTooltipSignal:HideTooltipsSignal;
-		
+
 		private var closeButton:SliceScalingButton;
-		
+
 		private var addButton:SliceScalingButton;
-		
+
 		private var contentBackground:SliceScalingBitmap;
-		
+
 		private var toolTip:TextToolTip = null;
-		
+
 		private var hoverTooltipDelegate:HoverTooltipDelegate;
-		
+
 		public function PetYardWindowMediator() {
 			super();
 		}
-		
-		override public function initialize() : void {
-			this.closeButton = new SliceScalingButton(TextureParser.instance.getSliceScalingBitmap("UI","close_button"));
-			this.addButton = new SliceScalingButton(TextureParser.instance.getSliceScalingBitmap("UI","add_button"));
-			this.view.header.setTitle("Pets",350,DefaultLabelFormat.defaultPopupTitle);
+
+		override public function initialize():void {
+			this.closeButton = new SliceScalingButton(TextureParser.instance.getSliceScalingBitmap("UI", "close_button"));
+			this.addButton = new SliceScalingButton(TextureParser.instance.getSliceScalingBitmap("UI", "add_button"));
+			this.view.header.setTitle("Pets", 350, DefaultLabelFormat.defaultPopupTitle);
 			this.view.header.showCoins(132).coinsAmount = this.gameModel.player.credits_;
 			this.view.header.showFame(132).fameAmount = this.gameModel.player.fame_;
 			this.closeButton.clickSignal.addOnce(this.onClose);
-			this.view.header.addButton(this.closeButton,PopupHeader.RIGHT_BUTTON);
+			this.view.header.addButton(this.closeButton, PopupHeader.RIGHT_BUTTON);
 			this.addButton.clickSignal.add(this.onAdd);
-			this.view.header.addButton(this.addButton,PopupHeader.LEFT_BUTTON);
-			this.contentBackground = TextureParser.instance.getSliceScalingBitmap("UI","tab_cointainer_background_filled");
+			this.view.header.addButton(this.addButton, PopupHeader.LEFT_BUTTON);
+			this.contentBackground = TextureParser.instance.getSliceScalingBitmap("UI", "tab_cointainer_background_filled");
 			this.contentBackground.width = 580;
 			this.contentBackground.height = 445;
-			this.view.contentContainer.addChildAt(this.contentBackground,0);
+			this.view.contentContainer.addChildAt(this.contentBackground, 0);
 			this.gameModel.player.creditsWereChanged.add(this.refreshCoins);
 			this.gameModel.player.fameWasChanged.add(this.refreshFame);
-			this.toolTip = new TextToolTip(3552822,10197915,"Buy Gold","Click to buy more Realm Gold!",200);
+			this.toolTip = new TextToolTip(3552822, 10197915, "Buy Gold", "Click to buy more Realm Gold!", 200);
 			this.hoverTooltipDelegate = new HoverTooltipDelegate();
 			this.hoverTooltipDelegate.setShowToolTipSignal(this.showTooltipSignal);
 			this.hoverTooltipDelegate.setHideToolTipsSignal(this.hideTooltipSignal);
 			this.hoverTooltipDelegate.setDisplayObject(this.addButton);
 			this.hoverTooltipDelegate.tooltip = this.toolTip;
 		}
-		
-		private function refreshCoins() : void {
+
+		private function refreshCoins():void {
 			this.view.header.showCoins(132).coinsAmount = this.gameModel.player.credits_;
 		}
-		
-		private function refreshFame() : void {
+
+		private function refreshFame():void {
 			this.view.header.showFame(132).fameAmount = this.gameModel.player.fame_;
 		}
-		
-		private function onAdd(param1:BaseButton) : void {
+
+		private function onAdd(param1:BaseButton):void {
 			this.openMoneyWindow.dispatch();
 		}
-		
-		override public function destroy() : void {
+
+		override public function destroy():void {
 			this.view.dispose();
 			this.closeButton.dispose();
 			this.addButton.dispose();
@@ -95,8 +97,8 @@ package io.decagames.rotmg.pets.windows.yard {
 			this.hoverTooltipDelegate.removeDisplayObject();
 			this.hoverTooltipDelegate = null;
 		}
-		
-		private function onClose(param1:BaseButton) : void {
+
+		private function onClose(param1:BaseButton):void {
 			this.closePopupSignal.dispatch(this.view);
 		}
 	}

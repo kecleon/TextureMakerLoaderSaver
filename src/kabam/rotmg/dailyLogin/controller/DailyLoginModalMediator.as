@@ -1,9 +1,10 @@
- 
 package kabam.rotmg.dailyLogin.controller {
 	import com.company.assembleegameclient.map.Map;
 	import com.company.assembleegameclient.parameters.Parameters;
+
 	import flash.events.MouseEvent;
 	import flash.globalization.DateTimeFormatter;
+
 	import kabam.rotmg.dailyLogin.model.DailyLoginModel;
 	import kabam.rotmg.dailyLogin.view.DailyLoginModal;
 	import kabam.rotmg.dialogs.control.CloseDialogsSignal;
@@ -11,49 +12,50 @@ package kabam.rotmg.dailyLogin.controller {
 	import kabam.rotmg.game.signals.ExitGameSignal;
 	import kabam.rotmg.pets.view.components.DialogCloseButton;
 	import kabam.rotmg.ui.model.HUDModel;
+
 	import robotlegs.bender.bundles.mvcs.Mediator;
-	
+
 	public class DailyLoginModalMediator extends Mediator {
-		 
-		
+
+
 		[Inject]
 		public var view:DailyLoginModal;
-		
+
 		[Inject]
 		public var closeDialogs:CloseDialogsSignal;
-		
+
 		[Inject]
 		public var dailyLoginModel:DailyLoginModel;
-		
+
 		[Inject]
 		public var hudModel:HUDModel;
-		
+
 		[Inject]
 		public var exitGameSignal:ExitGameSignal;
-		
+
 		[Inject]
 		public var closeDialog:CloseDialogsSignal;
-		
+
 		[Inject]
 		public var flushStartupQueue:FlushPopupStartupQueueSignal;
-		
+
 		public function DailyLoginModalMediator() {
 			super();
 		}
-		
-		override public function initialize() : void {
+
+		override public function initialize():void {
 			this.view.init(this.dailyLoginModel);
 			this.view.addTitle("Login Rewards");
 			var loc1:DateTimeFormatter = new DateTimeFormatter("en-US");
 			loc1.setDateTimePattern("yyyy-MM-dd hh:mm:ssa");
 			var loc2:Date = new Date();
-			var loc3:Date = new Date(loc2.fullYear,loc2.month + 1,1,0,0,0);
+			var loc3:Date = new Date(loc2.fullYear, loc2.month + 1, 1, 0, 0, 0);
 			loc3.time = loc3.time - 1;
 			this.view.showLegend(this.hudModel.gameSprite.map.name_ == Map.DAILY_QUEST_ROOM);
-			this.view.showServerTime(loc1.formatUTC(this.dailyLoginModel.getServerTime()),loc1.format(loc3));
-			if(this.hudModel.gameSprite.map.name_ != Map.DAILY_QUEST_ROOM) {
-				this.view.claimButton.addEventListener(MouseEvent.CLICK,this.onClaimClickHandler);
-				this.view.addEventListener(MouseEvent.CLICK,this.onPopupClickHandler);
+			this.view.showServerTime(loc1.formatUTC(this.dailyLoginModel.getServerTime()), loc1.format(loc3));
+			if (this.hudModel.gameSprite.map.name_ != Map.DAILY_QUEST_ROOM) {
+				this.view.claimButton.addEventListener(MouseEvent.CLICK, this.onClaimClickHandler);
+				this.view.addEventListener(MouseEvent.CLICK, this.onPopupClickHandler);
 			}
 			Parameters.data_.calendarShowOnDay = this.dailyLoginModel.getTimestampDay();
 			Parameters.save();
@@ -61,31 +63,31 @@ package kabam.rotmg.dailyLogin.controller {
 			this.view.addCloseButton();
 			this.view.closeButton.clicked.add(this.onCloseButtonClicked);
 		}
-		
-		public function onCloseButtonClicked() : void {
+
+		public function onCloseButtonClicked():void {
 			this.view.closeButton.clicked.remove(this.onCloseButtonClicked);
 			this.flushStartupQueue.dispatch();
 		}
-		
-		override public function destroy() : void {
-			if(this.hudModel.gameSprite.map.name_ != Map.DAILY_QUEST_ROOM) {
-				this.view.claimButton.removeEventListener(MouseEvent.CLICK,this.onClaimClickHandler);
-				this.view.removeEventListener(MouseEvent.CLICK,this.onPopupClickHandler);
+
+		override public function destroy():void {
+			if (this.hudModel.gameSprite.map.name_ != Map.DAILY_QUEST_ROOM) {
+				this.view.claimButton.removeEventListener(MouseEvent.CLICK, this.onClaimClickHandler);
+				this.view.removeEventListener(MouseEvent.CLICK, this.onPopupClickHandler);
 			}
 			super.destroy();
 		}
-		
-		private function enterPortal() : void {
+
+		private function enterPortal():void {
 			this.closeDialogs.dispatch();
 			this.hudModel.gameSprite.gsc_.gotoQuestRoom();
 		}
-		
-		private function onClaimClickHandler(param1:MouseEvent) : void {
+
+		private function onClaimClickHandler(param1:MouseEvent):void {
 			this.enterPortal();
 		}
-		
-		private function onPopupClickHandler(param1:MouseEvent) : void {
-			if(param1.target != DialogCloseButton) {
+
+		private function onPopupClickHandler(param1:MouseEvent):void {
+			if (param1.target != DialogCloseButton) {
 				this.enterPortal();
 			}
 		}

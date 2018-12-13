@@ -1,11 +1,13 @@
- 
 package com.company.assembleegameclient.ui {
 	import com.company.assembleegameclient.objects.SellableObject;
 	import com.company.assembleegameclient.util.Currency;
+
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
+
 	import io.decagames.rotmg.pets.utils.PetsViewAssetFactory;
+
 	import kabam.rotmg.fortune.components.ItemWithTooltip;
 	import kabam.rotmg.pets.view.components.DialogCloseButton;
 	import kabam.rotmg.pets.view.components.PopupWindowBackground;
@@ -14,44 +16,45 @@ package com.company.assembleegameclient.ui {
 	import kabam.rotmg.text.view.TextFieldDisplayConcrete;
 	import kabam.rotmg.util.components.LegacyBuyButton;
 	import kabam.rotmg.util.components.UIAssetsHelper;
+
 	import org.osflash.signals.Signal;
 	import org.osflash.signals.natives.NativeSignal;
-	
+
 	public class ConfirmBuyModal extends Sprite {
-		
+
 		public static const WIDTH:int = 280;
-		
+
 		public static const HEIGHT:int = 240;
-		
+
 		public static const TEXT_MARGIN:int = 20;
-		
+
 		public static var free:Boolean = true;
-		 
-		
+
+
 		private const closeButton:DialogCloseButton = PetsViewAssetFactory.returnCloseButton(ConfirmBuyModal.WIDTH);
-		
-		private const buyButton:LegacyBuyButton = new LegacyBuyButton(TextKey.SELLABLEOBJECTPANEL_BUY,16,0,Currency.INVALID);
-		
+
+		private const buyButton:LegacyBuyButton = new LegacyBuyButton(TextKey.SELLABLEOBJECTPANEL_BUY, 16, 0, Currency.INVALID);
+
 		private var buyButtonClicked:NativeSignal;
-		
+
 		private var quantityInputText:TextFieldDisplayConcrete;
-		
+
 		private var leftNavSprite:Sprite;
-		
+
 		private var rightNavSprite:Sprite;
-		
+
 		private var quantity_:int = 1;
-		
+
 		private var availableInventoryNumber:int;
-		
+
 		private var owner_:SellableObject;
-		
+
 		public var buyItem:Signal;
-		
+
 		public var open:Boolean;
-		
+
 		public var buttonWidth:int;
-		
+
 		public function ConfirmBuyModal(param1:Signal, param2:SellableObject, param3:Number, param4:int) {
 			var loc6:TextFieldConcreteBuilder = null;
 			var loc8:ItemWithTooltip = null;
@@ -62,27 +65,27 @@ package com.company.assembleegameclient.ui {
 			this.buttonWidth = param3;
 			this.availableInventoryNumber = param4;
 			this.events();
-			addEventListener(Event.REMOVED_FROM_STAGE,this.onRemovedFromStage);
+			addEventListener(Event.REMOVED_FROM_STAGE, this.onRemovedFromStage);
 			this.positionAndStuff();
 			this.addChildren();
-			this.buyButton.setPrice(this.owner_.price_,this.owner_.currency_);
+			this.buyButton.setPrice(this.owner_.price_, this.owner_.currency_);
 			var loc5:String = this.owner_.soldObjectName();
 			loc6 = new TextFieldConcreteBuilder();
 			loc6.containerMargin = TEXT_MARGIN;
 			loc6.containerWidth = WIDTH;
-			addChild(loc6.getLocalizedTextObject(TextKey.BUY_CONFIRMATION_TITLE,TEXT_MARGIN,5));
-			addChild(loc6.getLocalizedTextObject(TextKey.BUY_CONFIRMATION_DESC,TEXT_MARGIN,40));
-			addChild(loc6.getLocalizedTextObject(loc5,TEXT_MARGIN,90));
-			var loc7:TextFieldDisplayConcrete = loc6.getLocalizedTextObject(TextKey.BUY_CONFIRMATION_AMOUNT,TEXT_MARGIN,140);
+			addChild(loc6.getLocalizedTextObject(TextKey.BUY_CONFIRMATION_TITLE, TEXT_MARGIN, 5));
+			addChild(loc6.getLocalizedTextObject(TextKey.BUY_CONFIRMATION_DESC, TEXT_MARGIN, 40));
+			addChild(loc6.getLocalizedTextObject(loc5, TEXT_MARGIN, 90));
+			var loc7:TextFieldDisplayConcrete = loc6.getLocalizedTextObject(TextKey.BUY_CONFIRMATION_AMOUNT, TEXT_MARGIN, 140);
 			addChild(loc7);
-			this.quantityInputText = loc6.getLiteralTextObject("1",TEXT_MARGIN,160);
-			if(this.owner_.getSellableType() != -1) {
-				loc8 = new ItemWithTooltip(this.owner_.getSellableType(),64);
+			this.quantityInputText = loc6.getLiteralTextObject("1", TEXT_MARGIN, 160);
+			if (this.owner_.getSellableType() != -1) {
+				loc8 = new ItemWithTooltip(this.owner_.getSellableType(), 64);
 			}
 			loc8.x = WIDTH * 1 / 2 - loc8.width / 2;
 			loc8.y = 100;
 			addChild(loc8);
-			this.quantityInputText = loc6.getLiteralTextObject("1",TEXT_MARGIN,160);
+			this.quantityInputText = loc6.getLiteralTextObject("1", TEXT_MARGIN, 160);
 			this.quantityInputText.setMultiLine(false);
 			addChild(this.quantityInputText);
 			this.leftNavSprite = this.makeNavigator(UIAssetsHelper.LEFT_NEVIGATOR);
@@ -96,20 +99,20 @@ package com.company.assembleegameclient.ui {
 			this.refreshNavDisable();
 			this.open = true;
 		}
-		
-		private static function makeModalBackground(param1:int, param2:int) : PopupWindowBackground {
+
+		private static function makeModalBackground(param1:int, param2:int):PopupWindowBackground {
 			var loc3:PopupWindowBackground = new PopupWindowBackground();
-			loc3.draw(param1,param2);
-			loc3.divide(PopupWindowBackground.HORIZONTAL_DIVISION,30);
+			loc3.draw(param1, param2);
+			loc3.divide(PopupWindowBackground.HORIZONTAL_DIVISION, 30);
 			return loc3;
 		}
-		
-		private function refreshNavDisable() : void {
-			this.leftNavSprite.alpha = this.quantity_ == 1?Number(0.5):Number(1);
-			this.rightNavSprite.alpha = this.quantity_ == this.availableInventoryNumber?Number(0.5):Number(1);
+
+		private function refreshNavDisable():void {
+			this.leftNavSprite.alpha = this.quantity_ == 1 ? Number(0.5) : Number(1);
+			this.rightNavSprite.alpha = this.quantity_ == this.availableInventoryNumber ? Number(0.5) : Number(1);
 		}
-		
-		private function positionAndStuff() : void {
+
+		private function positionAndStuff():void {
 			var loc1:int = -300;
 			var loc2:int = -200;
 			this.x = loc1 + -1 * ConfirmBuyModal.WIDTH * 0.5;
@@ -118,63 +121,63 @@ package com.company.assembleegameclient.ui {
 			this.buyButton.y = this.buyButton.y + 195;
 			this.buyButton.x = WIDTH / 2 - this.buttonWidth / 2;
 		}
-		
-		private function events() : void {
+
+		private function events():void {
 			this.closeButton.clicked.add(this.onCloseClick);
-			this.buyButtonClicked = new NativeSignal(this.buyButton,MouseEvent.CLICK,MouseEvent);
+			this.buyButtonClicked = new NativeSignal(this.buyButton, MouseEvent.CLICK, MouseEvent);
 			this.buyButtonClicked.add(this.onBuyClick);
 		}
-		
-		private function addChildren() : void {
-			addChild(makeModalBackground(ConfirmBuyModal.WIDTH,ConfirmBuyModal.HEIGHT));
+
+		private function addChildren():void {
+			addChild(makeModalBackground(ConfirmBuyModal.WIDTH, ConfirmBuyModal.HEIGHT));
 			addChild(this.closeButton);
 			addChild(this.buyButton);
 		}
-		
-		public function onCloseClick() : void {
+
+		public function onCloseClick():void {
 			this.close();
 		}
-		
-		public function onBuyClick(param1:MouseEvent) : void {
+
+		public function onBuyClick(param1:MouseEvent):void {
 			this.owner_.quantity_ = this.quantity_;
 			this.buyItem.dispatch(this.owner_);
 			this.close();
 		}
-		
-		private function close() : void {
+
+		private function close():void {
 			parent.removeChild(this);
 			ConfirmBuyModal.free = true;
 			this.open = false;
 		}
-		
-		private function onRemovedFromStage(param1:Event) : void {
+
+		private function onRemovedFromStage(param1:Event):void {
 			ConfirmBuyModal.free = true;
 			this.open = false;
-			this.leftNavSprite.removeEventListener(MouseEvent.CLICK,this.onClick);
-			this.rightNavSprite.removeEventListener(MouseEvent.CLICK,this.onClick);
+			this.leftNavSprite.removeEventListener(MouseEvent.CLICK, this.onClick);
+			this.rightNavSprite.removeEventListener(MouseEvent.CLICK, this.onClick);
 		}
-		
-		private function makeNavigator(param1:String) : Sprite {
+
+		private function makeNavigator(param1:String):Sprite {
 			var loc2:Sprite = UIAssetsHelper.createLeftNevigatorIcon(param1);
-			loc2.addEventListener(MouseEvent.CLICK,this.onClick);
+			loc2.addEventListener(MouseEvent.CLICK, this.onClick);
 			return loc2;
 		}
-		
-		private function onClick(param1:MouseEvent) : void {
-			switch(param1.currentTarget) {
+
+		private function onClick(param1:MouseEvent):void {
+			switch (param1.currentTarget) {
 				case this.rightNavSprite:
-					if(this.quantity_ < this.availableInventoryNumber) {
+					if (this.quantity_ < this.availableInventoryNumber) {
 						this.quantity_ = this.quantity_ + 1;
 					}
 					break;
 				case this.leftNavSprite:
-					if(this.quantity_ > 1) {
+					if (this.quantity_ > 1) {
 						this.quantity_ = this.quantity_ - 1;
 					}
 			}
 			this.refreshNavDisable();
 			var loc2:int = this.owner_.price_ * this.quantity_;
-			this.buyButton.setPrice(loc2,this.owner_.currency_);
+			this.buyButton.setPrice(loc2, this.owner_.currency_);
 			this.quantityInputText.setText(this.quantity_.toString());
 		}
 	}

@@ -1,36 +1,38 @@
- 
 package com.company.assembleegameclient.screens.charrects {
 	import com.company.assembleegameclient.appengine.CharacterStats;
 	import com.company.assembleegameclient.appengine.SavedCharacter;
 	import com.company.assembleegameclient.parameters.Parameters;
+
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
 	import flash.display.DisplayObject;
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
+
 	import kabam.rotmg.assets.services.CharacterFactory;
 	import kabam.rotmg.classes.model.CharacterClass;
 	import kabam.rotmg.classes.model.CharacterSkin;
 	import kabam.rotmg.classes.model.ClassesModel;
 	import kabam.rotmg.core.StaticInjectorContext;
 	import kabam.rotmg.core.model.PlayerModel;
+
 	import org.osflash.signals.Signal;
 	import org.swiftsuspenders.Injector;
-	
+
 	public class CharacterRectList extends Sprite {
-		 
-		
+
+
 		private var classes:ClassesModel;
-		
+
 		private var model:PlayerModel;
-		
+
 		private var assetFactory:CharacterFactory;
-		
+
 		public var newCharacter:Signal;
-		
+
 		public var buyCharacterSlot:Signal;
-		
+
 		public function CharacterRectList() {
 			var loc5:SavedCharacter = null;
 			var loc6:BuyCharacterRect = null;
@@ -52,21 +54,21 @@ package com.company.assembleegameclient.screens.charrects {
 			for each(loc5 in loc4) {
 				loc7 = this.classes.getCharacterClass(loc5.objectType());
 				loc8 = this.model.getCharStats()[loc5.objectType()];
-				loc9 = new CurrentCharacterRect(loc2,loc7,loc5,loc8);
-				if(Parameters.skinTypes16.indexOf(loc5.skinType()) != -1) {
-					loc9.setIcon(this.getIcon(loc5,50));
+				loc9 = new CurrentCharacterRect(loc2, loc7, loc5, loc8);
+				if (Parameters.skinTypes16.indexOf(loc5.skinType()) != -1) {
+					loc9.setIcon(this.getIcon(loc5, 50));
 				} else {
-					loc9.setIcon(this.getIcon(loc5,100));
+					loc9.setIcon(this.getIcon(loc5, 100));
 				}
 				loc9.y = loc3;
 				addChild(loc9);
 				loc3 = loc3 + (CharacterRect.HEIGHT + 4);
 			}
-			if(this.model.hasAvailableCharSlot()) {
+			if (this.model.hasAvailableCharSlot()) {
 				loc10 = 0;
-				while(loc10 < this.model.getAvailableCharSlots()) {
+				while (loc10 < this.model.getAvailableCharSlots()) {
 					loc11 = new CreateNewCharacterRect(this.model);
-					loc11.addEventListener(MouseEvent.MOUSE_DOWN,this.onNewChar);
+					loc11.addEventListener(MouseEvent.MOUSE_DOWN, this.onNewChar);
 					loc11.y = loc3;
 					addChild(loc11);
 					loc3 = loc3 + (CharacterRect.HEIGHT + 4);
@@ -74,23 +76,23 @@ package com.company.assembleegameclient.screens.charrects {
 				}
 			}
 			loc6 = new BuyCharacterRect(this.model);
-			loc6.addEventListener(MouseEvent.MOUSE_DOWN,this.onBuyCharSlot);
+			loc6.addEventListener(MouseEvent.MOUSE_DOWN, this.onBuyCharSlot);
 			loc6.y = loc3;
 			addChild(loc6);
 		}
-		
-		private function getIcon(param1:SavedCharacter, param2:int = 100) : DisplayObject {
+
+		private function getIcon(param1:SavedCharacter, param2:int = 100):DisplayObject {
 			var loc3:CharacterClass = this.classes.getCharacterClass(param1.objectType());
 			var loc4:CharacterSkin = loc3.skins.getSkin(param1.skinType()) || loc3.skins.getDefaultSkin();
-			var loc5:BitmapData = this.assetFactory.makeIcon(loc4.template,param2,param1.tex1(),param1.tex2());
+			var loc5:BitmapData = this.assetFactory.makeIcon(loc4.template, param2, param1.tex1(), param1.tex2());
 			return new Bitmap(loc5);
 		}
-		
-		private function onNewChar(param1:Event) : void {
+
+		private function onNewChar(param1:Event):void {
 			this.newCharacter.dispatch();
 		}
-		
-		private function onBuyCharSlot(param1:Event) : void {
+
+		private function onBuyCharSlot(param1:Event):void {
 			this.buyCharacterSlot.dispatch(this.model.getNextCharSlotPrice());
 		}
 	}

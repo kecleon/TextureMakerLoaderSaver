@@ -1,75 +1,75 @@
- 
 package kabam.rotmg.constants {
 	import com.company.util.AssetLibrary;
+
 	import flash.display.BitmapData;
-	
+
 	public class ItemConstants {
-		
+
 		public static const NO_ITEM:int = -1;
-		
+
 		public static const ALL_TYPE:int = 0;
-		
+
 		public static const SWORD_TYPE:int = 1;
-		
+
 		public static const DAGGER_TYPE:int = 2;
-		
+
 		public static const BOW_TYPE:int = 3;
-		
+
 		public static const TOME_TYPE:int = 4;
-		
+
 		public static const SHIELD_TYPE:int = 5;
-		
+
 		public static const LEATHER_TYPE:int = 6;
-		
+
 		public static const PLATE_TYPE:int = 7;
-		
+
 		public static const WAND_TYPE:int = 8;
-		
+
 		public static const RING_TYPE:int = 9;
-		
+
 		public static const POTION_TYPE:int = 10;
-		
+
 		public static const SPELL_TYPE:int = 11;
-		
+
 		public static const SEAL_TYPE:int = 12;
-		
+
 		public static const CLOAK_TYPE:int = 13;
-		
+
 		public static const ROBE_TYPE:int = 14;
-		
+
 		public static const QUIVER_TYPE:int = 15;
-		
+
 		public static const HELM_TYPE:int = 16;
-		
+
 		public static const STAFF_TYPE:int = 17;
-		
+
 		public static const POISON_TYPE:int = 18;
-		
+
 		public static const SKULL_TYPE:int = 19;
-		
+
 		public static const TRAP_TYPE:int = 20;
-		
+
 		public static const ORB_TYPE:int = 21;
-		
+
 		public static const PRISM_TYPE:int = 22;
-		
+
 		public static const SCEPTER_TYPE:int = 23;
-		
+
 		public static const KATANA_TYPE:int = 24;
-		
+
 		public static const SHURIKEN_TYPE:int = 25;
-		
+
 		public static const EGG_TYPE:int = 26;
-		
+
 		public static const NEW_ABIL_TYPE:int = 27;
-		 
-		
+
+
 		public function ItemConstants() {
 			super();
 		}
-		
-		public static function itemTypeToName(param1:int) : String {
-			switch(param1) {
+
+		public static function itemTypeToName(param1:int):String {
+			switch (param1) {
 				case ALL_TYPE:
 					return "EquipmentType.Any";
 				case SWORD_TYPE:
@@ -130,86 +130,86 @@ package kabam.rotmg.constants {
 					return "EquipmentType.InvalidType";
 			}
 		}
-		
-		public static function itemTypeToBaseSprite(param1:int) : BitmapData {
+
+		public static function itemTypeToBaseSprite(param1:int):BitmapData {
 			var loc2:BitmapData = null;
-			switch(param1) {
+			switch (param1) {
 				case ALL_TYPE:
 					break;
 				case SWORD_TYPE:
-					loc2 = AssetLibrary.getImageFromSet("lofiObj5",48);
+					loc2 = AssetLibrary.getImageFromSet("lofiObj5", 48);
 					break;
 				case DAGGER_TYPE:
-					loc2 = AssetLibrary.getImageFromSet("lofiObj5",96);
+					loc2 = AssetLibrary.getImageFromSet("lofiObj5", 96);
 					break;
 				case BOW_TYPE:
-					loc2 = AssetLibrary.getImageFromSet("lofiObj5",80);
+					loc2 = AssetLibrary.getImageFromSet("lofiObj5", 80);
 					break;
 				case TOME_TYPE:
-					loc2 = AssetLibrary.getImageFromSet("lofiObj6",80);
+					loc2 = AssetLibrary.getImageFromSet("lofiObj6", 80);
 					break;
 				case SHIELD_TYPE:
-					loc2 = AssetLibrary.getImageFromSet("lofiObj6",112);
+					loc2 = AssetLibrary.getImageFromSet("lofiObj6", 112);
 					break;
 				case LEATHER_TYPE:
-					loc2 = AssetLibrary.getImageFromSet("lofiObj5",0);
+					loc2 = AssetLibrary.getImageFromSet("lofiObj5", 0);
 					break;
 				case PLATE_TYPE:
-					loc2 = AssetLibrary.getImageFromSet("lofiObj5",32);
+					loc2 = AssetLibrary.getImageFromSet("lofiObj5", 32);
 					break;
 				case WAND_TYPE:
-					loc2 = AssetLibrary.getImageFromSet("lofiObj5",64);
+					loc2 = AssetLibrary.getImageFromSet("lofiObj5", 64);
 					break;
 				case RING_TYPE:
-					loc2 = AssetLibrary.getImageFromSet("lofiObj",44);
+					loc2 = AssetLibrary.getImageFromSet("lofiObj", 44);
 					break;
 				case SPELL_TYPE:
-					loc2 = AssetLibrary.getImageFromSet("lofiObj6",64);
+					loc2 = AssetLibrary.getImageFromSet("lofiObj6", 64);
 					break;
 				case SEAL_TYPE:
-					loc2 = AssetLibrary.getImageFromSet("lofiObj6",160);
+					loc2 = AssetLibrary.getImageFromSet("lofiObj6", 160);
 					break;
 				case CLOAK_TYPE:
-					loc2 = AssetLibrary.getImageFromSet("lofiObj6",32);
+					loc2 = AssetLibrary.getImageFromSet("lofiObj6", 32);
 					break;
 				case ROBE_TYPE:
-					loc2 = AssetLibrary.getImageFromSet("lofiObj5",16);
+					loc2 = AssetLibrary.getImageFromSet("lofiObj5", 16);
 					break;
 				case QUIVER_TYPE:
-					loc2 = AssetLibrary.getImageFromSet("lofiObj6",48);
+					loc2 = AssetLibrary.getImageFromSet("lofiObj6", 48);
 					break;
 				case HELM_TYPE:
-					loc2 = AssetLibrary.getImageFromSet("lofiObj6",96);
+					loc2 = AssetLibrary.getImageFromSet("lofiObj6", 96);
 					break;
 				case STAFF_TYPE:
-					loc2 = AssetLibrary.getImageFromSet("lofiObj5",112);
+					loc2 = AssetLibrary.getImageFromSet("lofiObj5", 112);
 					break;
 				case POISON_TYPE:
-					loc2 = AssetLibrary.getImageFromSet("lofiObj6",128);
+					loc2 = AssetLibrary.getImageFromSet("lofiObj6", 128);
 					break;
 				case SKULL_TYPE:
-					loc2 = AssetLibrary.getImageFromSet("lofiObj6",0);
+					loc2 = AssetLibrary.getImageFromSet("lofiObj6", 0);
 					break;
 				case TRAP_TYPE:
-					loc2 = AssetLibrary.getImageFromSet("lofiObj6",16);
+					loc2 = AssetLibrary.getImageFromSet("lofiObj6", 16);
 					break;
 				case ORB_TYPE:
-					loc2 = AssetLibrary.getImageFromSet("lofiObj6",144);
+					loc2 = AssetLibrary.getImageFromSet("lofiObj6", 144);
 					break;
 				case PRISM_TYPE:
-					loc2 = AssetLibrary.getImageFromSet("lofiObj6",176);
+					loc2 = AssetLibrary.getImageFromSet("lofiObj6", 176);
 					break;
 				case SCEPTER_TYPE:
-					loc2 = AssetLibrary.getImageFromSet("lofiObj6",192);
+					loc2 = AssetLibrary.getImageFromSet("lofiObj6", 192);
 					break;
 				case KATANA_TYPE:
-					loc2 = AssetLibrary.getImageFromSet("lofiObj3",540);
+					loc2 = AssetLibrary.getImageFromSet("lofiObj3", 540);
 					break;
 				case SHURIKEN_TYPE:
-					loc2 = AssetLibrary.getImageFromSet("lofiObj3",555);
+					loc2 = AssetLibrary.getImageFromSet("lofiObj3", 555);
 					break;
 				case NEW_ABIL_TYPE:
-					loc2 = AssetLibrary.getImageFromSet("lofiObj6",224);
+					loc2 = AssetLibrary.getImageFromSet("lofiObj6", 224);
 			}
 			return loc2;
 		}

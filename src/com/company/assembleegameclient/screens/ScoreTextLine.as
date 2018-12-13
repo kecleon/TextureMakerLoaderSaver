@@ -1,6 +1,6 @@
- 
 package com.company.assembleegameclient.screens {
 	import com.company.assembleegameclient.ui.tooltip.TextToolTip;
+
 	import flash.display.DisplayObject;
 	import flash.display.Sprite;
 	import flash.events.Event;
@@ -8,6 +8,7 @@ package com.company.assembleegameclient.screens {
 	import flash.filters.DropShadowFilter;
 	import flash.text.TextFieldAutoSize;
 	import flash.utils.getTimer;
+
 	import kabam.rotmg.core.signals.HideTooltipsSignal;
 	import kabam.rotmg.core.signals.ShowTooltipSignal;
 	import kabam.rotmg.text.model.TextKey;
@@ -18,32 +19,32 @@ package com.company.assembleegameclient.screens {
 	import kabam.rotmg.text.view.stringBuilder.StringBuilder;
 	import kabam.rotmg.tooltips.HoverTooltipDelegate;
 	import kabam.rotmg.tooltips.TooltipAble;
-	
+
 	public class ScoreTextLine extends Sprite implements TooltipAble {
-		
-		public static var textTooltip_:TextToolTip = new TextToolTip(3552822,10197915,null,"",150);
-		 
-		
+
+		public static var textTooltip_:TextToolTip = new TextToolTip(3552822, 10197915, null, "", 150);
+
+
 		public var hoverTooltipDelegate:HoverTooltipDelegate;
-		
+
 		public var description:String;
-		
+
 		public var level:int;
-		
+
 		public var number_:int;
-		
+
 		public var numberPrefix_:String;
-		
+
 		public var unit_:String;
-		
+
 		private var startTime_:int = 0;
-		
+
 		private var nameText_:TextFieldDisplayConcrete;
-		
+
 		private var numberText_:TextFieldDisplayConcrete;
-		
+
 		private var unitIcon_:DisplayObject;
-		
+
 		public function ScoreTextLine(param1:int, param2:uint, param3:uint, param4:String, param5:String, param6:int, param7:int, param8:String, param9:String, param10:DisplayObject) {
 			this.hoverTooltipDelegate = new HoverTooltipDelegate();
 			super();
@@ -57,36 +58,36 @@ package com.company.assembleegameclient.screens {
 			this.nameText_.setBold(true);
 			this.nameText_.setAutoSize(TextFieldAutoSize.RIGHT);
 			var loc11:LineBuilder = new LineBuilder().setParams(param4);
-			if(param8 == "+") {
+			if (param8 == "+") {
 				loc11.setPrefix("Bonus: ");
 			}
 			this.nameText_.setStringBuilder(loc11);
 			this.nameText_.x = 410;
-			this.nameText_.filters = [new DropShadowFilter(0,0,0,1,4,4,2)];
+			this.nameText_.filters = [new DropShadowFilter(0, 0, 0, 1, 4, 4, 2)];
 			addChild(this.nameText_);
-			if(this.number_ != -1) {
+			if (this.number_ != -1) {
 				this.numberText_ = new TextFieldDisplayConcrete().setSize(param1).setColor(param3);
 				this.numberText_.setBold(true);
 				this.numberText_.setStringBuilder(new StaticStringBuilder(param8 + "0" + " " + param9));
 				this.numberText_.x = 450;
-				this.numberText_.filters = [new DropShadowFilter(0,0,0,1,4,4,2)];
+				this.numberText_.filters = [new DropShadowFilter(0, 0, 0, 1, 4, 4, 2)];
 				addChild(this.numberText_);
 			}
-			if(param10 != null) {
+			if (param10 != null) {
 				this.unitIcon_ = param10;
 				this.nameText_.textChanged.addOnce(this.onTextChanged);
 				addChild(this.unitIcon_);
 			}
 			this.hoverTooltipDelegate.setDisplayObject(this);
-			if(param5) {
+			if (param5) {
 				this.hoverTooltipDelegate.tooltip = textTooltip_;
 			}
-			addEventListener(Event.ADDED_TO_STAGE,this.onAddedToStage);
-			addEventListener(Event.REMOVED_FROM_STAGE,this.onRemovedFromStage);
+			addEventListener(Event.ADDED_TO_STAGE, this.onAddedToStage);
+			addEventListener(Event.REMOVED_FROM_STAGE, this.onRemovedFromStage);
 		}
-		
-		private function onTextChanged() : void {
-			if(this.numberText_ != null) {
+
+		private function onTextChanged():void {
+			if (this.numberText_ != null) {
 				this.unitIcon_.x = this.numberText_.x + this.numberText_.width - 4;
 				this.unitIcon_.y = this.numberText_.height / 2 - this.unitIcon_.height / 2 + 2;
 			} else {
@@ -94,71 +95,71 @@ package com.company.assembleegameclient.screens {
 				this.unitIcon_.y = this.nameText_.height / 2 - this.unitIcon_.height / 2 + 2;
 			}
 		}
-		
-		public function setShowToolTipSignal(param1:ShowTooltipSignal) : void {
+
+		public function setShowToolTipSignal(param1:ShowTooltipSignal):void {
 			this.hoverTooltipDelegate.setShowToolTipSignal(param1);
 		}
-		
-		public function getShowToolTip() : ShowTooltipSignal {
+
+		public function getShowToolTip():ShowTooltipSignal {
 			return this.hoverTooltipDelegate.getShowToolTip();
 		}
-		
-		public function setHideToolTipsSignal(param1:HideTooltipsSignal) : void {
+
+		public function setHideToolTipsSignal(param1:HideTooltipsSignal):void {
 			this.hoverTooltipDelegate.setHideToolTipsSignal(param1);
 		}
-		
-		public function getHideToolTips() : HideTooltipsSignal {
+
+		public function getHideToolTips():HideTooltipsSignal {
 			return this.hoverTooltipDelegate.getHideToolTips();
 		}
-		
-		public function skip() : void {
+
+		public function skip():void {
 			this.startTime_ = -1000000;
 		}
-		
-		private function onAddedToStage(param1:Event) : void {
-			if(this.startTime_ == 0) {
+
+		private function onAddedToStage(param1:Event):void {
+			if (this.startTime_ == 0) {
 				this.startTime_ = getTimer();
 			}
-			addEventListener(Event.ENTER_FRAME,this.onEnterFrame);
-			addEventListener(MouseEvent.MOUSE_OVER,this.onMouseOver);
+			addEventListener(Event.ENTER_FRAME, this.onEnterFrame);
+			addEventListener(MouseEvent.MOUSE_OVER, this.onMouseOver);
 		}
-		
-		private function onRemovedFromStage(param1:Event) : void {
-			removeEventListener(Event.ENTER_FRAME,this.onEnterFrame);
-			removeEventListener(MouseEvent.MOUSE_OVER,this.onMouseOver);
+
+		private function onRemovedFromStage(param1:Event):void {
+			removeEventListener(Event.ENTER_FRAME, this.onEnterFrame);
+			removeEventListener(MouseEvent.MOUSE_OVER, this.onMouseOver);
 		}
-		
-		public function onEnterFrame(param1:Event) : void {
+
+		public function onEnterFrame(param1:Event):void {
 			var loc3:int = 0;
-			var loc2:Number = Math.min(1,(getTimer() - this.startTime_) / 500);
-			if(this.numberText_ != null) {
+			var loc2:Number = Math.min(1, (getTimer() - this.startTime_) / 500);
+			if (this.numberText_ != null) {
 				loc3 = this.number_ * loc2;
 				this.numberText_.setStringBuilder(new StaticStringBuilder(this.numberPrefix_ + loc3.toString() + " " + this.unit_));
-				if(this.unitIcon_ != null) {
+				if (this.unitIcon_ != null) {
 					this.unitIcon_.x = this.numberText_.x + this.numberText_.width - 4;
 					this.unitIcon_.y = this.numberText_.height / 2 - this.unitIcon_.height / 2 + 2;
 				}
 			}
-			if(loc2 == 1) {
-				removeEventListener(Event.ENTER_FRAME,this.onEnterFrame);
+			if (loc2 == 1) {
+				removeEventListener(Event.ENTER_FRAME, this.onEnterFrame);
 			}
 		}
-		
-		public function onMouseOver(param1:Event) : void {
-			if(this.description != null) {
+
+		public function onMouseOver(param1:Event):void {
+			if (this.description != null) {
 				textTooltip_.setText(this.makeDescription());
 				stage.addChild(textTooltip_);
 			}
 		}
-		
-		private function makeDescription() : StringBuilder {
+
+		private function makeDescription():StringBuilder {
 			var loc1:AppendingLineBuilder = new AppendingLineBuilder();
 			loc1.setDelimiter("");
 			loc1.pushParams(this.description);
-			if(this.level > 1) {
-				loc1.pushParams(TextKey.BLANK,{"data":" \n("});
-				loc1.pushParams("FameBonus.LevelRequirement",{"level":this.level});
-				loc1.pushParams(TextKey.BLANK,{"data":")"});
+			if (this.level > 1) {
+				loc1.pushParams(TextKey.BLANK, {"data": " \n("});
+				loc1.pushParams("FameBonus.LevelRequirement", {"level": this.level});
+				loc1.pushParams(TextKey.BLANK, {"data": ")"});
 			}
 			return loc1;
 		}

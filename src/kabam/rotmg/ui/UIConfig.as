@@ -1,4 +1,3 @@
- 
 package kabam.rotmg.ui {
 	import com.company.assembleegameclient.account.ui.ChooseNameFrame;
 	import com.company.assembleegameclient.account.ui.ChooseNameFrameMediator;
@@ -31,6 +30,7 @@ package kabam.rotmg.ui {
 	import com.company.assembleegameclient.ui.panels.mediators.GuildRegisterPanelMediator;
 	import com.company.assembleegameclient.ui.panels.mediators.InteractPanelMediator;
 	import com.company.assembleegameclient.ui.panels.mediators.ItemGridMediator;
+
 	import io.decagames.rotmg.characterMetrics.tracker.CharactersMetricsTracker;
 	import io.decagames.rotmg.fame.FameContentPopup;
 	import io.decagames.rotmg.fame.FameContentPopupMediator;
@@ -85,6 +85,7 @@ package kabam.rotmg.ui {
 	import io.decagames.rotmg.ui.tabs.UITab;
 	import io.decagames.rotmg.ui.tabs.UITabMediator;
 	import io.decagames.rotmg.ui.texture.TextureParser;
+
 	import kabam.rotmg.account.core.services.GetCharListTask;
 	import kabam.rotmg.account.core.services.LoadAccountTask;
 	import kabam.rotmg.account.core.view.AccountInfoMediator;
@@ -167,34 +168,36 @@ package kabam.rotmg.ui {
 	import kabam.rotmg.ui.view.UnFocusAble;
 	import kabam.rotmg.ui.view.components.PotionSlotMediator;
 	import kabam.rotmg.ui.view.components.PotionSlotView;
+
 	import org.swiftsuspenders.Injector;
+
 	import robotlegs.bender.extensions.mediatorMap.api.IMediatorMap;
 	import robotlegs.bender.extensions.signalCommandMap.api.ISignalCommandMap;
 	import robotlegs.bender.framework.api.IConfig;
-	
+
 	public class UIConfig implements IConfig {
-		 
-		
+
+
 		[Inject]
 		public var injector:Injector;
-		
+
 		[Inject]
 		public var mediatorMap:IMediatorMap;
-		
+
 		[Inject]
 		public var commandMap:ISignalCommandMap;
-		
+
 		[Inject]
 		public var setup:ApplicationSetup;
-		
+
 		[Inject]
 		public var startup:StartupSequence;
-		
+
 		public function UIConfig() {
 			super();
 		}
-		
-		public function configure() : void {
+
+		public function configure():void {
 			this.injector.map(NameChangedSignal).asSingleton();
 			this.injector.map(PotionInventoryModel).asSingleton();
 			this.injector.map(UpdatePotionInventorySignal).asSingleton();
@@ -282,33 +285,33 @@ package kabam.rotmg.ui {
 			this.setupKeyUI();
 			this.mapNoServersDialogFactory();
 			this.setupCharacterWindow();
-			this.startup.addSignal(ShowLoadingUISignal,-1);
-			this.startup.addTask(LoadAccountTask,2);
-			this.startup.addTask(GetCharListTask,3);
-			this.startup.addTask(FetchPlayerCalendarTask,4);
-			this.startup.addTask(GetOwnedPetSkinsTask,5);
-			this.startup.addTask(GetInGameNewsTask,6);
-			this.startup.addTask(GetCampaignStatusTask,7);
-			this.startup.addSignal(ShowTitleUISignal,StartupSequence.LAST);
+			this.startup.addSignal(ShowLoadingUISignal, -1);
+			this.startup.addTask(LoadAccountTask, 2);
+			this.startup.addTask(GetCharListTask, 3);
+			this.startup.addTask(FetchPlayerCalendarTask, 4);
+			this.startup.addTask(GetOwnedPetSkinsTask, 5);
+			this.startup.addTask(GetInGameNewsTask, 6);
+			this.startup.addTask(GetCampaignStatusTask, 7);
+			this.startup.addSignal(ShowTitleUISignal, StartupSequence.LAST);
 		}
-		
-		private function setupKeyUI() : void {
+
+		private function setupKeyUI():void {
 			this.injector.map(ShowKeySignal).toValue(new ShowKeySignal());
 			this.injector.map(HideKeySignal).toValue(new HideKeySignal());
 			this.commandMap.map(ShowHideKeyUISignal).toCommand(ShowHideKeyUICommand);
 			this.commandMap.map(RefreshScreenAfterLoginSignal).toCommand(RefreshScreenAfterLoginCommand);
 			this.mediatorMap.map(KeysView).toMediator(KeysMediator);
 		}
-		
-		private function mapNoServersDialogFactory() : void {
-			if(this.setup.useProductionDialogs()) {
+
+		private function mapNoServersDialogFactory():void {
+			if (this.setup.useProductionDialogs()) {
 				this.injector.map(NoServersDialogFactory).toSingleton(ProductionNoServersDialogFactory);
 			} else {
 				this.injector.map(NoServersDialogFactory).toSingleton(TestingNoServersDialogFactory);
 			}
 		}
-		
-		private function setupCharacterWindow() : void {
+
+		private function setupCharacterWindow():void {
 			this.injector.map(HUDModel).asSingleton();
 			this.injector.map(UpdateHUDSignal).asSingleton();
 			this.injector.map(HUDModelInitialized).asSingleton();

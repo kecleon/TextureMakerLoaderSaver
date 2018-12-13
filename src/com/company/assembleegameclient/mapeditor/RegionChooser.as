@@ -1,8 +1,7 @@
- 
 package com.company.assembleegameclient.mapeditor {
 	public class RegionChooser extends Chooser {
-		 
-		
+
+
 		public function RegionChooser() {
 			var loc1:XML = null;
 			var loc2:RegionElement = null;

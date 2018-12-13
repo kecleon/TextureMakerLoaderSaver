@@ -1,34 +1,36 @@
- 
 package com.company.assembleegameclient.ui.language {
 	import com.company.assembleegameclient.screens.TitleMenuOption;
 	import com.company.rotmg.graphics.ScreenGraphic;
+
 	import flash.display.Shape;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.filters.DropShadowFilter;
 	import flash.text.TextFieldAutoSize;
+
 	import kabam.rotmg.text.model.TextKey;
 	import kabam.rotmg.text.view.TextFieldDisplayConcrete;
 	import kabam.rotmg.text.view.stringBuilder.LineBuilder;
 	import kabam.rotmg.ui.view.components.ScreenBase;
 	import kabam.rotmg.ui.view.components.dropdown.LocalizedDropDown;
+
 	import org.osflash.signals.Signal;
-	
+
 	public class LanguageOptionOverlay extends ScreenBase {
-		 
-		
+
+
 		public var languageSelected:Signal;
-		
+
 		public var back:Signal;
-		
+
 		private var title_:TextFieldDisplayConcrete;
-		
+
 		private var continueButton_:TitleMenuOption;
-		
+
 		private var languageDropDownLabel:TextFieldDisplayConcrete;
-		
+
 		private var languageDropDown:LocalizedDropDown;
-		
+
 		public function LanguageOptionOverlay() {
 			this.languageSelected = new Signal(String);
 			this.back = new Signal();
@@ -41,76 +43,76 @@ package com.company.assembleegameclient.ui.language {
 			addChild(new ScreenGraphic());
 			addChild(this.continueButton_);
 		}
-		
-		private function onContinueClick(param1:MouseEvent) : void {
+
+		private function onContinueClick(param1:MouseEvent):void {
 			this.back.dispatch();
 		}
-		
-		public function setLanguageDropdown(param1:Vector.<String>) : void {
+
+		public function setLanguageDropdown(param1:Vector.<String>):void {
 			this.languageDropDown = new LocalizedDropDown(param1);
 			this.languageDropDown.y = 100;
-			this.languageDropDown.addEventListener(Event.CHANGE,this.onLanguageSelected);
+			this.languageDropDown.addEventListener(Event.CHANGE, this.onLanguageSelected);
 			addChild(this.languageDropDown);
 			this.languageDropDownLabel.textChanged.addOnce(this.positionDropdownLabel);
 			addChild(this.languageDropDownLabel);
 			this.languageDropDownLabel.y = this.languageDropDown.y + this.languageDropDown.getClosedHeight() / 2;
 		}
-		
-		private function positionDropdownLabel() : void {
+
+		private function positionDropdownLabel():void {
 			this.languageDropDown.x = 800 / 2 - (this.languageDropDown.width + this.languageDropDownLabel.width + 10) / 2;
 			this.languageDropDownLabel.x = this.languageDropDown.x + this.languageDropDown.width + 10;
 		}
-		
-		public function setSelected(param1:String) : void {
+
+		public function setSelected(param1:String):void {
 			this.languageDropDown && this.languageDropDown.setValue(param1);
 		}
-		
-		private function onLanguageSelected(param1:Event) : void {
+
+		private function onLanguageSelected(param1:Event):void {
 			this.languageSelected.dispatch(this.languageDropDown.getValue());
 		}
-		
-		private function makeTitle() : TextFieldDisplayConcrete {
+
+		private function makeTitle():TextFieldDisplayConcrete {
 			var loc1:TextFieldDisplayConcrete = null;
 			loc1 = new TextFieldDisplayConcrete().setSize(36).setColor(16777215);
 			loc1.setBold(true);
 			loc1.setStringBuilder(new LineBuilder().setParams(TextKey.LANGUAGES_SCREEN_TITLE));
 			loc1.setAutoSize(TextFieldAutoSize.CENTER);
-			loc1.filters = [new DropShadowFilter(0,0,0)];
+			loc1.filters = [new DropShadowFilter(0, 0, 0)];
 			loc1.x = 800 / 2 - loc1.width / 2;
 			loc1.y = 16;
 			return loc1;
 		}
-		
-		private function makeContinueButton() : TitleMenuOption {
+
+		private function makeContinueButton():TitleMenuOption {
 			var loc1:TitleMenuOption = null;
-			loc1 = new TitleMenuOption(TextKey.OPTIONS_CONTINUE_BUTTON,36,false);
+			loc1 = new TitleMenuOption(TextKey.OPTIONS_CONTINUE_BUTTON, 36, false);
 			loc1.setAutoSize(TextFieldAutoSize.CENTER);
 			loc1.setVerticalAlign(TextFieldDisplayConcrete.MIDDLE);
-			loc1.addEventListener(MouseEvent.CLICK,this.onContinueClick);
+			loc1.addEventListener(MouseEvent.CLICK, this.onContinueClick);
 			loc1.x = 400;
 			loc1.y = 550;
 			return loc1;
 		}
-		
-		private function makeDropDownLabel() : TextFieldDisplayConcrete {
+
+		private function makeDropDownLabel():TextFieldDisplayConcrete {
 			var loc1:TextFieldDisplayConcrete = new TextFieldDisplayConcrete().setSize(16).setColor(11776947).setBold(true);
 			loc1.setVerticalAlign(TextFieldDisplayConcrete.MIDDLE);
-			loc1.filters = [new DropShadowFilter(0,0,0,0.5,12,12)];
+			loc1.filters = [new DropShadowFilter(0, 0, 0, 0.5, 12, 12)];
 			loc1.setStringBuilder(new LineBuilder().setParams(TextKey.CHOOSE_LANGUAGE));
 			return loc1;
 		}
-		
-		private function makeLine() : Shape {
+
+		private function makeLine():Shape {
 			var loc1:Shape = new Shape();
-			loc1.graphics.lineStyle(1,6184542);
-			loc1.graphics.moveTo(0,70);
-			loc1.graphics.lineTo(800,70);
+			loc1.graphics.lineStyle(1, 6184542);
+			loc1.graphics.moveTo(0, 70);
+			loc1.graphics.lineTo(800, 70);
 			loc1.graphics.lineStyle();
 			return loc1;
 		}
-		
-		public function clear() : void {
-			if(this.languageDropDown && contains(this.languageDropDown)) {
+
+		public function clear():void {
+			if (this.languageDropDown && contains(this.languageDropDown)) {
 				removeChild(this.languageDropDown);
 			}
 		}

@@ -1,4 +1,3 @@
- 
 package kabam.rotmg.characters.reskin {
 	import kabam.lib.net.api.MessageMap;
 	import kabam.rotmg.characters.reskin.control.AddReskinConsoleActionCommand;
@@ -14,35 +13,37 @@ package kabam.rotmg.characters.reskin {
 	import kabam.rotmg.characters.reskin.view.ReskinPanelMediator;
 	import kabam.rotmg.messaging.impl.GameServerConnection;
 	import kabam.rotmg.messaging.impl.outgoing.Reskin;
+
 	import org.swiftsuspenders.Injector;
+
 	import robotlegs.bender.extensions.mediatorMap.api.IMediatorMap;
 	import robotlegs.bender.extensions.signalCommandMap.api.ISignalCommandMap;
 	import robotlegs.bender.framework.api.IConfig;
 	import robotlegs.bender.framework.api.IContext;
-	
+
 	public class ReskinConfig implements IConfig {
-		 
-		
+
+
 		[Inject]
 		public var context:IContext;
-		
+
 		[Inject]
 		public var injector:Injector;
-		
+
 		[Inject]
 		public var mediatorMap:IMediatorMap;
-		
+
 		[Inject]
 		public var commandMap:ISignalCommandMap;
-		
+
 		[Inject]
 		public var messageMap:MessageMap;
-		
+
 		public function ReskinConfig() {
 			super();
 		}
-		
-		public function configure() : void {
+
+		public function configure():void {
 			this.mediatorMap.map(ReskinCharacterView).toMediator(ReskinCharacterMediator);
 			this.mediatorMap.map(ReskinPanel).toMediator(ReskinPanelMediator);
 			this.commandMap.map(AddReskinConsoleActionSignal).toCommand(AddReskinConsoleActionCommand);
@@ -51,8 +52,8 @@ package kabam.rotmg.characters.reskin {
 			this.messageMap.map(GameServerConnection.RESKIN).toMessage(Reskin).toHandler(ReskinHandler);
 			this.context.lifecycle.afterInitializing(this.onInit);
 		}
-		
-		private function onInit() : void {
+
+		private function onInit():void {
 			this.injector.getInstance(AddReskinConsoleActionSignal).dispatch();
 		}
 	}

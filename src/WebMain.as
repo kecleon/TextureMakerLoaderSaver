@@ -1,20 +1,22 @@
- 
 package {
 	import com.company.assembleegameclient.parameters.Parameters;
 	import com.company.assembleegameclient.util.AssetLoader;
 	import com.company.assembleegameclient.util.StageProxy;
+
 	import flash.display.LoaderInfo;
 	import flash.display.Sprite;
 	import flash.display.Stage;
 	import flash.display.StageScaleMode;
 	import flash.events.Event;
 	import flash.system.Capabilities;
+
 	import io.decagames.rotmg.dailyQuests.config.DailyQuestsConfig;
 	import io.decagames.rotmg.nexusShop.config.NexusShopConfig;
 	import io.decagames.rotmg.pets.config.PetsConfig;
 	import io.decagames.rotmg.social.config.SocialConfig;
 	import io.decagames.rotmg.supportCampaign.config.SupportCampaignConfig;
 	import io.decagames.rotmg.tos.config.ToSConfig;
+
 	import kabam.lib.net.NetConfig;
 	import kabam.rotmg.account.AccountConfig;
 	import kabam.rotmg.appengine.AppEngineConfig;
@@ -53,6 +55,7 @@ package {
 	import kabam.rotmg.tooltips.TooltipsConfig;
 	import kabam.rotmg.ui.UIConfig;
 	import kabam.rotmg.ui.UIUtils;
+
 	import robotlegs.bender.bundles.mvcs.MVCSBundle;
 	import robotlegs.bender.extensions.signalCommandMap.SignalCommandMapExtension;
 	import robotlegs.bender.framework.api.IContext;
@@ -60,29 +63,29 @@ package {
 
 	[SWF(frameRate="60", backgroundColor="#000000", width="800", height="600")]
 	public class WebMain extends Sprite {
-		
+
 		public static var STAGE:Stage;
-		
+
 		public static var USER_AGENT:String = "None";
-		 
-		
+
+
 		protected var context:IContext;
-		
+
 		public function WebMain() {
 			super();
-			if(stage) {
+			if (stage) {
 				this.setup();
 			} else {
-				addEventListener(Event.ADDED_TO_STAGE,this.onAddedToStage);
+				addEventListener(Event.ADDED_TO_STAGE, this.onAddedToStage);
 			}
 		}
-		
-		private function onAddedToStage(param1:Event) : void {
-			removeEventListener(Event.ADDED_TO_STAGE,this.onAddedToStage);
+
+		private function onAddedToStage(param1:Event):void {
+			removeEventListener(Event.ADDED_TO_STAGE, this.onAddedToStage);
 			this.setup();
 		}
-		
-		private function setup() : void {
+
+		private function setup():void {
 			STAGE = stage;
 			this.hackParameters();
 			this.createContext();
@@ -92,12 +95,12 @@ package {
 			this.configureForAirIfDesktopPlayer();
 			UIUtils.toggleQuality(Parameters.data_.uiQuality);
 		}
-		
-		private function hackParameters() : void {
+
+		private function hackParameters():void {
 			Parameters.root = stage.root;
 		}
-		
-		private function createContext() : void {
+
+		private function createContext():void {
 			this.context = new StaticInjectorContext();
 			this.context.injector.map(LoaderInfo).toValue(root.stage.root.loaderInfo);
 			var loc1:StageProxy = new StageProxy(this);
@@ -105,9 +108,9 @@ package {
 			this.context.extend(MVCSBundle).extend(SignalCommandMapExtension).configure(BuildConfig).configure(StartupConfig).configure(NetConfig).configure(AssetsConfig).configure(DialogsConfig).configure(EnvironmentConfig).configure(ApplicationConfig).configure(LanguageConfig).configure(TextConfig).configure(AppEngineConfig).configure(AccountConfig).configure(ErrorConfig).configure(CoreConfig).configure(ApplicationSpecificConfig).configure(DeathConfig).configure(CharactersConfig).configure(ServersConfig).configure(GameConfig).configure(UIConfig).configure(MiniMapConfig).configure(LegendsConfig).configure(NewsConfig).configure(FameConfig).configure(TooltipsConfig).configure(PromotionsConfig).configure(ProTipConfig).configure(MapLoadingConfig).configure(ClassesConfig).configure(PackageConfig).configure(PetsConfig).configure(DailyLoginConfig).configure(Stage3DConfig).configure(ArenaConfig).configure(ExternalConfig).configure(MysteryBoxConfig).configure(FortuneConfig).configure(DailyQuestsConfig).configure(SocialConfig).configure(NexusShopConfig).configure(ToSConfig).configure(SupportCampaignConfig).configure(this);
 			this.context.logLevel = LogLevel.DEBUG;
 		}
-		
-		private function configureForAirIfDesktopPlayer() : void {
-			if(Capabilities.playerType == "Desktop") {
+
+		private function configureForAirIfDesktopPlayer():void {
+			if (Capabilities.playerType == "Desktop") {
 				Parameters.data_.fullscreenMode = false;
 				Parameters.save();
 			}

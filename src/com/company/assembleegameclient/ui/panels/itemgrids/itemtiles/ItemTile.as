@@ -1,4 +1,3 @@
- 
 package com.company.assembleegameclient.ui.panels.itemgrids.itemtiles {
 	import com.company.assembleegameclient.objects.ObjectLibrary;
 	import com.company.assembleegameclient.objects.Player;
@@ -7,82 +6,85 @@ package com.company.assembleegameclient.ui.panels.itemgrids.itemtiles {
 	import com.company.assembleegameclient.util.FilterUtil;
 	import com.company.assembleegameclient.util.TierUtil;
 	import com.company.util.GraphicsUtil;
+
 	import flash.display.GraphicsPath;
 	import flash.display.GraphicsSolidFill;
 	import flash.display.IGraphicsData;
 	import flash.display.Shape;
 	import flash.display.Sprite;
+
 	import io.decagames.rotmg.ui.labels.UILabel;
+
 	import kabam.rotmg.constants.ItemConstants;
-	
+
 	public class ItemTile extends Sprite {
-		
+
 		public static const WIDTH:int = 40;
-		
+
 		public static const HEIGHT:int = 40;
-		
+
 		public static const BORDER:int = 4;
-		 
-		
+
+
 		public var itemSprite:ItemTileSprite;
-		
+
 		public var tileId:int;
-		
+
 		public var ownerGrid:ItemGrid;
-		
+
 		public var blockingItemUpdates:Boolean;
-		
+
 		private var fill_:GraphicsSolidFill;
-		
+
 		private var path_:GraphicsPath;
-		
+
 		private var graphicsData_:Vector.<IGraphicsData>;
-		
+
 		private var restrictedUseIndicator:Shape;
-		
+
 		private var tierText:UILabel;
-		
+
 		private var itemContainer:Sprite;
-		
+
 		private var tagContainer:Sprite;
-		
+
 		private var isItemUsable:Boolean;
-		
+
 		public function ItemTile(param1:int, param2:ItemGrid) {
-			this.fill_ = new GraphicsSolidFill(this.getBackgroundColor(),1);
-			this.path_ = new GraphicsPath(new Vector.<int>(),new Vector.<Number>());
-			this.graphicsData_ = new <IGraphicsData>[this.fill_,this.path_,GraphicsUtil.END_FILL];
+			this.fill_ = new GraphicsSolidFill(this.getBackgroundColor(), 1);
+			this.path_ = new GraphicsPath(new Vector.<int>(), new Vector.<Number>());
+			this.graphicsData_ = new <IGraphicsData>[this.fill_, this.path_, GraphicsUtil.END_FILL];
 			super();
 			this.tileId = param1;
 			this.ownerGrid = param2;
 			this.init();
 		}
-		
-		private function init() : void {
+
+		private function init():void {
 			this.restrictedUseIndicator = new Shape();
 			addChild(this.restrictedUseIndicator);
 			this.setItemSprite(new ItemTileSprite());
 		}
-		
-		public function drawBackground(param1:Array) : void {
+
+		public function drawBackground(param1:Array):void {
 			GraphicsUtil.clearPath(this.path_);
-			GraphicsUtil.drawCutEdgeRect(0,0,WIDTH,HEIGHT,4,param1,this.path_);
+			GraphicsUtil.drawCutEdgeRect(0, 0, WIDTH, HEIGHT, 4, param1, this.path_);
 			graphics.clear();
 			graphics.drawGraphicsData(this.graphicsData_);
-			var loc2:GraphicsSolidFill = new GraphicsSolidFill(6036765,1);
+			var loc2:GraphicsSolidFill = new GraphicsSolidFill(6036765, 1);
 			GraphicsUtil.clearPath(this.path_);
-			var loc3:Vector.<IGraphicsData> = new <IGraphicsData>[loc2,this.path_,GraphicsUtil.END_FILL];
-			GraphicsUtil.drawCutEdgeRect(0,0,WIDTH,HEIGHT,4,param1,this.path_);
+			var loc3:Vector.<IGraphicsData> = new <IGraphicsData>[loc2, this.path_, GraphicsUtil.END_FILL];
+			GraphicsUtil.drawCutEdgeRect(0, 0, WIDTH, HEIGHT, 4, param1, this.path_);
 			this.restrictedUseIndicator.graphics.drawGraphicsData(loc3);
 			this.restrictedUseIndicator.cacheAsBitmap = true;
 			this.restrictedUseIndicator.visible = false;
 		}
-		
-		public function setItem(param1:int) : Boolean {
-			if(param1 == this.itemSprite.itemId) {
+
+		public function setItem(param1:int):Boolean {
+			if (param1 == this.itemSprite.itemId) {
 				return false;
 			}
-			if(this.blockingItemUpdates) {
+			if (this.blockingItemUpdates) {
 				return true;
 			}
 			this.itemSprite.setType(param1);
@@ -90,9 +92,9 @@ package com.company.assembleegameclient.ui.panels.itemgrids.itemtiles {
 			this.updateUseability(this.ownerGrid.curPlayer);
 			return true;
 		}
-		
-		public function setItemSprite(param1:ItemTileSprite) : void {
-			if(!this.itemContainer) {
+
+		public function setItemSprite(param1:ItemTileSprite):void {
+			if (!this.itemContainer) {
 				this.itemContainer = new Sprite();
 				addChild(this.itemContainer);
 			}
@@ -101,45 +103,45 @@ package com.company.assembleegameclient.ui.panels.itemgrids.itemtiles {
 			this.itemSprite.y = HEIGHT / 2;
 			this.itemContainer.addChild(this.itemSprite);
 		}
-		
-		public function updateUseability(param1:Player) : void {
+
+		public function updateUseability(param1:Player):void {
 			var loc2:int = this.itemSprite.itemId;
-			if(loc2 >= 36864 && loc2 < 61440) {
+			if (loc2 >= 36864 && loc2 < 61440) {
 				loc2 = 36863;
 			}
-			if(this.itemSprite.itemId != ItemConstants.NO_ITEM) {
-				this.restrictedUseIndicator.visible = !ObjectLibrary.isUsableByPlayer(loc2,param1);
+			if (this.itemSprite.itemId != ItemConstants.NO_ITEM) {
+				this.restrictedUseIndicator.visible = !ObjectLibrary.isUsableByPlayer(loc2, param1);
 			} else {
 				this.restrictedUseIndicator.visible = false;
 			}
 		}
-		
-		public function canHoldItem(param1:int) : Boolean {
+
+		public function canHoldItem(param1:int):Boolean {
 			return true;
 		}
-		
-		public function resetItemPosition() : void {
+
+		public function resetItemPosition():void {
 			this.setItemSprite(this.itemSprite);
 		}
-		
-		public function getItemId() : int {
-			if(this.itemSprite.itemId >= 36864 && this.itemSprite.itemId < 61440) {
+
+		public function getItemId():int {
+			if (this.itemSprite.itemId >= 36864 && this.itemSprite.itemId < 61440) {
 				return 36863;
 			}
 			return this.itemSprite.itemId;
 		}
-		
-		protected function getBackgroundColor() : int {
+
+		protected function getBackgroundColor():int {
 			return 5526612;
 		}
-		
-		public function setTierTag() : void {
+
+		public function setTierTag():void {
 			this.clearTierTag();
 			var loc1:XML = ObjectLibrary.xmlLibrary_[this.itemSprite.itemId];
-			if(loc1) {
+			if (loc1) {
 				this.tierText = TierUtil.getTierTag(loc1);
-				if(this.tierText) {
-					if(!this.tagContainer) {
+				if (this.tierText) {
+					if (!this.tagContainer) {
 						this.tagContainer = new Sprite();
 						addChild(this.tagContainer);
 					}
@@ -151,25 +153,25 @@ package com.company.assembleegameclient.ui.panels.itemgrids.itemtiles {
 				}
 			}
 		}
-		
-		private function clearTierTag() : void {
-			if(this.tierText && this.tagContainer && this.tagContainer.contains(this.tierText)) {
+
+		private function clearTierTag():void {
+			if (this.tierText && this.tagContainer && this.tagContainer.contains(this.tierText)) {
 				this.tagContainer.removeChild(this.tierText);
 				this.tierText = null;
 			}
 		}
-		
-		public function toggleTierTag(param1:Boolean) : void {
-			if(this.tierText) {
+
+		public function toggleTierTag(param1:Boolean):void {
+			if (this.tierText) {
 				this.tierText.visible = param1;
 			}
 		}
-		
-		protected function toggleDragState(param1:Boolean) : void {
-			if(this.tierText && Parameters.data_.showTierTag) {
+
+		protected function toggleDragState(param1:Boolean):void {
+			if (this.tierText && Parameters.data_.showTierTag) {
 				this.tierText.visible = param1;
 			}
-			if(!this.isItemUsable && !param1) {
+			if (!this.isItemUsable && !param1) {
 				this.restrictedUseIndicator.visible = param1;
 			}
 		}

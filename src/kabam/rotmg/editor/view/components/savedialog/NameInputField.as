@@ -1,32 +1,32 @@
- 
 package kabam.rotmg.editor.view.components.savedialog {
 	import com.company.ui.BaseSimpleText;
+
 	import flash.display.CapsStyle;
 	import flash.display.JointStyle;
 	import flash.display.LineScaleMode;
 	import flash.display.Sprite;
 	import flash.filters.DropShadowFilter;
-	
+
 	public class NameInputField extends Sprite {
-		
+
 		public static const HEIGHT:int = 88;
-		 
-		
+
+
 		public var nameText_:BaseSimpleText;
-		
+
 		public var inputText_:BaseSimpleText;
-		
+
 		public var errorText_:BaseSimpleText;
-		
+
 		public function NameInputField(param1:String) {
 			super();
-			this.nameText_ = new BaseSimpleText(18,11776947,false,0,0);
+			this.nameText_ = new BaseSimpleText(18, 11776947, false, 0, 0);
 			this.nameText_.setBold(true);
 			this.nameText_.text = "Name: ";
 			this.nameText_.updateMetrics();
-			this.nameText_.filters = [new DropShadowFilter(0,0,0)];
+			this.nameText_.filters = [new DropShadowFilter(0, 0, 0)];
 			addChild(this.nameText_);
-			this.inputText_ = new BaseSimpleText(20,11776947,true,260,30);
+			this.inputText_ = new BaseSimpleText(20, 11776947, true, 260, 30);
 			this.inputText_.x = 80;
 			this.inputText_.border = false;
 			this.inputText_.maxChars = 32;
@@ -34,14 +34,14 @@ package kabam.rotmg.editor.view.components.savedialog {
 			this.inputText_.updateMetrics();
 			this.inputText_.text = param1;
 			addChild(this.inputText_);
-			graphics.lineStyle(2,4539717,1,false,LineScaleMode.NORMAL,CapsStyle.ROUND,JointStyle.ROUND);
-			graphics.beginFill(3355443,1);
-			graphics.drawRect(78,-2,260,30);
+			graphics.lineStyle(2, 4539717, 1, false, LineScaleMode.NORMAL, CapsStyle.ROUND, JointStyle.ROUND);
+			graphics.beginFill(3355443, 1);
+			graphics.drawRect(78, -2, 260, 30);
 			graphics.endFill();
 			graphics.lineStyle();
 		}
-		
-		public function text() : String {
+
+		public function text():String {
 			return this.inputText_.text;
 		}
 	}

@@ -1,56 +1,55 @@
- 
 package com.company.assembleegameclient.objects.particles {
 	public class EffectProperties {
-		 
-		
+
+
 		public var id:String;
-		
+
 		public var particle:String;
-		
+
 		public var cooldown:Number;
-		
+
 		public var color:uint;
-		
+
 		public var color2:uint;
-		
+
 		public var rate:Number;
-		
+
 		public var speed:Number;
-		
+
 		public var speedVariance:Number;
-		
+
 		public var spread:Number;
-		
+
 		public var life:Number;
-		
+
 		public var lifeVariance:Number;
-		
+
 		public var size:int;
-		
+
 		public var friction:Number;
-		
+
 		public var rise:Number;
-		
+
 		public var riseVariance:Number;
-		
+
 		public var riseAcc:Number;
-		
+
 		public var rangeX:int;
-		
+
 		public var rangeY:int;
-		
+
 		public var zOffset:Number;
-		
+
 		public var minRadius:Number;
-		
+
 		public var maxRadius:Number;
-		
+
 		public var amount:int;
-		
+
 		public var bitmapFile:String;
-		
+
 		public var bitmapIndex:uint;
-		
+
 		public function EffectProperties(param1:XML) {
 			super();
 			this.id = param1.toString();

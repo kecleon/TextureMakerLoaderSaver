@@ -1,4 +1,3 @@
- 
 package io.decagames.rotmg.supportCampaign.config {
 	import io.decagames.rotmg.supportCampaign.data.SupporterCampaignModel;
 	import io.decagames.rotmg.supportCampaign.signals.TierSelectedSignal;
@@ -16,24 +15,26 @@ package io.decagames.rotmg.supportCampaign.config {
 	import io.decagames.rotmg.supportCampaign.tasks.GetCampaignStatusTask;
 	import io.decagames.rotmg.supportCampaign.tooltips.PointsTooltip;
 	import io.decagames.rotmg.supportCampaign.tooltips.PointsTooltipMediator;
+
 	import org.swiftsuspenders.Injector;
+
 	import robotlegs.bender.extensions.mediatorMap.api.IMediatorMap;
 	import robotlegs.bender.framework.api.IConfig;
-	
+
 	public class SupportCampaignConfig implements IConfig {
-		 
-		
+
+
 		[Inject]
 		public var mediatorMap:IMediatorMap;
-		
+
 		[Inject]
 		public var injector:Injector;
-		
+
 		public function SupportCampaignConfig() {
 			super();
 		}
-		
-		public function configure() : void {
+
+		public function configure():void {
 			this.injector.map(SupporterCampaignModel).asSingleton();
 			this.injector.map(GetCampaignStatusTask);
 			this.injector.map(UpdateCampaignProgress).asSingleton();

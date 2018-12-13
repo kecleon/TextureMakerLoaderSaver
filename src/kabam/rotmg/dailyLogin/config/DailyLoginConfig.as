@@ -1,6 +1,6 @@
- 
 package kabam.rotmg.dailyLogin.config {
 	import io.decagames.rotmg.pets.tasks.GetOwnedPetSkinsTask;
+
 	import kabam.rotmg.dailyLogin.commands.ShowDailyCalendarPopupCommand;
 	import kabam.rotmg.dailyLogin.controller.CalendarDayBoxMediator;
 	import kabam.rotmg.dailyLogin.controller.CalendarTabsViewMediator;
@@ -16,28 +16,30 @@ package kabam.rotmg.dailyLogin.config {
 	import kabam.rotmg.dailyLogin.view.CalendarView;
 	import kabam.rotmg.dailyLogin.view.DailyLoginModal;
 	import kabam.rotmg.dailyLogin.view.DailyLoginPanel;
+
 	import org.swiftsuspenders.Injector;
+
 	import robotlegs.bender.extensions.mediatorMap.api.IMediatorMap;
 	import robotlegs.bender.extensions.signalCommandMap.api.ISignalCommandMap;
 	import robotlegs.bender.framework.api.IConfig;
-	
+
 	public class DailyLoginConfig implements IConfig {
-		 
-		
+
+
 		[Inject]
 		public var injector:Injector;
-		
+
 		[Inject]
 		public var mediatorMap:IMediatorMap;
-		
+
 		[Inject]
 		public var commandMap:ISignalCommandMap;
-		
+
 		public function DailyLoginConfig() {
 			super();
 		}
-		
-		public function configure() : void {
+
+		public function configure():void {
 			this.mediatorMap.map(DailyLoginPanel).toMediator(DailyLoginPanelMediator);
 			this.mediatorMap.map(DailyLoginModal).toMediator(DailyLoginModalMediator);
 			this.mediatorMap.map(CalendarView).toMediator(CalendarViewMediator);

@@ -1,16 +1,16 @@
- 
 package com.company.assembleegameclient.objects {
 	import com.company.assembleegameclient.ui.tooltip.TextToolTip;
 	import com.company.assembleegameclient.ui.tooltip.ToolTip;
 	import com.company.assembleegameclient.util.Currency;
 	import com.company.assembleegameclient.util.GuildUtil;
+
 	import flash.display.BitmapData;
-	
+
 	public class GuildMerchant extends SellableObject implements IInteractiveObject {
-		 
-		
+
+
 		public var description_:String;
-		
+
 		public function GuildMerchant(param1:XML) {
 			super(param1);
 			price_ = int(param1.Price);
@@ -18,27 +18,27 @@ package com.company.assembleegameclient.objects {
 			this.description_ = param1.Description;
 			guildRankReq_ = GuildUtil.LEADER;
 		}
-		
-		override public function soldObjectName() : String {
+
+		override public function soldObjectName():String {
 			return ObjectLibrary.typeToDisplayId_[objectType_];
 		}
-		
-		override public function soldObjectInternalName() : String {
+
+		override public function soldObjectInternalName():String {
 			var loc1:XML = ObjectLibrary.xmlLibrary_[objectType_];
 			return loc1.@id.toString();
 		}
-		
-		override public function getTooltip() : ToolTip {
-			var loc1:ToolTip = new TextToolTip(3552822,10197915,this.soldObjectName(),this.description_,200);
+
+		override public function getTooltip():ToolTip {
+			var loc1:ToolTip = new TextToolTip(3552822, 10197915, this.soldObjectName(), this.description_, 200);
 			return loc1;
 		}
-		
-		override public function getSellableType() : int {
+
+		override public function getSellableType():int {
 			return objectType_;
 		}
-		
-		override public function getIcon() : BitmapData {
-			return ObjectLibrary.getRedrawnTextureFromType(objectType_,80,true);
+
+		override public function getIcon():BitmapData {
+			return ObjectLibrary.getRedrawnTextureFromType(objectType_, 80, true);
 		}
 	}
 }

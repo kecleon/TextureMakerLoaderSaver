@@ -1,4 +1,3 @@
- 
 package io.decagames.rotmg.pets.popup.hatching {
 	import com.company.assembleegameclient.objects.ObjectLibrary;
 	import com.company.assembleegameclient.util.AnimatedChar;
@@ -11,10 +10,12 @@ package io.decagames.rotmg.pets.popup.hatching {
 	import com.greensock.easing.Sine;
 	import com.greensock.plugins.TransformAroundPointPlugin;
 	import com.greensock.plugins.TweenPlugin;
+
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
 	import flash.display.Sprite;
 	import flash.geom.Point;
+
 	import io.decagames.rotmg.pets.config.AnimationConfig;
 	import io.decagames.rotmg.pets.data.vo.SkinVO;
 	import io.decagames.rotmg.ui.buttons.SliceScalingButton;
@@ -23,40 +24,41 @@ package io.decagames.rotmg.pets.popup.hatching {
 	import io.decagames.rotmg.ui.popups.modal.ModalPopup;
 	import io.decagames.rotmg.ui.sliceScaling.SliceScalingBitmap;
 	import io.decagames.rotmg.ui.texture.TextureParser;
+
 	import kabam.rotmg.text.view.stringBuilder.LineBuilder;
-	
+
 	public class PetHatchingDialog extends ModalPopup {
-		 
-		
+
+
 		private var contentInset:SliceScalingBitmap;
-		
+
 		private var eggImage:Bitmap;
-		
+
 		private var animationContainer:Sprite;
-		
+
 		private var animationTimeline:TimelineMax;
-		
+
 		private var _petSkin:int;
-		
+
 		private var petImage:Bitmap;
-		
+
 		private var eggSize:int = 80;
-		
+
 		private var unlockedSkin:Boolean;
-		
+
 		private var skinVO:SkinVO;
-		
+
 		private var _okButton:SliceScalingButton;
-		
+
 		private var petName:String;
-		
+
 		public function PetHatchingDialog(param1:String, param2:int, param3:int, param4:Boolean, param5:SkinVO) {
 			var petName:String = param1;
 			var petSkin:int = param2;
 			var itemType:int = param3;
 			var unlocked:Boolean = param4;
 			var skinVO:SkinVO = param5;
-			super(270,180,"Pet hatching!");
+			super(270, 180, "Pet hatching!");
 			this.unlockedSkin = unlocked;
 			this._petSkin = petSkin;
 			this.skinVO = skinVO;
@@ -64,7 +66,7 @@ package io.decagames.rotmg.pets.popup.hatching {
 			TweenPlugin.activate([TransformAroundPointPlugin]);
 			this.petImage = this.getTypeBitmap();
 			this.animationContainer = new Sprite();
-			this.contentInset = TextureParser.instance.getSliceScalingBitmap("UI","popup_content_inset",270);
+			this.contentInset = TextureParser.instance.getSliceScalingBitmap("UI", "popup_content_inset", 270);
 			addChild(this.contentInset);
 			this.contentInset.height = 130;
 			this.contentInset.x = 0;
@@ -72,7 +74,7 @@ package io.decagames.rotmg.pets.popup.hatching {
 			this.animationContainer.x = this.contentInset.x;
 			this.animationContainer.y = this.contentInset.y;
 			addChild(this.animationContainer);
-			var maskImage:SliceScalingBitmap = TextureParser.instance.getSliceScalingBitmap("UI","popup_content_inset",this.contentInset.width);
+			var maskImage:SliceScalingBitmap = TextureParser.instance.getSliceScalingBitmap("UI", "popup_content_inset", this.contentInset.width);
 			maskImage.height = this.contentInset.height;
 			maskImage.x = this.contentInset.x;
 			maskImage.y = this.contentInset.y;
@@ -80,63 +82,65 @@ package io.decagames.rotmg.pets.popup.hatching {
 			this.animationContainer.cacheAsBitmap = true;
 			addChild(maskImage);
 			this.animationContainer.mask = maskImage;
-			var texture:BitmapData = ObjectLibrary.getRedrawnTextureFromType(itemType,this.eggSize,true,false);
+			var texture:BitmapData = ObjectLibrary.getRedrawnTextureFromType(itemType, this.eggSize, true, false);
 			this.eggImage = new Bitmap(texture);
 			this.eggImage.x = this.contentInset.x + Math.round((this.contentInset.width - this.eggImage.width) / 2);
 			this.eggImage.y = this.contentInset.y + Math.round((this.contentInset.height - this.eggImage.height) / 2);
 			this.animationContainer.addChild(this.eggImage);
 			this.animationTimeline = new TimelineMax();
-			this.animateEgg(this.animationTimeline,this.eggImage,-20,AnimationConfig.HATCHING_EGG_ANIMATION_DURATION,0.5);
-			this.animateEgg(this.animationTimeline,this.eggImage,20,AnimationConfig.HATCHING_EGG_ANIMATION_DURATION,0);
-			this.animateEgg(this.animationTimeline,this.eggImage,0,AnimationConfig.HATCHING_EGG_ANIMATION_DURATION,0);
-			this.animateEgg(this.animationTimeline,this.eggImage,20,AnimationConfig.HATCHING_EGG_ANIMATION_DURATION,0.3);
-			this.animateEgg(this.animationTimeline,this.eggImage,-20,AnimationConfig.HATCHING_EGG_ANIMATION_DURATION,0);
-			this.animateEgg(this.animationTimeline,this.eggImage,0,AnimationConfig.HATCHING_EGG_ANIMATION_DURATION,0,function():void {
+			this.animateEgg(this.animationTimeline, this.eggImage, -20, AnimationConfig.HATCHING_EGG_ANIMATION_DURATION, 0.5);
+			this.animateEgg(this.animationTimeline, this.eggImage, 20, AnimationConfig.HATCHING_EGG_ANIMATION_DURATION, 0);
+			this.animateEgg(this.animationTimeline, this.eggImage, 0, AnimationConfig.HATCHING_EGG_ANIMATION_DURATION, 0);
+			this.animateEgg(this.animationTimeline, this.eggImage, 20, AnimationConfig.HATCHING_EGG_ANIMATION_DURATION, 0.3);
+			this.animateEgg(this.animationTimeline, this.eggImage, -20, AnimationConfig.HATCHING_EGG_ANIMATION_DURATION, 0);
+			this.animateEgg(this.animationTimeline, this.eggImage, 0, AnimationConfig.HATCHING_EGG_ANIMATION_DURATION, 0, function ():void {
 				showPet();
 			});
-			this.animationTimeline.to(this.eggImage,AnimationConfig.HATCHING_EGG_ANIMATION_DURATION,{"transformAroundPoint":{
-				"point":new Point(this.eggImage.width / 2,this.eggImage.height / 2),
-				"pointIsLocal":true,
-				"scaleX":2,
-				"scaleY":2
-			}});
+			this.animationTimeline.to(this.eggImage, AnimationConfig.HATCHING_EGG_ANIMATION_DURATION, {
+				"transformAroundPoint": {
+					"point": new Point(this.eggImage.width / 2, this.eggImage.height / 2),
+					"pointIsLocal": true,
+					"scaleX": 2,
+					"scaleY": 2
+				}
+			});
 			this.animationTimeline.play();
-			this._okButton = new SliceScalingButton(TextureParser.instance.getSliceScalingBitmap("UI","generic_green_button"));
-			this._okButton.setLabel(LineBuilder.getLocalizedStringFromKey("Pets.sendToYard"),DefaultLabelFormat.questButtonCompleteLabel);
+			this._okButton = new SliceScalingButton(TextureParser.instance.getSliceScalingBitmap("UI", "generic_green_button"));
+			this._okButton.setLabel(LineBuilder.getLocalizedStringFromKey("Pets.sendToYard"), DefaultLabelFormat.questButtonCompleteLabel);
 			this._okButton.width = 149;
 			this._okButton.x = Math.round((_contentWidth - this._okButton.width) / 2);
 			this._okButton.y = _contentHeight - this._okButton.height;
 			addChild(this._okButton);
 		}
-		
-		public function get okButton() : SliceScalingButton {
+
+		public function get okButton():SliceScalingButton {
 			return this._okButton;
 		}
-		
-		private function getTypeBitmap() : Bitmap {
+
+		private function getTypeBitmap():Bitmap {
 			var loc1:String = ObjectLibrary.getIdFromType(this._petSkin);
 			var loc2:XML = ObjectLibrary.getXMLfromId(loc1);
 			var loc3:String = loc2.AnimatedTexture.File;
 			var loc4:int = loc2.AnimatedTexture.Index;
-			var loc5:AnimatedChar = AnimatedChars.getAnimatedChar(loc3,loc4);
-			var loc6:MaskedImage = loc5.imageFromAngle(0,AnimatedChar.STAND,0);
-			var loc7:BitmapData = TextureRedrawer.resize(loc6.image_,loc6.mask_,this.eggSize,true,0,0);
-			loc7 = GlowRedrawer.outlineGlow(loc7,0,6);
+			var loc5:AnimatedChar = AnimatedChars.getAnimatedChar(loc3, loc4);
+			var loc6:MaskedImage = loc5.imageFromAngle(0, AnimatedChar.STAND, 0);
+			var loc7:BitmapData = TextureRedrawer.resize(loc6.image_, loc6.mask_, this.eggSize, true, 0, 0);
+			loc7 = GlowRedrawer.outlineGlow(loc7, 0, 6);
 			return new Bitmap(loc7);
 		}
-		
-		private function showPet() : void {
+
+		private function showPet():void {
 			var animationSpiral:SliceScalingBitmap = null;
 			var whiteRectangle:Sprite = null;
 			var spinDuration:Number = NaN;
 			var spinAngle:int = 0;
 			var hideDuration:Number = NaN;
-			animationSpiral = TextureParser.instance.getSliceScalingBitmap("UI","animation_spiral");
+			animationSpiral = TextureParser.instance.getSliceScalingBitmap("UI", "animation_spiral");
 			animationSpiral.x = this.contentInset.x + Math.round((this.contentInset.width - animationSpiral.width) / 2);
 			animationSpiral.y = this.contentInset.y + Math.round((this.contentInset.height - animationSpiral.height) / 2);
 			whiteRectangle = new Sprite();
 			whiteRectangle.graphics.beginFill(16777215);
-			whiteRectangle.graphics.drawRect(0,0,this.contentInset.width,this.contentInset.height);
+			whiteRectangle.graphics.drawRect(0, 0, this.contentInset.width, this.contentInset.height);
 			whiteRectangle.graphics.endFill();
 			whiteRectangle.alpha = 0;
 			this.animationContainer.addChild(whiteRectangle);
@@ -144,10 +148,10 @@ package io.decagames.rotmg.pets.popup.hatching {
 			spinDuration = AnimationConfig.SPIN_ANIMATION_DURATION;
 			spinAngle = AnimationConfig.SPIN_ANIMATION_ANGLE;
 			hideDuration = 0.1;
-			TweenLite.to(whiteRectangle,0.1,{
-				"alpha":1,
-				"ease":Sine.easeIn,
-				"onComplete":function():void {
+			TweenLite.to(whiteRectangle, 0.1, {
+				"alpha": 1,
+				"ease": Sine.easeIn,
+				"onComplete": function ():void {
 					var textInfo:* = undefined;
 					animationContainer.removeChild(eggImage);
 					animationContainer.addChild(animationSpiral);
@@ -155,13 +159,13 @@ package io.decagames.rotmg.pets.popup.hatching {
 					petImage.y = contentInset.y + Math.round((contentInset.height - petImage.height) / 2);
 					animationContainer.addChild(petImage);
 					var petNameLabel:* = new UILabel();
-					DefaultLabelFormat.petNameLabel(petNameLabel,skinVO.rarity.color);
+					DefaultLabelFormat.petNameLabel(petNameLabel, skinVO.rarity.color);
 					petNameLabel.y = contentInset.y + 15;
 					petNameLabel.width = _contentWidth;
 					petNameLabel.wordWrap = true;
 					petNameLabel.text = petName;
 					animationContainer.addChild(petNameLabel);
-					if(unlockedSkin) {
+					if (unlockedSkin) {
 						textInfo = new UILabel();
 						DefaultLabelFormat.newSkinHatched(textInfo);
 						textInfo.y = contentInset.y + contentInset.height - 30;
@@ -171,44 +175,44 @@ package io.decagames.rotmg.pets.popup.hatching {
 						animationContainer.addChild(textInfo);
 					}
 					animationContainer.addChild(whiteRectangle);
-					TweenLite.to(animationSpiral,spinDuration,{
-						"transformAroundCenter":{"rotation":spinAngle},
-						"ease":Sine.easeOut
+					TweenLite.to(animationSpiral, spinDuration, {
+						"transformAroundCenter": {"rotation": spinAngle},
+						"ease": Sine.easeOut
 					});
-					TweenLite.to(animationSpiral,hideDuration,{
-						"alpha":0,
-						"delay":spinDuration - 0.2,
-						"overwrite":false,
-						"ease":Sine.easeIn,
-						"onComplete":function():void {
+					TweenLite.to(animationSpiral, hideDuration, {
+						"alpha": 0,
+						"delay": spinDuration - 0.2,
+						"overwrite": false,
+						"ease": Sine.easeIn,
+						"onComplete": function ():void {
 							animationContainer.removeChild(whiteRectangle);
 							animationContainer.removeChild(animationSpiral);
 						}
 					});
 				}
 			});
-			TweenLite.to(whiteRectangle,flashDuration,{
-				"alpha":0,
-				"delay":flashDuration,
-				"ease":Sine.easeOut,
-				"overwrite":false
+			TweenLite.to(whiteRectangle, flashDuration, {
+				"alpha": 0,
+				"delay": flashDuration,
+				"ease": Sine.easeOut,
+				"overwrite": false
 			});
 		}
-		
-		private function animateEgg(param1:TimelineMax, param2:Bitmap, param3:Number, param4:Number, param5:Number, param6:Function = null) : void {
-			param1.to(param2,param4,{
-				"delay":param5,
-				"transformAroundPoint":{
-					"point":new Point(param2.width / 2,param2.height),
-					"pointIsLocal":true,
-					"rotation":param3
+
+		private function animateEgg(param1:TimelineMax, param2:Bitmap, param3:Number, param4:Number, param5:Number, param6:Function = null):void {
+			param1.to(param2, param4, {
+				"delay": param5,
+				"transformAroundPoint": {
+					"point": new Point(param2.width / 2, param2.height),
+					"pointIsLocal": true,
+					"rotation": param3
 				},
-				"onComplete":param6,
-				"overwrite":false
+				"onComplete": param6,
+				"overwrite": false
 			});
 		}
-		
-		public function get petSkin() : int {
+
+		public function get petSkin():int {
 			return this._petSkin;
 		}
 	}

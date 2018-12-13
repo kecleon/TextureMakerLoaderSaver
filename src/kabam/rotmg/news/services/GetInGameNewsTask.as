@@ -1,4 +1,3 @@
- 
 package kabam.rotmg.news.services {
 	import kabam.lib.tasks.BaseTask;
 	import kabam.rotmg.appengine.api.AppEngineClient;
@@ -8,58 +7,59 @@ package kabam.rotmg.news.services {
 	import kabam.rotmg.news.model.InGameNews;
 	import kabam.rotmg.news.model.NewsModel;
 	import kabam.rotmg.news.view.NewsModal;
+
 	import robotlegs.bender.framework.api.ILogger;
-	
+
 	public class GetInGameNewsTask extends BaseTask {
-		 
-		
+
+
 		[Inject]
 		public var logger:ILogger;
-		
+
 		[Inject]
 		public var client:AppEngineClient;
-		
+
 		[Inject]
 		public var model:NewsModel;
-		
+
 		[Inject]
 		public var addToQueueSignal:AddPopupToStartupQueueSignal;
-		
+
 		[Inject]
 		public var openDialogSignal:OpenDialogSignal;
-		
+
 		private var requestData:Object;
-		
+
 		public function GetInGameNewsTask() {
 			super();
 		}
-		
-		override protected function startTask() : void {
+
+		override protected function startTask():void {
 			this.logger.info("GetInGameNewsTask start");
 			this.requestData = this.makeRequestData();
 			this.sendRequest();
 		}
-		
-		public function makeRequestData() : Object {
+
+		public function makeRequestData():Object {
 			var loc1:Object = {};
 			return loc1;
 		}
-		
-		private function sendRequest() : void {
+
+		private function sendRequest():void {
 			this.client.complete.addOnce(this.onComplete);
-			this.client.sendRequest("/inGameNews/getNews",this.requestData);
+			this.client.sendRequest("/inGameNews/getNews", this.requestData);
 		}
-		
-		private function onComplete(param1:Boolean, param2:*) : void {
+
+		private function onComplete(param1:Boolean, param2:*):void {
 			this.logger.info("String response from GetInGameNewsTask: " + param2);
-			if(param1) {
+			if (param1) {
 				this.parseNews(param2);
 			} else {
 				completeTask(true);
 			}
 		}
-		
-		private function parseNews(param1:String) : void {
+
+		private function parseNews(param1:String):void {
 			var loc3:Object = null;
 			var loc4:Object = null;
 			var loc5:InGameNews = null;
@@ -79,11 +79,11 @@ package kabam.rotmg.news.services {
 					this.model.addInGameNews(loc5);
 				}
 			}
-			catch(e:Error) {
+			catch (e:Error) {
 			}
 			var loc2:InGameNews = this.model.getFirstNews();
-			if(loc2 && loc2.showAtStartup && this.model.hasUpdates()) {
-				this.addToQueueSignal.dispatch(PopupNamesConfig.NEWS_POPUP,this.openDialogSignal,-1,new NewsModal(true));
+			if (loc2 && loc2.showAtStartup && this.model.hasUpdates()) {
+				this.addToQueueSignal.dispatch(PopupNamesConfig.NEWS_POPUP, this.openDialogSignal, -1, new NewsModal(true));
 			}
 			completeTask(true);
 		}

@@ -1,7 +1,7 @@
- 
 package io.decagames.rotmg.pets.config {
 	import com.company.assembleegameclient.ui.dialogs.DialogCloser;
 	import com.company.assembleegameclient.ui.dialogs.DialogCloserMediator;
+
 	import io.decagames.rotmg.pets.commands.ActivatePetCommand;
 	import io.decagames.rotmg.pets.commands.AddPetsConsoleActionsCommand;
 	import io.decagames.rotmg.pets.commands.DeactivatePetCommand;
@@ -96,34 +96,37 @@ package io.decagames.rotmg.pets.config {
 	import io.decagames.rotmg.pets.windows.yard.fuse.FuseTabMediator;
 	import io.decagames.rotmg.pets.windows.yard.list.PetYardList;
 	import io.decagames.rotmg.pets.windows.yard.list.PetYardListMediator;
+
 	import kabam.rotmg.pets.view.components.DialogCloseButton;
 	import kabam.rotmg.pets.view.components.DialogCloseButtonMediator;
+
 	import org.swiftsuspenders.Injector;
+
 	import robotlegs.bender.extensions.commandCenter.api.ICommandCenter;
 	import robotlegs.bender.extensions.mediatorMap.api.IMediatorMap;
 	import robotlegs.bender.extensions.signalCommandMap.api.ISignalCommandMap;
 	import robotlegs.bender.framework.api.IConfig;
-	
+
 	public class PetsConfig implements IConfig {
-		 
-		
+
+
 		[Inject]
 		public var injector:Injector;
-		
+
 		[Inject]
 		public var mediatorMap:IMediatorMap;
-		
+
 		[Inject]
 		public var commandMap:ISignalCommandMap;
-		
+
 		[Inject]
 		public var commandCenter:ICommandCenter;
-		
+
 		public function PetsConfig() {
 			super();
 		}
-		
-		public function configure() : void {
+
+		public function configure():void {
 			this.injector.map(ShowPetTooltip).asSingleton();
 			this.injector.map(NotifyActivePetUpdated).asSingleton();
 			this.injector.map(PetsViewAssetFactory).asSingleton();

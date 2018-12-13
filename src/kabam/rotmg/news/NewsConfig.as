@@ -1,4 +1,3 @@
- 
 package kabam.rotmg.news {
 	import kabam.rotmg.game.view.NewsModalButton;
 	import kabam.rotmg.news.controller.NewsButtonRefreshSignal;
@@ -15,35 +14,37 @@ package kabam.rotmg.news {
 	import kabam.rotmg.news.view.NewsTickerMediator;
 	import kabam.rotmg.news.view.NewsView;
 	import kabam.rotmg.startup.control.StartupSequence;
+
 	import org.swiftsuspenders.Injector;
+
 	import robotlegs.bender.extensions.mediatorMap.api.IMediatorMap;
 	import robotlegs.bender.extensions.signalCommandMap.api.ISignalCommandMap;
 	import robotlegs.bender.framework.api.IConfig;
 	import robotlegs.bender.framework.api.IContext;
-	
+
 	public class NewsConfig implements IConfig {
-		 
-		
+
+
 		[Inject]
 		public var context:IContext;
-		
+
 		[Inject]
 		public var injector:Injector;
-		
+
 		[Inject]
 		public var mediatorMap:IMediatorMap;
-		
+
 		[Inject]
 		public var commandMap:ISignalCommandMap;
-		
+
 		[Inject]
 		public var startupSequence:StartupSequence;
-		
+
 		public function NewsConfig() {
 			super();
 		}
-		
-		public function configure() : void {
+
+		public function configure():void {
 			this.injector.map(OpenSkinSignal).asSingleton();
 			this.injector.map(NewsDataUpdatedSignal).asSingleton();
 			this.injector.map(NewsButtonRefreshSignal).asSingleton();
@@ -54,7 +55,7 @@ package kabam.rotmg.news {
 			this.mediatorMap.map(NewsCell).toMediator(NewsCellMediator);
 			this.mediatorMap.map(NewsModalButton).toMediator(NewsModalMediator);
 			this.mediatorMap.map(NewsTicker).toMediator(NewsTickerMediator);
-			this.startupSequence.addTask(GetAppEngineNewsTask,6);
+			this.startupSequence.addTask(GetAppEngineNewsTask, 6);
 		}
 	}
 }

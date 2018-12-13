@@ -1,41 +1,42 @@
- 
 package io.decagames.rotmg.tos.popups.buttons {
 	import io.decagames.rotmg.ui.buttons.BaseButton;
 	import io.decagames.rotmg.ui.popups.signals.CloseCurrentPopupSignal;
+
 	import kabam.rotmg.account.core.Account;
 	import kabam.rotmg.appengine.api.AppEngineClient;
+
 	import robotlegs.bender.bundles.mvcs.Mediator;
-	
+
 	public class AcceptButtonMediator extends Mediator {
-		 
-		
+
+
 		[Inject]
 		public var view:AcceptButton;
-		
+
 		[Inject]
 		public var appEngineClient:AppEngineClient;
-		
+
 		[Inject]
 		public var account:Account;
-		
+
 		[Inject]
 		public var closePopupSignal:CloseCurrentPopupSignal;
-		
+
 		public function AcceptButtonMediator() {
 			super();
 		}
-		
-		override public function initialize() : void {
+
+		override public function initialize():void {
 			this.view.clickSignal.add(this.onClickHandler);
 		}
-		
-		override public function destroy() : void {
+
+		override public function destroy():void {
 			this.view.clickSignal.remove(this.onClickHandler);
 		}
-		
-		private function onClickHandler(param1:BaseButton) : void {
+
+		private function onClickHandler(param1:BaseButton):void {
 			var loc2:Object = this.account.getCredentials();
-			this.appEngineClient.sendRequest("account/acceptTOS",loc2);
+			this.appEngineClient.sendRequest("account/acceptTOS", loc2);
 			this.closePopupSignal.dispatch();
 		}
 	}

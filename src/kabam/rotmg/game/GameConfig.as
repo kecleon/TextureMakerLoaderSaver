@@ -1,4 +1,3 @@
- 
 package kabam.rotmg.game {
 	import com.company.assembleegameclient.game.GameSprite;
 	import com.company.assembleegameclient.game.GiftStatusModel;
@@ -21,6 +20,7 @@ package kabam.rotmg.game {
 	import com.company.assembleegameclient.ui.panels.mediators.InventoryGridMediator;
 	import com.company.assembleegameclient.ui.panels.mediators.ItemGridMediator;
 	import com.company.assembleegameclient.ui.panels.mediators.PartyPanelMediator;
+
 	import kabam.lib.net.impl.SocketServerModel;
 	import kabam.rotmg.application.api.ApplicationSetup;
 	import kabam.rotmg.chat.ChatConfig;
@@ -70,35 +70,37 @@ package kabam.rotmg.game {
 	import kabam.rotmg.game.view.components.TabStripMediator;
 	import kabam.rotmg.game.view.components.TabStripView;
 	import kabam.rotmg.ui.model.TabStripModel;
+
 	import org.swiftsuspenders.Injector;
+
 	import robotlegs.bender.extensions.mediatorMap.api.IMediatorMap;
 	import robotlegs.bender.extensions.signalCommandMap.api.ISignalCommandMap;
 	import robotlegs.bender.framework.api.IConfig;
 	import robotlegs.bender.framework.api.IContext;
-	
+
 	public class GameConfig implements IConfig {
-		 
-		
+
+
 		[Inject]
 		public var context:IContext;
-		
+
 		[Inject]
 		public var injector:Injector;
-		
+
 		[Inject]
 		public var mediatorMap:IMediatorMap;
-		
+
 		[Inject]
 		public var commandMap:ISignalCommandMap;
-		
+
 		[Inject]
 		public var setup:ApplicationSetup;
-		
+
 		public function GameConfig() {
 			super();
 		}
-		
-		private function generalGameConfiguration() : void {
+
+		private function generalGameConfiguration():void {
 			this.injector.map(UpdateGiftStatusDisplaySignal).asSingleton();
 			this.injector.map(SetWorldInteractionSignal).asSingleton();
 			this.injector.map(SetTextBoxVisibilitySignal).asSingleton();
@@ -131,21 +133,21 @@ package kabam.rotmg.game {
 			this.commandMap.map(PlayGameSignal).toCommand(PlayGameCommand);
 			this.mapLoopMonitor();
 		}
-		
-		public function configure() : void {
+
+		public function configure():void {
 			this.context.configure(GameFocusConfig);
 			this.injector.map(GameModel).asSingleton();
 			this.generalGameConfiguration();
 			this.context.configure(ChatConfig);
 		}
-		
-		private function makeTextPanelMappings() : void {
+
+		private function makeTextPanelMappings():void {
 			this.injector.map(TextPanelData).asSingleton();
-			this.commandMap.map(TextPanelMessageUpdateSignal,true).toCommand(TextPanelMessageUpdateCommand);
+			this.commandMap.map(TextPanelMessageUpdateSignal, true).toCommand(TextPanelMessageUpdateCommand);
 			this.mediatorMap.map(TextPanel).toMediator(TextPanelMediator);
 		}
-		
-		private function makeGiftStatusDisplayMappings() : void {
+
+		private function makeGiftStatusDisplayMappings():void {
 			this.mediatorMap.map(GiftStatusDisplay).toMediator(GiftStatusDisplayMediator);
 			this.mediatorMap.map(ShopDisplay).toMediator(ShopDisplayMediator);
 			this.mediatorMap.map(GameSprite).toMediator(GameSpriteMediator);
@@ -153,9 +155,9 @@ package kabam.rotmg.game {
 			this.mediatorMap.map(MoneyChangerPanel).toMediator(MoneyChangerPanelMediator);
 			this.mediatorMap.map(SellableObjectPanel).toMediator(SellableObjectPanelMediator);
 		}
-		
-		private function mapLoopMonitor() : void {
-			if(this.setup.isGameLoopMonitored()) {
+
+		private function mapLoopMonitor():void {
+			if (this.setup.isGameLoopMonitored()) {
 				this.injector.map(LoopMonitor).toType(RollingMeanLoopMonitor);
 			} else {
 				this.injector.map(LoopMonitor).toType(NullLoopMonitor);

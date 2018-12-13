@@ -1,19 +1,18 @@
- 
 package com.company.assembleegameclient.engine3d {
 	import flash.display.BitmapData;
 	import flash.geom.Matrix;
-	
+
 	public class TextureMatrix {
-		 
-		
+
+
 		public var texture_:BitmapData = null;
-		
+
 		public var tToS_:Matrix;
-		
+
 		private var uvMatrix_:Matrix = null;
-		
+
 		private var tempMatrix_:Matrix;
-		
+
 		public function TextureMatrix(param1:BitmapData, param2:Vector.<Number>) {
 			this.tToS_ = new Matrix();
 			this.tempMatrix_ = new Matrix();
@@ -21,16 +20,16 @@ package com.company.assembleegameclient.engine3d {
 			this.texture_ = param1;
 			this.calculateUVMatrix(param2);
 		}
-		
-		public function setUVT(param1:Vector.<Number>) : void {
+
+		public function setUVT(param1:Vector.<Number>):void {
 			this.calculateUVMatrix(param1);
 		}
-		
-		public function setVOut(param1:Vector.<Number>) : void {
+
+		public function setVOut(param1:Vector.<Number>):void {
 			this.calculateTextureMatrix(param1);
 		}
-		
-		public function calculateTextureMatrix(param1:Vector.<Number>) : void {
+
+		public function calculateTextureMatrix(param1:Vector.<Number>):void {
 			this.tToS_.a = this.uvMatrix_.a;
 			this.tToS_.b = this.uvMatrix_.b;
 			this.tToS_.c = this.uvMatrix_.c;
@@ -47,9 +46,9 @@ package com.company.assembleegameclient.engine3d {
 			this.tempMatrix_.ty = param1[1];
 			this.tToS_.concat(this.tempMatrix_);
 		}
-		
-		public function calculateUVMatrix(param1:Vector.<Number>) : void {
-			if(this.texture_ == null) {
+
+		public function calculateUVMatrix(param1:Vector.<Number>):void {
+			if (this.texture_ == null) {
 				this.uvMatrix_ = null;
 				return;
 			}
@@ -64,7 +63,7 @@ package com.company.assembleegameclient.engine3d {
 			var loc10:Number = loc6 - loc4;
 			var loc11:Number = loc7 - loc3;
 			var loc12:Number = loc8 - loc4;
-			this.uvMatrix_ = new Matrix(loc9,loc10,loc11,loc12,loc3,loc4);
+			this.uvMatrix_ = new Matrix(loc9, loc10, loc11, loc12, loc3, loc4);
 			this.uvMatrix_.invert();
 		}
 	}

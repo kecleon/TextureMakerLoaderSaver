@@ -1,4 +1,3 @@
- 
 package kabam.rotmg.chat {
 	import kabam.lib.net.api.MessageMap;
 	import kabam.rotmg.chat.control.AddChatSignal;
@@ -25,31 +24,33 @@ package kabam.rotmg.chat {
 	import kabam.rotmg.game.signals.GameClosedSignal;
 	import kabam.rotmg.messaging.impl.GameServerConnection;
 	import kabam.rotmg.messaging.impl.incoming.Text;
+
 	import org.swiftsuspenders.Injector;
+
 	import robotlegs.bender.extensions.mediatorMap.api.IMediatorMap;
 	import robotlegs.bender.extensions.signalCommandMap.impl.SignalCommandMap;
 	import robotlegs.bender.framework.api.IConfig;
-	
+
 	public class ChatConfig implements IConfig {
-		 
-		
+
+
 		[Inject]
 		public var injector:Injector;
-		
+
 		[Inject]
 		public var messageMap:MessageMap;
-		
+
 		[Inject]
 		public var commandMap:SignalCommandMap;
-		
+
 		[Inject]
 		public var mediatorMap:IMediatorMap;
-		
+
 		public function ChatConfig() {
 			super();
 		}
-		
-		public function configure() : void {
+
+		public function configure():void {
 			this.injector.map(ChatModel).asSingleton();
 			this.injector.map(ChatConfig).asSingleton();
 			this.injector.map(ChatListItemFactory).asSingleton();

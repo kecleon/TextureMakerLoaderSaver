@@ -1,4 +1,3 @@
- 
 package kabam.rotmg.chat.view {
 	import flash.display.Sprite;
 	import flash.events.Event;
@@ -7,93 +6,95 @@ package kabam.rotmg.chat.view {
 	import flash.text.TextField;
 	import flash.text.TextFieldType;
 	import flash.ui.Keyboard;
+
 	import kabam.rotmg.chat.model.ChatModel;
+
 	import org.osflash.signals.Signal;
-	
+
 	public class ChatInput extends Sprite {
-		 
-		
+
+
 		public const message:Signal = new Signal(String);
-		
+
 		public const close:Signal = new Signal();
-		
+
 		private var input:TextField;
-		
+
 		private var enteredText:Boolean;
-		
+
 		private var lastInput:String = "";
-		
+
 		public function ChatInput() {
 			super();
 			visible = false;
 			this.enteredText = false;
 		}
-		
-		public function setup(param1:ChatModel, param2:TextField) : void {
+
+		public function setup(param1:ChatModel, param2:TextField):void {
 			addChild(this.input = param2);
 			param2.width = param1.bounds.width - 2;
 			param2.height = param1.lineHeight;
 			param2.y = param1.bounds.height - param1.lineHeight;
 		}
-		
-		public function activate(param1:String, param2:Boolean) : void {
+
+		public function activate(param1:String, param2:Boolean):void {
 			this.enteredText = false;
-			if(param1 != null) {
+			if (param1 != null) {
 				this.input.text = param1;
 			}
-			var loc3:int = !!param1?int(param1.length):0;
-			this.input.setSelection(loc3,loc3);
-			if(param2) {
+			var loc3:int = !!param1 ? int(param1.length) : 0;
+			this.input.setSelection(loc3, loc3);
+			if (param2) {
 				this.activateEnabled();
 			} else {
 				this.activateDisabled();
 			}
 			visible = true;
 		}
-		
-		public function deactivate() : void {
+
+		public function deactivate():void {
 			this.enteredText = false;
-			removeEventListener(KeyboardEvent.KEY_UP,this.onKeyUp);
-			stage.removeEventListener(KeyboardEvent.KEY_UP,this.onTextChange);
+			removeEventListener(KeyboardEvent.KEY_UP, this.onKeyUp);
+			stage.removeEventListener(KeyboardEvent.KEY_UP, this.onTextChange);
 			visible = false;
 			stage && (stage.focus = null);
 		}
-		
-		public function hasEnteredText() : Boolean {
+
+		public function hasEnteredText():Boolean {
 			return this.enteredText;
 		}
-		
-		private function activateEnabled() : void {
+
+		private function activateEnabled():void {
 			this.input.type = TextFieldType.INPUT;
 			this.input.border = true;
 			this.input.selectable = true;
 			this.input.maxChars = 128;
 			this.input.borderColor = 16777215;
 			this.input.height = 18;
-			this.input.filters = [new GlowFilter(0,1,3,3,2,1)];
-			addEventListener(KeyboardEvent.KEY_UP,this.onKeyUp);
-			stage.addEventListener(KeyboardEvent.KEY_UP,this.onTextChange);
+			this.input.filters = [new GlowFilter(0, 1, 3, 3, 2, 1)];
+			addEventListener(KeyboardEvent.KEY_UP, this.onKeyUp);
+			stage.addEventListener(KeyboardEvent.KEY_UP, this.onTextChange);
 			stage && (stage.focus = this.input);
 		}
-		
-		private function onTextChange(param1:Event) : void {
+
+		private function onTextChange(param1:Event):void {
 			this.enteredText = true;
 		}
-		
-		private function activateDisabled() : void {
+
+		private function activateDisabled():void {
 			this.input.type = TextFieldType.DYNAMIC;
 			this.input.border = false;
 			this.input.selectable = false;
-			this.input.filters = [new GlowFilter(0,1,3,3,2,1)];
+			this.input.filters = [new GlowFilter(0, 1, 3, 3, 2, 1)];
 			this.input.height = 18;
-			removeEventListener(KeyboardEvent.KEY_UP,this.onKeyUp);
-			stage.removeEventListener(KeyboardEvent.KEY_UP,this.onTextChange);
+			removeEventListener(KeyboardEvent.KEY_UP, this.onKeyUp);
+			stage.removeEventListener(KeyboardEvent.KEY_UP, this.onTextChange);
 		}
-		
-		private function onKeyUp(param1:KeyboardEvent) : void {
+
+		private function onKeyUp(param1:KeyboardEvent):void {
 			var loc2:int = 0;
-			if(param1.keyCode == Keyboard.ENTER) {
-				if(this.input.text != "") {
+			if (param1.keyCode == Keyboard.ENTER) {
+				if (this.input.text != "") {
 					this.message.dispatch(this.input.text);
 				} else {
 					this.close.dispatch();
@@ -101,10 +102,10 @@ package kabam.rotmg.chat.view {
 				this.lastInput = this.input.text;
 				param1.stopImmediatePropagation();
 			}
-			if(param1.keyCode == Keyboard.UP) {
+			if (param1.keyCode == Keyboard.UP) {
 				this.input.text = this.lastInput;
 				loc2 = this.lastInput.length;
-				this.input.setSelection(loc2,loc2);
+				this.input.setSelection(loc2, loc2);
 				param1.stopImmediatePropagation();
 			}
 		}

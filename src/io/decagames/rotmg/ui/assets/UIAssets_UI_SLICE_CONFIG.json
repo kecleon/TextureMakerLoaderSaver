@@ -339,40 +339,40 @@
         "h": 1
       }
     },
-    "listitem_content_background_inactive.png" : {
-      "type" : "9grid",
-      "rectangle" : {
-        "y" : 9,
-        "w" : 1,
-        "x" : 9,
-        "h" : 1
+    "listitem_content_background_inactive.png": {
+      "type": "9grid",
+      "rectangle": {
+        "y": 9,
+        "w": 1,
+        "x": 9,
+        "h": 1
       }
     },
-    "listitem_content_background_indicator.png" : {
-      "type" : "9grid",
-      "rectangle" : {
-        "y" : 9,
-        "w" : 1,
-        "x" : 9,
-        "h" : 1
+    "listitem_content_background_indicator.png": {
+      "type": "9grid",
+      "rectangle": {
+        "y": 9,
+        "w": 1,
+        "x": 9,
+        "h": 1
       }
     },
-    "listitem_content_background_selected.png" : {
-      "type" : "9grid",
-      "rectangle" : {
-        "y" : 9,
-        "w" : 1,
-        "x" : 9,
-        "h" : 1
+    "listitem_content_background_selected.png": {
+      "type": "9grid",
+      "rectangle": {
+        "y": 9,
+        "w": 1,
+        "x": 9,
+        "h": 1
       }
     },
-    "popup_content_inset.png" : {
-      "type" : "9grid",
-      "rectangle" : {
-        "y" : 12,
-        "w" : 1,
-        "x" : 12,
-        "h" : 1
+    "popup_content_inset.png": {
+      "type": "9grid",
+      "rectangle": {
+        "y": 12,
+        "w": 1,
+        "x": 12,
+        "h": 1
       }
     },
     "shop_box_background.png": {

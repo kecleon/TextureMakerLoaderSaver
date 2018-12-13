@@ -1,8 +1,8 @@
- 
 package kabam.rotmg.classes.view {
 	import flash.display.Bitmap;
 	import flash.display.Sprite;
 	import flash.filters.DropShadowFilter;
+
 	import kabam.rotmg.assets.model.Animation;
 	import kabam.rotmg.assets.services.IconFactory;
 	import kabam.rotmg.text.model.TextKey;
@@ -11,51 +11,51 @@ package kabam.rotmg.classes.view {
 	import kabam.rotmg.text.view.stringBuilder.StaticStringBuilder;
 	import kabam.rotmg.ui.view.SignalWaiter;
 	import kabam.rotmg.util.components.StarsView;
-	
+
 	public class ClassDetailView extends Sprite {
-		
+
 		private static const RIGHT_JUSTIFICATION_STATS:int = 205;
-		
+
 		private static const WIDTH:int = 344;
-		
+
 		private static const TEXT_WIDTH:int = 188;
-		 
-		
+
+
 		private var classNameText:TextFieldDisplayConcrete;
-		
+
 		private var classDescriptionText:TextFieldDisplayConcrete;
-		
+
 		private var questCompletionText:TextFieldDisplayConcrete;
-		
+
 		private var levelTitleText:TextFieldDisplayConcrete;
-		
+
 		private var levelText:TextFieldDisplayConcrete;
-		
+
 		private var fameTitleText:TextFieldDisplayConcrete;
-		
+
 		private var fameText:TextFieldDisplayConcrete;
-		
+
 		private var fameIcon:Bitmap;
-		
+
 		private var nextGoalText:TextFieldDisplayConcrete;
-		
+
 		private var nextGoalDetailText:TextFieldDisplayConcrete;
-		
+
 		private var questCompletedStars:StarsView;
-		
+
 		private var showNextGoal:Boolean;
-		
+
 		private var animContainer:Sprite;
-		
+
 		private var animation:Animation;
-		
+
 		private const waiter:SignalWaiter = new SignalWaiter();
-		
+
 		public function ClassDetailView() {
 			var loc1:DropShadowFilter = null;
 			super();
 			this.waiter.complete.add(this.layout);
-			loc1 = new DropShadowFilter(0,0,0,1,8,8);
+			loc1 = new DropShadowFilter(0, 0, 0, 1, 8, 8);
 			this.animContainer = new Sprite();
 			this.animContainer.x = (WIDTH - 104) * 0.5;
 			addChild(this.animContainer);
@@ -105,20 +105,20 @@ package kabam.rotmg.classes.view {
 			this.questCompletedStars = new StarsView();
 			addChild(this.questCompletedStars);
 		}
-		
-		public function setData(param1:String, param2:String, param3:int, param4:int, param5:int) : void {
+
+		public function setData(param1:String, param2:String, param3:int, param4:int, param5:int):void {
 			this.classNameText.setStringBuilder(new LineBuilder().setParams(param1));
 			this.classDescriptionText.setStringBuilder(new LineBuilder().setParams(param2));
 			this.levelText.setStringBuilder(new StaticStringBuilder(String(param4)));
 			this.fameText.setStringBuilder(new StaticStringBuilder(String(param5)));
 		}
-		
-		public function setNextGoal(param1:String, param2:int) : void {
+
+		public function setNextGoal(param1:String, param2:int):void {
 			this.showNextGoal = param2 != -1;
-			if(this.showNextGoal) {
-				this.nextGoalDetailText.setStringBuilder(new LineBuilder().setParams(TextKey.CLASS_NEXT_GOAL_DETAIL,{
-					"goal":String(param2),
-					"quest":param1
+			if (this.showNextGoal) {
+				this.nextGoalDetailText.setStringBuilder(new LineBuilder().setParams(TextKey.CLASS_NEXT_GOAL_DETAIL, {
+					"goal": String(param2),
+					"quest": param1
 				}));
 				this.nextGoalDetailText.y = this.nextGoalText.y + this.nextGoalText.height;
 				this.nextGoalDetailText.x = WIDTH / 2 - this.nextGoalDetailText.width / 2;
@@ -126,25 +126,25 @@ package kabam.rotmg.classes.view {
 				this.waiter.push(this.nextGoalText.textChanged);
 			}
 		}
-		
-		public function setWalkingAnimation(param1:Animation) : void {
+
+		public function setWalkingAnimation(param1:Animation):void {
 			this.animation && this.removeAnimation(this.animation);
 			this.animation = param1;
 			this.animation && this.addAnimation(this.animation);
 			this.layout();
 		}
-		
-		private function removeAnimation(param1:Animation) : void {
+
+		private function removeAnimation(param1:Animation):void {
 			param1.stop();
 			this.animContainer.removeChild(param1);
 		}
-		
-		private function addAnimation(param1:Animation) : void {
+
+		private function addAnimation(param1:Animation):void {
 			this.animContainer.addChild(param1);
 			param1.start();
 		}
-		
-		private function layout() : void {
+
+		private function layout():void {
 			this.classNameText.x = WIDTH / 2 - this.classNameText.width / 2;
 			this.classNameText.y = 110;
 			this.classDescriptionText.y = this.classNameText.y + this.classNameText.height + 5;

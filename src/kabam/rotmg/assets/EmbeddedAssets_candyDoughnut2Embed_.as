@@ -1,11 +1,10 @@
- 
 package kabam.rotmg.assets {
 	import mx.core.ByteArrayAsset;
-	
-	[Embed(source="EmbeddedAssets_candyDoughnut2Embed_.obj",mimeType="application/octet-stream")]
+
+	[Embed(source="EmbeddedAssets_candyDoughnut2Embed_.obj", mimeType="application/octet-stream")]
 	public class EmbeddedAssets_candyDoughnut2Embed_ extends ByteArrayAsset {
-		 
-		
+
+
 		public function EmbeddedAssets_candyDoughnut2Embed_() {
 			super();
 		}

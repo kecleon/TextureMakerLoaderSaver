@@ -1,32 +1,33 @@
- 
 package kabam.rotmg.core.view {
 	import flash.display.DisplayObjectContainer;
 	import flash.display.Sprite;
+
 	import io.decagames.rotmg.ui.popups.PopupView;
+
 	import kabam.rotmg.dialogs.view.DialogsView;
 	import kabam.rotmg.tooltips.view.TooltipsView;
-	
+
 	public class Layers extends Sprite {
-		 
-		
+
+
 		private var menu:ScreensView;
-		
+
 		public var overlay:DisplayObjectContainer;
-		
+
 		private var tooltips:TooltipsView;
-		
+
 		public var top:DisplayObjectContainer;
-		
+
 		public var mouseDisabledTop:DisplayObjectContainer;
-		
+
 		private var dialogs:DialogsView;
-		
+
 		private var popups:PopupView;
-		
+
 		public var api:DisplayObjectContainer;
-		
+
 		public var console:DisplayObjectContainer;
-		
+
 		public function Layers() {
 			super();
 			addChild(this.menu = new ScreensView());

@@ -1,8 +1,8 @@
- 
 package kabam.rotmg.stage3D {
 	import com.adobe.utils.AGALMiniAssembler;
 	import com.company.assembleegameclient.map.Camera;
 	import com.company.assembleegameclient.parameters.Parameters;
+
 	import flash.display.GraphicsBitmapFill;
 	import flash.display.GraphicsGradientFill;
 	import flash.display.IGraphicsData;
@@ -20,151 +20,153 @@ package kabam.rotmg.stage3D {
 	import flash.geom.Matrix3D;
 	import flash.geom.Vector3D;
 	import flash.utils.ByteArray;
+
 	import kabam.rotmg.stage3D.Object3D.Object3DStage3D;
 	import kabam.rotmg.stage3D.Object3D.Util;
 	import kabam.rotmg.stage3D.graphic3D.Graphic3D;
 	import kabam.rotmg.stage3D.graphic3D.TextureFactory;
 	import kabam.rotmg.stage3D.proxies.Context3DProxy;
+
 	import org.swiftsuspenders.Injector;
-	
+
 	public class Renderer {
-		
+
 		public static const STAGE3D_FILTER_PAUSE:uint = 1;
-		
+
 		public static const STAGE3D_FILTER_BLIND:uint = 2;
-		
+
 		public static const STAGE3D_FILTER_DRUNK:uint = 3;
-		
+
 		public static var inGame:Boolean;
-		
-		private static const POST_FILTER_VERTEX_CONSTANTS:Vector.<Number> = new <Number>[1,2,0,0];
-		
-		private static const GRAYSCALE_FRAGMENT_CONSTANTS:Vector.<Number> = new <Number>[0.3,0.59,0.11,0];
-		
-		private static const BLIND_FRAGMENT_CONSTANTS:Vector.<Number> = new <Number>[0.05,0.05,0.05,0];
-		
-		private static const POST_FILTER_POSITIONS:Vector.<Number> = new <Number>[-1,1,0,0,1,1,1,0,1,-1,1,1,-1,-1,0,1];
-		
-		private static const POST_FILTER_TRIS:Vector.<uint> = new <uint>[0,2,3,0,1,2];
-		 
-		
+
+		private static const POST_FILTER_VERTEX_CONSTANTS:Vector.<Number> = new <Number>[1, 2, 0, 0];
+
+		private static const GRAYSCALE_FRAGMENT_CONSTANTS:Vector.<Number> = new <Number>[0.3, 0.59, 0.11, 0];
+
+		private static const BLIND_FRAGMENT_CONSTANTS:Vector.<Number> = new <Number>[0.05, 0.05, 0.05, 0];
+
+		private static const POST_FILTER_POSITIONS:Vector.<Number> = new <Number>[-1, 1, 0, 0, 1, 1, 1, 0, 1, -1, 1, 1, -1, -1, 0, 1];
+
+		private static const POST_FILTER_TRIS:Vector.<uint> = new <uint>[0, 2, 3, 0, 1, 2];
+
+
 		[Inject]
 		public var context3D:Context3DProxy;
-		
+
 		[Inject]
 		public var textureFactory:TextureFactory;
-		
+
 		[Inject]
 		public var injector:Injector;
-		
+
 		private var tX:Number;
-		
+
 		private var tY:Number;
-		
+
 		public var program2:Program3D;
-		
+
 		private var postProcessingProgram_:Program3D;
-		
+
 		private var blurPostProcessing_:Program3D;
-		
+
 		private var shadowProgram_:Program3D;
-		
+
 		private var graphic3D_:Graphic3D;
-		
+
 		protected var _projection:Matrix3D;
-		
+
 		protected var cameraMatrix_:Matrix3D;
-		
+
 		private var p_:Vector3D;
-		
+
 		private var f_:Vector3D;
-		
+
 		private var u_:Vector3D;
-		
+
 		private var r_:Vector3D;
-		
+
 		private var rd_:Vector.<Number>;
-		
+
 		protected var widthOffset_:Number;
-		
+
 		protected var heightOffset_:Number;
-		
+
 		private var stageWidth:Number = 600;
-		
+
 		private var stageHeight:Number = 600;
-		
+
 		private var sceneTexture_:Texture;
-		
+
 		private var blurFactor:Number = 0.01;
-		
+
 		private var postFilterVertexBuffer_:VertexBuffer3D;
-		
+
 		private var postFilterIndexBuffer_:IndexBuffer3D;
-		
+
 		protected var _vertexShader:String;
-		
+
 		protected var _fragmentShader:String;
-		
+
 		protected var blurFragmentConstants_:Vector.<Number>;
-		
+
 		public function Renderer(param1:Render3D) {
 			this.cameraMatrix_ = new Matrix3D();
 			this.p_ = new Vector3D();
 			this.f_ = new Vector3D();
 			this.u_ = new Vector3D();
 			this.r_ = new Vector3D();
-			this.rd_ = new Vector.<Number>(16,true);
-			this._vertexShader = ["m44 op, va0, vc0","m44 v0, va0, vc8","m44 v1, va1, vc8","mov v2, va2"].join("\n");
+			this.rd_ = new Vector.<Number>(16, true);
+			this._vertexShader = ["m44 op, va0, vc0", "m44 v0, va0, vc8", "m44 v1, va1, vc8", "mov v2, va2"].join("\n");
 			this._fragmentShader = ["tex oc, v2, fs0 <2d,clamp>"].join("\n");
-			this.blurFragmentConstants_ = Vector.<Number>([0.4,0.6,0.4,1.5]);
+			this.blurFragmentConstants_ = Vector.<Number>([0.4, 0.6, 0.4, 1.5]);
 			super();
 			Renderer.inGame = false;
 			this.setTranslationToTitle();
 			param1.add(this.onRender);
 		}
-		
-		public function init(param1:Context3D) : void {
-			this._projection = Util.perspectiveProjection(56,1,0.1,2048);
+
+		public function init(param1:Context3D):void {
+			this._projection = Util.perspectiveProjection(56, 1, 0.1, 2048);
 			var loc2:AGALMiniAssembler = new AGALMiniAssembler();
-			loc2.assemble(Context3DProgramType.VERTEX,this._vertexShader);
+			loc2.assemble(Context3DProgramType.VERTEX, this._vertexShader);
 			var loc3:AGALMiniAssembler = new AGALMiniAssembler();
-			loc3.assemble(Context3DProgramType.FRAGMENT,this._fragmentShader);
+			loc3.assemble(Context3DProgramType.FRAGMENT, this._fragmentShader);
 			this.program2 = param1.createProgram();
-			this.program2.upload(loc2.agalcode,loc3.agalcode);
+			this.program2.upload(loc2.agalcode, loc3.agalcode);
 			var loc4:* = "tex ft0, v0, fs0 <2d,clamp,linear>\n" + "dp3 ft0.x, ft0, fc0\n" + "mov ft0.y, ft0.x\n" + "mov ft0.z, ft0.x\n" + "mov oc, ft0\n";
 			var loc5:* = "mov op, va0\n" + "add vt0, vc0.xxxx, va0\n" + "div vt0, vt0, vc0.yyyy\n" + "sub vt0.y, vc0.x, vt0.y\n" + "mov v0, vt0\n";
 			var loc6:AGALMiniAssembler = new AGALMiniAssembler();
-			loc6.assemble(Context3DProgramType.VERTEX,loc5);
+			loc6.assemble(Context3DProgramType.VERTEX, loc5);
 			var loc7:ByteArray = loc6.agalcode;
-			loc6.assemble(Context3DProgramType.FRAGMENT,loc4);
+			loc6.assemble(Context3DProgramType.FRAGMENT, loc4);
 			var loc8:ByteArray = loc6.agalcode;
 			this.postProcessingProgram_ = param1.createProgram();
-			this.postProcessingProgram_.upload(loc7,loc8);
+			this.postProcessingProgram_.upload(loc7, loc8);
 			var loc9:* = "sub ft0, v0, fc0\n" + "sub ft0.zw, ft0.zw, ft0.zw\n" + "dp3 ft1, ft0, ft0\n" + "sqt ft1, ft1\n" + "div ft1.xy, ft1.xy, fc0.zz\n" + "pow ft1.x, ft1.x, fc0.w\n" + "mul ft0.xy, ft0.xy, ft1.xx\n" + "div ft0.xy, ft0.xy, ft1.yy\n" + "add ft0.xy, ft0.xy, fc0.xy\n" + "tex oc, ft0, fs0<2d,clamp>\n";
 			var loc10:* = "m44 op, va0, vc0\n" + "mov v0, va1\n";
-			loc6.assemble(Context3DProgramType.VERTEX,loc10);
+			loc6.assemble(Context3DProgramType.VERTEX, loc10);
 			var loc11:ByteArray = loc6.agalcode;
-			loc6.assemble(Context3DProgramType.FRAGMENT,loc9);
+			loc6.assemble(Context3DProgramType.FRAGMENT, loc9);
 			var loc12:ByteArray = loc6.agalcode;
 			this.blurPostProcessing_ = param1.createProgram();
-			this.blurPostProcessing_.upload(loc11,loc12);
+			this.blurPostProcessing_.upload(loc11, loc12);
 			var loc13:* = "m44 op, va0, vc0\n" + "mov v0, va1\n" + "mov v1, va2\n";
-			loc6.assemble(Context3DProgramType.VERTEX,loc13);
+			loc6.assemble(Context3DProgramType.VERTEX, loc13);
 			var loc14:ByteArray = loc6.agalcode;
 			var loc15:* = "sub ft0.xy, v1.xy, fc4.xx\n" + "mul ft0.xy, ft0.xy, ft0.xy\n" + "add ft0.x, ft0.x, ft0.y\n" + "slt ft0.y, ft0.x, fc4.y\n" + "mul oc, v0, ft0.yyyy\n";
-			loc6.assemble(Context3DProgramType.FRAGMENT,loc15);
+			loc6.assemble(Context3DProgramType.FRAGMENT, loc15);
 			var loc16:ByteArray = loc6.agalcode;
 			this.shadowProgram_ = param1.createProgram();
-			this.shadowProgram_.upload(loc14,loc16);
-			this.sceneTexture_ = param1.createTexture(1024,1024,Context3DTextureFormat.BGRA,true);
-			this.postFilterVertexBuffer_ = param1.createVertexBuffer(4,4);
-			this.postFilterVertexBuffer_.uploadFromVector(POST_FILTER_POSITIONS,0,4);
+			this.shadowProgram_.upload(loc14, loc16);
+			this.sceneTexture_ = param1.createTexture(1024, 1024, Context3DTextureFormat.BGRA, true);
+			this.postFilterVertexBuffer_ = param1.createVertexBuffer(4, 4);
+			this.postFilterVertexBuffer_.uploadFromVector(POST_FILTER_POSITIONS, 0, 4);
 			this.postFilterIndexBuffer_ = param1.createIndexBuffer(6);
-			this.postFilterIndexBuffer_.uploadFromVector(POST_FILTER_TRIS,0,6);
+			this.postFilterIndexBuffer_.uploadFromVector(POST_FILTER_TRIS, 0, 6);
 			this.graphic3D_ = this.injector.getInstance(Graphic3D);
 		}
-		
-		private function UpdateCameraMatrix(param1:Camera) : void {
+
+		private function UpdateCameraMatrix(param1:Camera):void {
 			var loc2:Number = -param1.angleRad_;
 			this.f_.x = 0;
 			this.f_.y = 0;
@@ -199,79 +201,79 @@ package kabam.rotmg.stage3D {
 			this.cameraMatrix_.identity();
 			this.cameraMatrix_.append(loc3);
 		}
-		
-		private function onRender(param1:Vector.<IGraphicsData>, param2:Vector.<Object3DStage3D>, param3:Number, param4:Number, param5:Camera, param6:uint) : void {
+
+		private function onRender(param1:Vector.<IGraphicsData>, param2:Vector.<Object3DStage3D>, param3:Number, param4:Number, param5:Camera, param6:uint):void {
 			WebMain.STAGE.scaleMode = StageScaleMode.NO_SCALE;
-			if(WebMain.STAGE.stageWidth * 3 / 4 != this.stageWidth || WebMain.STAGE.stageHeight != this.stageHeight) {
+			if (WebMain.STAGE.stageWidth * 3 / 4 != this.stageWidth || WebMain.STAGE.stageHeight != this.stageHeight) {
 				this.resizeStage3DBackBuffer();
 			}
-			if(Renderer.inGame == true) {
+			if (Renderer.inGame == true) {
 				this.setTranslationToGame();
 			} else {
 				this.setTranslationToTitle();
 			}
-			if(param6 > 0) {
-				this.renderWithPostEffect(param1,param2,param3,param4,param5,param6);
+			if (param6 > 0) {
+				this.renderWithPostEffect(param1, param2, param3, param4, param5, param6);
 			} else {
-				this.renderScene(param1,param2,param3,param4,param5);
+				this.renderScene(param1, param2, param3, param4, param5);
 			}
 			this.context3D.present();
 			WebMain.STAGE.scaleMode = StageScaleMode.EXACT_FIT;
 		}
-		
-		private function resizeStage3DBackBuffer() : void {
-			if(WebMain.STAGE.stageWidth * 3 / 4 < 1 || WebMain.STAGE.stageHeight < 1) {
+
+		private function resizeStage3DBackBuffer():void {
+			if (WebMain.STAGE.stageWidth * 3 / 4 < 1 || WebMain.STAGE.stageHeight < 1) {
 				return;
 			}
 			var loc1:Stage3D = WebMain.STAGE.stage3Ds[0];
-			loc1.context3D.configureBackBuffer(WebMain.STAGE.stageWidth * 3 / 4,WebMain.STAGE.stageHeight,2,false);
+			loc1.context3D.configureBackBuffer(WebMain.STAGE.stageWidth * 3 / 4, WebMain.STAGE.stageHeight, 2, false);
 			this.stageWidth = WebMain.STAGE.stageWidth * 3 / 4;
 			this.stageHeight = WebMain.STAGE.stageHeight;
 		}
-		
-		private function renderWithPostEffect(param1:Vector.<IGraphicsData>, param2:Vector.<Object3DStage3D>, param3:Number, param4:Number, param5:Camera, param6:uint) : void {
-			this.context3D.GetContext3D().setRenderToTexture(this.sceneTexture_,true);
-			this.renderScene(param1,param2,param3,param4,param5);
+
+		private function renderWithPostEffect(param1:Vector.<IGraphicsData>, param2:Vector.<Object3DStage3D>, param3:Number, param4:Number, param5:Camera, param6:uint):void {
+			this.context3D.GetContext3D().setRenderToTexture(this.sceneTexture_, true);
+			this.renderScene(param1, param2, param3, param4, param5);
 			this.context3D.GetContext3D().setRenderToBackBuffer();
-			switch(param6) {
+			switch (param6) {
 				case STAGE3D_FILTER_PAUSE:
 				case STAGE3D_FILTER_BLIND:
 					this.context3D.GetContext3D().setProgram(this.postProcessingProgram_);
-					this.context3D.GetContext3D().setTextureAt(0,this.sceneTexture_);
-					this.context3D.GetContext3D().clear(0.5,0.5,0.5);
-					this.context3D.GetContext3D().setVertexBufferAt(0,this.postFilterVertexBuffer_,0,Context3DVertexBufferFormat.FLOAT_2);
-					this.context3D.GetContext3D().setVertexBufferAt(1,null);
+					this.context3D.GetContext3D().setTextureAt(0, this.sceneTexture_);
+					this.context3D.GetContext3D().clear(0.5, 0.5, 0.5);
+					this.context3D.GetContext3D().setVertexBufferAt(0, this.postFilterVertexBuffer_, 0, Context3DVertexBufferFormat.FLOAT_2);
+					this.context3D.GetContext3D().setVertexBufferAt(1, null);
 					break;
 				case STAGE3D_FILTER_DRUNK:
 					this.context3D.GetContext3D().setProgram(this.blurPostProcessing_);
-					this.context3D.GetContext3D().setTextureAt(0,this.sceneTexture_);
-					this.context3D.GetContext3D().clear(0.5,0.5,0.5);
-					this.context3D.GetContext3D().setVertexBufferAt(0,this.postFilterVertexBuffer_,0,Context3DVertexBufferFormat.FLOAT_2);
-					this.context3D.GetContext3D().setVertexBufferAt(1,this.postFilterVertexBuffer_,2,Context3DVertexBufferFormat.FLOAT_2);
+					this.context3D.GetContext3D().setTextureAt(0, this.sceneTexture_);
+					this.context3D.GetContext3D().clear(0.5, 0.5, 0.5);
+					this.context3D.GetContext3D().setVertexBufferAt(0, this.postFilterVertexBuffer_, 0, Context3DVertexBufferFormat.FLOAT_2);
+					this.context3D.GetContext3D().setVertexBufferAt(1, this.postFilterVertexBuffer_, 2, Context3DVertexBufferFormat.FLOAT_2);
 			}
-			this.context3D.GetContext3D().setVertexBufferAt(2,null);
-			switch(param6) {
+			this.context3D.GetContext3D().setVertexBufferAt(2, null);
+			switch (param6) {
 				case STAGE3D_FILTER_PAUSE:
-					this.context3D.setProgramConstantsFromVector(Context3DProgramType.VERTEX,0,POST_FILTER_VERTEX_CONSTANTS);
-					this.context3D.setProgramConstantsFromVector(Context3DProgramType.FRAGMENT,0,GRAYSCALE_FRAGMENT_CONSTANTS);
+					this.context3D.setProgramConstantsFromVector(Context3DProgramType.VERTEX, 0, POST_FILTER_VERTEX_CONSTANTS);
+					this.context3D.setProgramConstantsFromVector(Context3DProgramType.FRAGMENT, 0, GRAYSCALE_FRAGMENT_CONSTANTS);
 					break;
 				case STAGE3D_FILTER_BLIND:
-					this.context3D.setProgramConstantsFromVector(Context3DProgramType.VERTEX,0,POST_FILTER_VERTEX_CONSTANTS);
-					this.context3D.setProgramConstantsFromVector(Context3DProgramType.FRAGMENT,0,BLIND_FRAGMENT_CONSTANTS);
+					this.context3D.setProgramConstantsFromVector(Context3DProgramType.VERTEX, 0, POST_FILTER_VERTEX_CONSTANTS);
+					this.context3D.setProgramConstantsFromVector(Context3DProgramType.FRAGMENT, 0, BLIND_FRAGMENT_CONSTANTS);
 					break;
 				case STAGE3D_FILTER_DRUNK:
-					if(this.blurFragmentConstants_[3] <= 0.2 || this.blurFragmentConstants_[3] >= 1.8) {
+					if (this.blurFragmentConstants_[3] <= 0.2 || this.blurFragmentConstants_[3] >= 1.8) {
 						this.blurFactor = this.blurFactor * -1;
 					}
 					this.blurFragmentConstants_[3] = this.blurFragmentConstants_[3] + this.blurFactor;
-					this.context3D.setProgramConstantsFromMatrix(Context3DProgramType.VERTEX,0,new Matrix3D());
-					this.context3D.setProgramConstantsFromVector(Context3DProgramType.FRAGMENT,0,this.blurFragmentConstants_,this.blurFragmentConstants_.length / 4);
+					this.context3D.setProgramConstantsFromMatrix(Context3DProgramType.VERTEX, 0, new Matrix3D());
+					this.context3D.setProgramConstantsFromVector(Context3DProgramType.FRAGMENT, 0, this.blurFragmentConstants_, this.blurFragmentConstants_.length / 4);
 			}
-			this.context3D.GetContext3D().clear(0,0,0,1);
+			this.context3D.GetContext3D().clear(0, 0, 0, 1);
 			this.context3D.GetContext3D().drawTriangles(this.postFilterIndexBuffer_);
 		}
-		
-		private function renderScene(param1:Vector.<IGraphicsData>, param2:Vector.<Object3DStage3D>, param3:Number, param4:Number, param5:Camera) : void {
+
+		private function renderScene(param1:Vector.<IGraphicsData>, param2:Vector.<Object3DStage3D>, param3:Number, param4:Number, param5:Camera):void {
 			var test:int = 0;
 			var graphicsData:IGraphicsData = null;
 			var graphicsDatas:Vector.<IGraphicsData> = param1;
@@ -287,59 +289,59 @@ package kabam.rotmg.stage3D {
 			this.UpdateCameraMatrix(camera);
 			for each(graphicsData in graphicsDatas) {
 				this.context3D.GetContext3D().setCulling(Context3DTriangleFace.NONE);
-				if(graphicsData is GraphicsBitmapFill && !GraphicsFillExtra.isSoftwareDraw(GraphicsBitmapFill(graphicsData))) {
+				if (graphicsData is GraphicsBitmapFill && !GraphicsFillExtra.isSoftwareDraw(GraphicsBitmapFill(graphicsData))) {
 					try {
 						test = GraphicsBitmapFill(graphicsData).bitmapData.width;
 					}
-					catch(e:Error) {
+					catch (e:Error) {
 						continue;
 					}
-					this.graphic3D_.setGraphic(GraphicsBitmapFill(graphicsData),this.context3D);
+					this.graphic3D_.setGraphic(GraphicsBitmapFill(graphicsData), this.context3D);
 					finalTransform.identity();
 					finalTransform.append(this.graphic3D_.getMatrix3D());
-					finalTransform.appendScale(1 / Stage3DConfig.HALF_WIDTH,1 / Stage3DConfig.HALF_HEIGHT,1);
-					finalTransform.appendTranslation(this.tX / Stage3DConfig.WIDTH,this.tY / Stage3DConfig.HEIGHT,0);
-					this.context3D.setProgramConstantsFromMatrix(Context3DProgramType.VERTEX,0,finalTransform,true);
+					finalTransform.appendScale(1 / Stage3DConfig.HALF_WIDTH, 1 / Stage3DConfig.HALF_HEIGHT, 1);
+					finalTransform.appendTranslation(this.tX / Stage3DConfig.WIDTH, this.tY / Stage3DConfig.HEIGHT, 0);
+					this.context3D.setProgramConstantsFromMatrix(Context3DProgramType.VERTEX, 0, finalTransform, true);
 					this.graphic3D_.render(this.context3D);
 				}
-				if(graphicsData is GraphicsGradientFill) {
+				if (graphicsData is GraphicsGradientFill) {
 					this.context3D.GetContext3D().setProgram(this.shadowProgram_);
-					this.graphic3D_.setGradientFill(GraphicsGradientFill(graphicsData),this.context3D,Stage3DConfig.HALF_WIDTH,Stage3DConfig.HALF_HEIGHT);
+					this.graphic3D_.setGradientFill(GraphicsGradientFill(graphicsData), this.context3D, Stage3DConfig.HALF_WIDTH, Stage3DConfig.HALF_HEIGHT);
 					finalTransform.identity();
 					finalTransform.append(this.graphic3D_.getMatrix3D());
-					finalTransform.appendTranslation(this.tX / Stage3DConfig.WIDTH,this.tY / Stage3DConfig.HEIGHT,0);
-					this.context3D.setProgramConstantsFromMatrix(Context3DProgramType.VERTEX,0,finalTransform,true);
-					this.context3D.setProgramConstantsFromVector(Context3DProgramType.FRAGMENT,4,Vector.<Number>([0.5,0.25,0,0]));
+					finalTransform.appendTranslation(this.tX / Stage3DConfig.WIDTH, this.tY / Stage3DConfig.HEIGHT, 0);
+					this.context3D.setProgramConstantsFromMatrix(Context3DProgramType.VERTEX, 0, finalTransform, true);
+					this.context3D.setProgramConstantsFromVector(Context3DProgramType.FRAGMENT, 4, Vector.<Number>([0.5, 0.25, 0, 0]));
 					this.graphic3D_.renderShadow(this.context3D);
 				}
-				if(graphicsData == null && grahpicsData3d.length != 0) {
+				if (graphicsData == null && grahpicsData3d.length != 0) {
 					try {
 						this.context3D.GetContext3D().setProgram(this.program2);
 						this.context3D.GetContext3D().setCulling(Context3DTriangleFace.BACK);
-						grahpicsData3d[index3d].UpdateModelMatrix(this.widthOffset_,this.heightOffset_);
+						grahpicsData3d[index3d].UpdateModelMatrix(this.widthOffset_, this.heightOffset_);
 						finalTransform.identity();
 						finalTransform.append(grahpicsData3d[index3d].GetModelMatrix());
 						finalTransform.append(this.cameraMatrix_);
 						finalTransform.append(this._projection);
-						finalTransform.appendTranslation(this.tX / Stage3DConfig.WIDTH,this.tY / Stage3DConfig.HEIGHT * 11.5,0);
-						this.context3D.setProgramConstantsFromMatrix(Context3DProgramType.VERTEX,0,finalTransform,true);
-						this.context3D.setProgramConstantsFromMatrix(Context3DProgramType.VERTEX,8,grahpicsData3d[index3d].GetModelMatrix(),true);
+						finalTransform.appendTranslation(this.tX / Stage3DConfig.WIDTH, this.tY / Stage3DConfig.HEIGHT * 11.5, 0);
+						this.context3D.setProgramConstantsFromMatrix(Context3DProgramType.VERTEX, 0, finalTransform, true);
+						this.context3D.setProgramConstantsFromMatrix(Context3DProgramType.VERTEX, 8, grahpicsData3d[index3d].GetModelMatrix(), true);
 						grahpicsData3d[index3d].draw(this.context3D.GetContext3D());
 						index3d++;
 					}
-					catch(e:Error) {
+					catch (e:Error) {
 						continue;
 					}
 				}
 			}
 		}
-		
-		private function setTranslationToGame() : void {
+
+		private function setTranslationToGame():void {
 			this.tX = 0;
-			this.tY = !!Parameters.data_.centerOnPlayer?Number(-50):Number((Camera.OFFSET_SCREEN_RECT.y + Camera.CENTER_SCREEN_RECT.height / 2) * 2);
+			this.tY = !!Parameters.data_.centerOnPlayer ? Number(-50) : Number((Camera.OFFSET_SCREEN_RECT.y + Camera.CENTER_SCREEN_RECT.height / 2) * 2);
 		}
-		
-		private function setTranslationToTitle() : void {
+
+		private function setTranslationToTitle():void {
 			this.tX = this.tY = 0;
 		}
 	}

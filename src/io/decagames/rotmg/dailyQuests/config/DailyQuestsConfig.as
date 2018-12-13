@@ -1,4 +1,3 @@
- 
 package io.decagames.rotmg.dailyQuests.config {
 	import io.decagames.rotmg.dailyQuests.command.QuestFetchCompleteCommand;
 	import io.decagames.rotmg.dailyQuests.model.DailyQuestsModel;
@@ -23,28 +22,30 @@ package io.decagames.rotmg.dailyQuests.config {
 	import io.decagames.rotmg.dailyQuests.view.popup.DailyQuestRedeemPopupMediator;
 	import io.decagames.rotmg.dailyQuests.view.slot.DailyQuestItemSlot;
 	import io.decagames.rotmg.dailyQuests.view.slot.DailyQuestItemSlotMediator;
+
 	import org.swiftsuspenders.Injector;
+
 	import robotlegs.bender.extensions.mediatorMap.api.IMediatorMap;
 	import robotlegs.bender.extensions.signalCommandMap.api.ISignalCommandMap;
 	import robotlegs.bender.framework.api.IConfig;
-	
+
 	public class DailyQuestsConfig implements IConfig {
-		 
-		
+
+
 		[Inject]
 		public var injector:Injector;
-		
+
 		[Inject]
 		public var mediatorMap:IMediatorMap;
-		
+
 		[Inject]
 		public var commandMap:ISignalCommandMap;
-		
+
 		public function DailyQuestsConfig() {
 			super();
 		}
-		
-		public function configure() : void {
+
+		public function configure():void {
 			this.mediatorMap.map(DailyQuestsPanel).toMediator(DailyQuestsPanelMediator);
 			this.mediatorMap.map(DailyQuestsList).toMediator(DailyQuestsListMediator);
 			this.mediatorMap.map(DailyQuestListElement).toMediator(DailyQuestListElementMediator);

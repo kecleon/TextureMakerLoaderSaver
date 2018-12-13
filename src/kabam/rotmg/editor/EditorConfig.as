@@ -1,6 +1,6 @@
- 
 package kabam.rotmg.editor {
 	import flash.display.DisplayObjectContainer;
+
 	import kabam.lib.json.JsonParser;
 	import kabam.lib.json.SoftwareJsonParser;
 	import kabam.lib.tasks.TaskMonitor;
@@ -36,40 +36,42 @@ package kabam.rotmg.editor {
 	import kabam.rotmg.editor.view.components.loaddialog.ResultsBox;
 	import kabam.rotmg.editor.view.components.loaddialog.ResultsBoxMediator;
 	import kabam.rotmg.startup.control.StartupSequence;
+
 	import org.swiftsuspenders.Injector;
+
 	import robotlegs.bender.extensions.mediatorMap.api.IMediatorMap;
 	import robotlegs.bender.extensions.signalCommandMap.api.ISignalCommandMap;
 	import robotlegs.bender.framework.api.IConfig;
 	import robotlegs.bender.framework.api.IContext;
-	
+
 	public class EditorConfig implements IConfig {
-		 
-		
+
+
 		[Inject]
 		public var context:IContext;
-		
+
 		[Inject]
 		public var contextView:DisplayObjectContainer;
-		
+
 		[Inject]
 		public var injector:Injector;
-		
+
 		[Inject]
 		public var commandMap:ISignalCommandMap;
-		
+
 		[Inject]
 		public var mediatorMap:IMediatorMap;
-		
+
 		[Inject]
 		public var startupSequence:StartupSequence;
-		
+
 		private var layers:Layers;
-		
+
 		public function EditorConfig() {
 			super();
 		}
-		
-		public function configure() : void {
+
+		public function configure():void {
 			this.configureServices();
 			this.configureSignals();
 			this.configureCommands();
@@ -80,14 +82,14 @@ package kabam.rotmg.editor {
 			this.startupSequence.addSignal(SetupEditorSignal);
 			this.context.lifecycle.afterInitializing(this.init);
 		}
-		
-		private function configureServices() : void {
+
+		private function configureServices():void {
 			this.injector.map(JsonParser).toSingleton(SoftwareJsonParser);
 			this.injector.map(TaskMonitor).asSingleton();
 			this.injector.map(GoogleAnalytics).asSingleton();
 		}
-		
-		private function configureSignals() : void {
+
+		private function configureSignals():void {
 			this.injector.map(SetScreenSignal).asSingleton();
 			this.injector.map(GotoPreviousScreenSignal).asSingleton();
 			this.injector.map(LaunchGameSignal).asSingleton();
@@ -95,15 +97,15 @@ package kabam.rotmg.editor {
 			this.injector.map(OpenDialogSignal).asSingleton();
 			this.injector.map(CloseDialogsSignal).asSingleton();
 		}
-		
-		private function configureCommands() : void {
+
+		private function configureCommands():void {
 			this.commandMap.map(SetupDomainSecuritySignal).toCommand(SetupDomainSecurityCommand);
 			this.commandMap.map(SetupAnalyticsSignal).toCommand(SetupAnalyticsCommand);
 			this.commandMap.map(SetupEditorSignal).toCommand(SetupEditorCommand);
 			this.commandMap.map(SaveTextureSignal).toCommand(SaveTextureCommand);
 		}
-		
-		private function configureViews() : void {
+
+		private function configureViews():void {
 			this.mediatorMap.map(ScreensView).toMediator(ScreensMediator);
 			this.mediatorMap.map(DialogsView).toMediator(DialogsMediator);
 			this.mediatorMap.map(ResultsBox).toMediator(ResultsBoxMediator);
@@ -112,8 +114,8 @@ package kabam.rotmg.editor {
 			this.mediatorMap.map(SaveTextureDialog).toMediator(SaveTextureMediator);
 			this.mediatorMap.map(LoadTextureDialog).toMediator(LoadTextureMediator);
 		}
-		
-		private function init() : void {
+
+		private function init():void {
 			this.mediatorMap.mediate(this.contextView);
 			this.layers = new Layers();
 			this.injector.map(Layers).toValue(this.layers);

@@ -1,70 +1,70 @@
- 
 package com.company.assembleegameclient.map {
 	import com.company.assembleegameclient.objects.GameObject;
 	import com.company.assembleegameclient.parameters.Parameters;
 	import com.company.assembleegameclient.util.RandomUtil;
+
 	import flash.geom.Matrix3D;
 	import flash.geom.PerspectiveProjection;
 	import flash.geom.Rectangle;
 	import flash.geom.Vector3D;
-	
+
 	public class Camera {
-		
-		public static const lN_:Vector3D = new Vector3D(0,0,1);
-		
-		public static const CENTER_SCREEN_RECT:Rectangle = new Rectangle(-300,-325,600,600);
-		
-		public static const OFFSET_SCREEN_RECT:Rectangle = new Rectangle(-300,-450,600,600);
-		
-		private static const SCREENSHOT_SCREEN_RECT:Rectangle = new Rectangle(-400,-325,800,600);
-		
-		private static const SLIM_SCREENSHOT_SCREEN_RECT:Rectangle = new Rectangle(-400,-275,800,500);
-		 
-		
+
+		public static const lN_:Vector3D = new Vector3D(0, 0, 1);
+
+		public static const CENTER_SCREEN_RECT:Rectangle = new Rectangle(-300, -325, 600, 600);
+
+		public static const OFFSET_SCREEN_RECT:Rectangle = new Rectangle(-300, -450, 600, 600);
+
+		private static const SCREENSHOT_SCREEN_RECT:Rectangle = new Rectangle(-400, -325, 800, 600);
+
+		private static const SLIM_SCREENSHOT_SCREEN_RECT:Rectangle = new Rectangle(-400, -275, 800, 500);
+
+
 		public var x_:Number;
-		
+
 		public var y_:Number;
-		
+
 		public var z_:Number;
-		
+
 		public var angleRad_:Number;
-		
+
 		public var clipRect_:Rectangle;
-		
+
 		public var pp_:PerspectiveProjection;
-		
+
 		public var maxDist_:Number;
-		
+
 		public var maxDistSq_:Number;
-		
+
 		public var isHallucinating_:Boolean = false;
-		
+
 		public var wToS_:Matrix3D;
-		
+
 		public var wToV_:Matrix3D;
-		
+
 		public var vToS_:Matrix3D;
-		
+
 		private var nonPPMatrix_:Matrix3D;
-		
+
 		private var p_:Vector3D;
-		
+
 		private var f_:Vector3D;
-		
+
 		private var u_:Vector3D;
-		
+
 		private var r_:Vector3D;
-		
+
 		private var isJittering_:Boolean = false;
-		
+
 		private var jitter_:Number = 0;
-		
+
 		private const MAX_JITTER:Number = 0.5;
-		
+
 		private const JITTER_BUILDUP_MS:int = 10000;
-		
+
 		private var rd_:Vector.<Number>;
-		
+
 		public function Camera() {
 			this.pp_ = new PerspectiveProjection();
 			this.wToS_ = new Matrix3D();
@@ -75,46 +75,46 @@ package com.company.assembleegameclient.map {
 			this.f_ = new Vector3D();
 			this.u_ = new Vector3D();
 			this.r_ = new Vector3D();
-			this.rd_ = new Vector.<Number>(16,true);
+			this.rd_ = new Vector.<Number>(16, true);
 			super();
 			this.pp_.focalLength = 3;
 			this.pp_.fieldOfView = 48;
-			this.nonPPMatrix_.appendScale(50,50,50);
+			this.nonPPMatrix_.appendScale(50, 50, 50);
 			this.f_.x = 0;
 			this.f_.y = 0;
 			this.f_.z = -1;
 		}
-		
-		public function configureCamera(param1:GameObject, param2:Boolean) : void {
-			var loc3:Rectangle = !!Parameters.data_.centerOnPlayer?CENTER_SCREEN_RECT:OFFSET_SCREEN_RECT;
-			if(Parameters.screenShotMode_) {
-				if(!Parameters.screenShotSlimMode_) {
+
+		public function configureCamera(param1:GameObject, param2:Boolean):void {
+			var loc3:Rectangle = !!Parameters.data_.centerOnPlayer ? CENTER_SCREEN_RECT : OFFSET_SCREEN_RECT;
+			if (Parameters.screenShotMode_) {
+				if (!Parameters.screenShotSlimMode_) {
 					loc3 = SCREENSHOT_SCREEN_RECT;
 				} else {
 					loc3 = SLIM_SCREENSHOT_SCREEN_RECT;
 				}
 			}
 			var loc4:Number = Parameters.data_.cameraAngle;
-			this.configure(param1.x_,param1.y_,12,loc4,loc3);
+			this.configure(param1.x_, param1.y_, 12, loc4, loc3);
 			this.isHallucinating_ = param2;
 		}
-		
-		public function startJitter() : void {
+
+		public function startJitter():void {
 			this.isJittering_ = true;
 			this.jitter_ = 0;
 		}
-		
-		public function update(param1:Number) : void {
-			if(this.isJittering_ && this.jitter_ < this.MAX_JITTER) {
+
+		public function update(param1:Number):void {
+			if (this.isJittering_ && this.jitter_ < this.MAX_JITTER) {
 				this.jitter_ = this.jitter_ + param1 * this.MAX_JITTER / this.JITTER_BUILDUP_MS;
-				if(this.jitter_ > this.MAX_JITTER) {
+				if (this.jitter_ > this.MAX_JITTER) {
 					this.jitter_ = this.MAX_JITTER;
 				}
 			}
 		}
-		
-		public function configure(param1:Number, param2:Number, param3:Number, param4:Number, param5:Rectangle) : void {
-			if(this.isJittering_) {
+
+		public function configure(param1:Number, param2:Number, param3:Number, param4:Number, param5:Rectangle):void {
+			if (this.isJittering_) {
 				param1 = param1 + RandomUtil.plusMinus(this.jitter_);
 				param2 = param2 + RandomUtil.plusMinus(this.jitter_);
 			}

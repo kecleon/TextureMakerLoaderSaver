@@ -1,10 +1,10 @@
- 
 package kabam.rotmg.ui.view {
 	import com.company.assembleegameclient.appengine.SavedCharacter;
 	import com.company.assembleegameclient.parameters.Parameters;
 	import com.company.assembleegameclient.screens.CharacterSelectionAndNewsScreen;
 	import com.company.assembleegameclient.screens.NewCharacterScreen;
 	import com.company.util.MoreDateUtil;
+
 	import kabam.rotmg.account.securityQuestions.data.SecurityQuestionsModel;
 	import kabam.rotmg.account.securityQuestions.view.SecurityQuestionsInfoDialog;
 	import kabam.rotmg.classes.model.CharacterClass;
@@ -20,52 +20,53 @@ package kabam.rotmg.ui.view {
 	import kabam.rotmg.packages.control.InitPackagesSignal;
 	import kabam.rotmg.ui.signals.ChooseNameSignal;
 	import kabam.rotmg.ui.signals.NameChangedSignal;
+
 	import robotlegs.bender.bundles.mvcs.Mediator;
-	
+
 	public class CurrentCharacterMediator extends Mediator {
-		 
-		
+
+
 		[Inject]
 		public var view:CharacterSelectionAndNewsScreen;
-		
+
 		[Inject]
 		public var playerModel:PlayerModel;
-		
+
 		[Inject]
 		public var classesModel:ClassesModel;
-		
+
 		[Inject]
 		public var track:TrackEventSignal;
-		
+
 		[Inject]
 		public var setScreen:SetScreenSignal;
-		
+
 		[Inject]
 		public var playGame:PlayGameSignal;
-		
+
 		[Inject]
 		public var chooseName:ChooseNameSignal;
-		
+
 		[Inject]
 		public var nameChanged:NameChangedSignal;
-		
+
 		[Inject]
 		public var trackPage:TrackPageViewSignal;
-		
+
 		[Inject]
 		public var initPackages:InitPackagesSignal;
-		
+
 		[Inject]
 		public var openDialog:OpenDialogSignal;
-		
+
 		[Inject]
 		public var securityQuestionsModel:SecurityQuestionsModel;
-		
+
 		public function CurrentCharacterMediator() {
 			super();
 		}
-		
-		override public function initialize() : void {
+
+		override public function initialize():void {
 			this.trackSomething();
 			this.view.initialize(this.playerModel);
 			this.view.close.add(this.onClose);
@@ -76,12 +77,12 @@ package kabam.rotmg.ui.view {
 			this.trackPage.dispatch("/currentCharScreen");
 			this.nameChanged.add(this.onNameChanged);
 			this.initPackages.dispatch();
-			if(this.securityQuestionsModel.showSecurityQuestionsOnStartup) {
+			if (this.securityQuestionsModel.showSecurityQuestionsOnStartup) {
 				this.openDialog.dispatch(new SecurityQuestionsInfoDialog());
 			}
 		}
-		
-		override public function destroy() : void {
+
+		override public function destroy():void {
 			this.nameChanged.remove(this.onNameChanged);
 			this.view.close.remove(this.onClose);
 			this.view.newCharacter.remove(this.onNewCharacter);
@@ -89,15 +90,15 @@ package kabam.rotmg.ui.view {
 			this.view.showClasses.remove(this.onNewCharacter);
 			this.view.playGame.remove(this.onPlayGame);
 		}
-		
-		private function onNameChanged(param1:String) : void {
+
+		private function onNameChanged(param1:String):void {
 			this.view.setName(param1);
 		}
-		
-		private function trackSomething() : void {
+
+		private function trackSomething():void {
 			var loc2:TrackingData = null;
 			var loc1:String = MoreDateUtil.getDayStringInPT();
-			if(Parameters.data_.lastDailyAnalytics != loc1) {
+			if (Parameters.data_.lastDailyAnalytics != loc1) {
 				loc2 = new TrackingData();
 				loc2.category = "joinDate";
 				loc2.action = Parameters.data_.joinDate;
@@ -105,20 +106,20 @@ package kabam.rotmg.ui.view {
 				Parameters.save();
 			}
 		}
-		
-		private function onNewCharacter() : void {
+
+		private function onNewCharacter():void {
 			this.setScreen.dispatch(new NewCharacterScreen());
 		}
-		
-		private function onClose() : void {
+
+		private function onClose():void {
 			this.setScreen.dispatch(new TitleView());
 		}
-		
-		private function onChooseName() : void {
+
+		private function onChooseName():void {
 			this.chooseName.dispatch();
 		}
-		
-		private function onPlayGame() : void {
+
+		private function onPlayGame():void {
 			var loc1:SavedCharacter = this.playerModel.getCharacterByIndex(0);
 			this.playerModel.currentCharId = loc1.charId();
 			var loc2:CharacterClass = this.classesModel.getCharacterClass(loc1.objectType());
