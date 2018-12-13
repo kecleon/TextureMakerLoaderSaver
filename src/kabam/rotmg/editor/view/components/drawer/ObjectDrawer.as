@@ -113,9 +113,9 @@ package kabam.rotmg.editor.view.components.drawer {
 			var loc5:uint = 0;
 			var loc6:HSV = null;
 			var loc2:int = 0;
-			while (loc2 < param1.width) {
+			while (loc2 < pW_) {
 				loc3 = 0;
-				while (loc3 < param1.height) {
+				while (loc3 < pH_) {
 					loc4 = this.pixels_[loc2][loc3];
 					loc5 = param1.getPixel32(loc2, loc3);
 					loc6 = null;
