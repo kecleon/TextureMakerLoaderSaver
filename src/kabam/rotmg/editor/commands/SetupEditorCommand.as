@@ -5,7 +5,6 @@ package kabam.rotmg.editor.commands {
 	import kabam.rotmg.account.web.view.WebAccountInfoView;
 	import kabam.rotmg.core.signals.SetScreenSignal;
 	import kabam.rotmg.core.view.Layers;
-	import kabam.rotmg.editor.view.TermsView;
 	import kabam.rotmg.editor.view.TextureView;
 
 	public class SetupEditorCommand {

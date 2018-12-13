@@ -9,6 +9,8 @@ package kabam.rotmg.language.service {
 	import kabam.rotmg.language.model.LanguageModel;
 	import kabam.rotmg.language.model.StringMap;
 
+	import kecleon.URLCache;
+
 	public class GetLanguageService extends BaseTask {
 
 		private static const LANGUAGE:String = "LANGUAGE";
@@ -34,18 +36,12 @@ package kabam.rotmg.language.service {
 
 		override protected function startTask():void {
 			this.language = this.model.getLanguageFamily();
-			this.client.complete.addOnce(this.onComplete);
-			this.client.setMaxRetries(3);
-			this.client.sendRequest("/app/getLanguageStrings", {"languageType": this.language});
+			onComplete();
 		}
 
-		private function onComplete(param1:Boolean, param2:*):void {
-			if (param1) {
-				this.onLanguageResponse(param2);
-			} else {
-				this.onLanguageError();
-			}
-			completeTask(param1, param2);
+		private function onComplete():void {
+			onLanguageResponse(URLCache.APP_GETLANGUAGESTRINGS);
+			completeTask(true, URLCache.APP_GETLANGUAGESTRINGS);
 		}
 
 		private function onLanguageResponse(param1:String):void {
