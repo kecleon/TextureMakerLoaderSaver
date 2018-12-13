@@ -6,9 +6,16 @@ package kabam.rotmg.editor.view {
 	import com.company.assembleegameclient.screens.AccountScreen;
 	import com.company.util.IntPoint;
 
+	import flash.display.BitmapData;
+
 	import flash.display.Sprite;
 	import flash.events.Event;
+	import flash.net.FileFilter;
 	import flash.net.FileReference;
+	import flash.net.FileReference;
+	import flash.utils.ByteArray;
+
+	import ion.utils.png.PNGDecoder;
 
 	import kabam.rotmg.editor.model.TextureData;
 	import kabam.rotmg.editor.view.components.ColorPicker;
@@ -67,6 +74,10 @@ package kabam.rotmg.editor.view {
 		private var tags_:String = "";
 
 		private var tempEvent_:PixelEvent = null;
+
+		private var file:FileReference;
+
+		private static const FILTER:Array = [new FileFilter("Images", "*.png")];
 
 		public function TextureView() {
 			super();
@@ -277,26 +288,22 @@ package kabam.rotmg.editor.view {
 		}
 
 		private function onLoad(param1:CommandEvent):void {
-			this.loadDialog.dispatch();
+			file = new FileReference();
+			file.addEventListener(Event.COMPLETE, this.onLoadComplete);
+			file.addEventListener(Event.SELECT, this.onSelectFile);
+			file.browse(FILTER);
+		}
+
+		private function onLoadComplete(event:Event):void{
+			pixelDrawer_.loadBitmapData(PNGDecoder.decodeImage(file.data));
+		}
+
+		public function onSelectFile(event:Event):void {
+			this.file.load();
 		}
 
 		private function onSave(param1:CommandEvent):void {
-			var loc2:TextureData = new TextureData();
-			loc2.name = this.name_;
-			loc2.type = this.type_;
-			loc2.tags = this.tags_;
-			loc2.bitmapData = this.pixelDrawer_.getBitmapData();
-			switch (this.modeDropDown_.getValue()) {
-				case ModeDropDown.OBJECTS:
-					loc2.types = new <int>[PictureType.INVALID, PictureType.CHARACTER, PictureType.ITEM, PictureType.ENVIRONMENT, PictureType.PROJECTILE, PictureType.INTERFACE, PictureType.MISCELLANEOUS];
-					break;
-				case ModeDropDown.CHARACTERS:
-					loc2.types = new <int>[PictureType.CHARACTER];
-					break;
-				case ModeDropDown.TEXTILES:
-					loc2.types = new <int>[PictureType.TEXTILE];
-			}
-			this.saveDialog.dispatch(loc2);
+			new FileReference().save(PNGEncoder.encode(this.pixelDrawer_.getBitmapData()), this.name_ + ".png");
 		}
 
 		public function setTexture(param1:TextureData):void {
