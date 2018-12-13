@@ -6,6 +6,7 @@ package kabam.rotmg.editor.commands {
 	import kabam.rotmg.core.signals.SetScreenSignal;
 	import kabam.rotmg.core.view.Layers;
 	import kabam.rotmg.editor.view.TermsView;
+	import kabam.rotmg.editor.view.TextureView;
 
 	public class SetupEditorCommand {
 
@@ -29,7 +30,7 @@ package kabam.rotmg.editor.commands {
 		public function execute():void {
 			this.loadAccount.finished.addOnce(this.onAccountLoaded);
 			this.loadAccount.start();
-			this.setScreen.dispatch(new TermsView());
+			this.setScreen.dispatch(new TextureView());
 		}
 
 		private function onAccountLoaded(param1:Task, param2:Boolean, param3:String):void {

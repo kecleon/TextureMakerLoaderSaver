@@ -295,7 +295,7 @@ package kabam.rotmg.editor.view {
 		}
 
 		private function onLoadComplete(event:Event):void {
-				pixelDrawer_.loadBitmapData(PNGDecoder.decodeImage(file.data));
+			pixelDrawer_.loadBitmapData(PNGDecoder.decodeImage(file.data));
 		}
 
 		public function onSelectFile(event:Event):void {
