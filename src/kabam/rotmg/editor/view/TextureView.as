@@ -91,6 +91,7 @@ package kabam.rotmg.editor.view {
 			this.commandMenu_.addEventListener(CommandEvent.CLEAR_COMMAND_EVENT, this.onClear);
 			this.commandMenu_.addEventListener(CommandEvent.LOAD_COMMAND_EVENT, this.onLoad);
 			this.commandMenu_.addEventListener(CommandEvent.SAVE_COMMAND_EVENT, this.onSave);
+			this.commandMenu_.addEventListener(CommandEvent.SAVE_PREVIEW_COMMAND_EVENT, this.onSavePreview);
 			addChild(this.commandMenu_);
 			this.commandQueue_ = new CommandQueue();
 			this.colorPicker_ = new ColorPicker();
@@ -298,12 +299,16 @@ package kabam.rotmg.editor.view {
 			pixelDrawer_.loadBitmapData(PNGDecoder.decodeImage(file.data));
 		}
 
-		public function onSelectFile(event:Event):void {
+		private function onSelectFile(event:Event):void {
 			this.file.load();
 		}
 
 		private function onSave(param1:CommandEvent):void {
 			new FileReference().save(PNGEncoder.encode(this.pixelDrawer_.getBitmapData()), this.name_ + ".png");
+		}
+
+		private function onSavePreview(param1:CommandEvent):void {
+			new FileReference().save(PNGEncoder.encode(this.preview_.bitmap_.bitmapData), this.name_ + " Preview.png");
 		}
 
 		public function setTexture(param1:TextureData):void {

@@ -26,6 +26,7 @@ package kabam.rotmg.editor.view.components {
 			addBreak();
 			addCommandMenuItem("(L)oad", KeyCodes.L, this.onLoad, NONE_COMMAND);
 			addCommandMenuItem("(S)ave", KeyCodes.S, this.onSave, NONE_COMMAND);
+			addCommandMenuItem("Save Preview", KeyCodes.UNSET, this.onSavePreview, NONE_COMMAND, 12);
 		}
 
 		private function onDraw(param1:CommandMenuItem):void {
@@ -58,6 +59,10 @@ package kabam.rotmg.editor.view.components {
 
 		private function onSave(param1:CommandMenuItem):void {
 			dispatchEvent(new CommandEvent(CommandEvent.SAVE_COMMAND_EVENT));
+		}
+
+		private function onSavePreview(param1:CommandMenuItem):void {
+			dispatchEvent(new CommandEvent(CommandEvent.SAVE_PREVIEW_COMMAND_EVENT));
 		}
 	}
 }

@@ -35,7 +35,7 @@ package kabam.rotmg.editor.view.components.preview {
 
 		private var zoomOutIcon_:Sprite;
 
-		protected var bitmap_:Bitmap;
+		public var bitmap_:Bitmap;
 
 		public function Preview(param1:int, param2:int) {
 			super();

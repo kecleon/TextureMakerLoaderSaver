@@ -66,8 +66,8 @@ package com.company.assembleegameclient.editor {
 			loc2.callback_(loc2);
 		}
 
-		protected function addCommandMenuItem(param1:String, param2:int, param3:Function, param4:int):void {
-			var loc5:CommandMenuItem = new CommandMenuItem(param1, param3, param4);
+		protected function addCommandMenuItem(param1:String, param2:int, param3:Function, param4:int, fontSize:int = 16):void {
+			var loc5:CommandMenuItem = new CommandMenuItem(param1, param3, param4, fontSize);
 			loc5.y = this.yOffset_;
 			addChild(loc5);
 			if (param2 != -1) {

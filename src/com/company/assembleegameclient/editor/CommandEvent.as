@@ -19,6 +19,8 @@ package com.company.assembleegameclient.editor {
 
 		public static const SELECT_COMMAND_EVENT:String = "SELECT_COMMAND_EVENT";
 
+		public static const SAVE_PREVIEW_COMMAND_EVENT:String = "SAVE_PREVIEW_COMMAND_EVENT";
+
 
 		public function CommandEvent(param1:String) {
 			super(param1);

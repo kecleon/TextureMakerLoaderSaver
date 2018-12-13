@@ -23,11 +23,11 @@ package com.company.assembleegameclient.editor {
 
 		private var text_:BaseSimpleText;
 
-		public function CommandMenuItem(param1:String, param2:Function, param3:int) {
+		public function CommandMenuItem(param1:String, param2:Function, param3:int, fontSize:int = 16) {
 			super();
 			this.callback_ = param2;
 			this.command_ = param3;
-			this.text_ = new BaseSimpleText(16, 16777215, false, 0, 0);
+			this.text_ = new BaseSimpleText(fontSize, 16777215, false, 0, 0);
 			this.text_.setBold(true);
 			this.text_.text = param1;
 			this.text_.updateMetrics();
