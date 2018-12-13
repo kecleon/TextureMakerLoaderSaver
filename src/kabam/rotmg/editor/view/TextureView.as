@@ -294,8 +294,13 @@ package kabam.rotmg.editor.view {
 			file.browse(FILTER);
 		}
 
-		private function onLoadComplete(event:Event):void{
-			pixelDrawer_.loadBitmapData(PNGDecoder.decodeImage(file.data));
+		private function onLoadComplete(event:Event):void {
+			var bitmap:BitmapData = PNGDecoder.decodeImage(file.data);
+			var h:int = bitmap.height;
+			var w:int = bitmap.width;
+			if ((w == 8 && h == 8) || (w == 16 && h == 8) || (w == 16 && h == 16)) {
+				pixelDrawer_.loadBitmapData(bitmap);
+			}
 		}
 
 		public function onSelectFile(event:Event):void {
