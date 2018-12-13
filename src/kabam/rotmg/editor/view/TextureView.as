@@ -46,6 +46,8 @@ package kabam.rotmg.editor.view {
 
 		private static const MODE_DROPDOWN_Y:int = 32;
 
+		private static const FILTER:Array = [new FileFilter("Images", "*.png")];
+
 
 		public const loadDialog:Signal = new Signal();
 
@@ -76,8 +78,6 @@ package kabam.rotmg.editor.view {
 		private var tempEvent_:PixelEvent = null;
 
 		private var file:FileReference;
-
-		private static const FILTER:Array = [new FileFilter("Images", "*.png")];
 
 		public function TextureView() {
 			super();

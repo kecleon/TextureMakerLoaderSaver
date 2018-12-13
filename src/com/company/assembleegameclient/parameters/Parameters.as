@@ -11,6 +11,8 @@ package com.company.assembleegameclient.parameters {
 
 	public class Parameters {
 
+		public static const TIMESTAMP_VERSION:String = "1543572660";
+
 		public static const BUILD_VERSION:String = "X31.1";
 
 		public static const MINOR_VERSION:String = "2";
