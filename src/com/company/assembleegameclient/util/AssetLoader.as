@@ -39,7 +39,7 @@ package com.company.assembleegameclient.util {
 			this.parseObjectFiles();
 			this.parseRegionFiles();
 			Parameters.load();
-			Options.refreshCursor();
+			//Options.refreshCursor();
 			this.music.load();
 			SFX.load();
 		}
